@@ -21,9 +21,11 @@ public class SubGuiPic extends SubGui{
 	
 	@Override
 	public void createControls() {
-		controls.add(new GuiTextfield("url", frame.url, 5, 5, 100, 20));
-		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 5, 30, 40, 20));
-		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 60, 30, 40, 20));
+		GuiTextfield url = new GuiTextfield("url", frame.url, 5, 5, 100, 20);
+		url.maxLength = 512;
+		controls.add(url);
+		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 5, 30, 40, 20).setFloatOnly());
+		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 60, 30, 40, 20).setFloatOnly());
 		
 		controls.add(new GuiButton("Save", 100, 100, 50));
 	}

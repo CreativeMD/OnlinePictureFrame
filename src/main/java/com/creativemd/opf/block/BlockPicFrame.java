@@ -13,11 +13,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class BlockPicFrame extends BlockContainer implements IGuiCreator {
@@ -26,6 +29,21 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator {
 		super(Material.iron);
 		setCreativeTab(CreativeTabs.tabDecorations);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta)
+    {
+        return Blocks.planks.getIcon(side, meta);
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister registry)
+    {
+        
+    }
+
 	
 	@Override
 	@SideOnly(Side.CLIENT)
