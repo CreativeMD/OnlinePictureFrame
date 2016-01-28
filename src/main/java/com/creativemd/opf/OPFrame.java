@@ -2,6 +2,9 @@ package com.creativemd.opf;
 
 import java.util.Arrays;
 
+import com.creativemd.opf.block.BlockPicFrame;
+import com.creativemd.opf.block.TileEntityPicFrame;
+import com.creativemd.opf.client.OPFrameClient;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -13,6 +16,10 @@ import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.init.Items;
@@ -25,10 +32,23 @@ public class OPFrame{
 	public static final String modid = "opframe";
 	public static final String version = "0.1";
 	
+	public static Block frame = new BlockPicFrame().setBlockName("opFrame");
+	
+	@SideOnly(Side.CLIENT)
+	public void initClient()
+	{
+		OPFrameClient.initClient();
+	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {
 		
+		GameRegistry.registerBlock(frame, "opFrame");
+		
+		GameRegistry.registerTileEntity(TileEntityPicFrame.class, "OPFrameTileEntity");
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			initClient();
 		
 		
 	}
