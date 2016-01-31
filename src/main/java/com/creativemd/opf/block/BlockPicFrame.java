@@ -43,7 +43,6 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator {
     {
         
     }
-
 	
 	@Override
 	@SideOnly(Side.CLIENT)
