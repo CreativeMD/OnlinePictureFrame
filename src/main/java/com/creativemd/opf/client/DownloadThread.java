@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.vecmath.Tuple2f;
+import javax.vecmath.Vector2f;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -16,11 +18,13 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.Tuple;
 
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
 	
 	public static HashMap<String, Integer> loadedImages = new HashMap<String, Integer>();
+	public static HashMap<String, Vector2f> loadedImagesSize = new HashMap<String, Vector2f>();
 	
 	public static ArrayList<String> loadingImages = new ArrayList<String>();
 	
@@ -74,8 +78,10 @@ public class DownloadThread extends Thread {
 	{
 		if(!thread.hasFailed())
 		{
-			int id = loadTexture(thread.getDownloadedImage());
+			BufferedImage image = thread.getDownloadedImage();
+			int id = loadTexture(image);
 			loadedImages.put(thread.url, id);
+			loadedImagesSize.put(thread.url, new Vector2f(image.getWidth(), image.getHeight()));
 			return id;
 		}
 		return -1;

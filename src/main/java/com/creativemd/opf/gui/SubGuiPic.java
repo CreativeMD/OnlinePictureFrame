@@ -1,5 +1,7 @@
 package com.creativemd.opf.gui;
 
+import javax.vecmath.Vector2f;
+
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiButton;
 import com.creativemd.creativecore.common.gui.controls.GuiCheckBox;
@@ -9,6 +11,7 @@ import com.creativemd.creativecore.common.gui.controls.GuiSteppedSlider;
 import com.creativemd.creativecore.common.gui.controls.GuiTextfield;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.opf.block.TileEntityPicFrame;
+import com.creativemd.opf.client.DownloadThread;
 import com.google.common.util.concurrent.ExecutionError;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
@@ -23,6 +26,7 @@ public class SubGuiPic extends SubGui{
 	public TileEntityPicFrame frame;
 	
 	public SubGuiPic(TileEntityPicFrame frame) {
+		super(200, 200);
 		this.frame = frame;
 	}
 	
@@ -32,7 +36,10 @@ public class SubGuiPic extends SubGui{
 		url.maxLength = 512;
 		controls.add(url);
 		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 5, 30, 40, 20).setFloatOnly());
-		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 60, 30, 40, 20).setFloatOnly());
+		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 50, 30, 40, 20).setFloatOnly());
+		
+		controls.add(new GuiButton("reX", "x->y", 95, 30, 50));
+		controls.add(new GuiButton("reY", "y->x", 145, 30, 50));
 		
 		controls.add(new GuiCheckBox("flipX", "flip (x-axis)", 5, 50, frame.flippedX));
 		controls.add(new GuiCheckBox("flipY", "flip (y-axis)", 80, 50, frame.flippedY));
@@ -53,6 +60,36 @@ public class SubGuiPic extends SubGui{
 	@CustomEventSubscribe
 	public void onClicked(ControlClickEvent event)
 	{
+		if(event.source.is("reX") || event.source.is("reY"))
+		{
+			GuiTextfield sizeXField = (GuiTextfield) getControl("sizeX");
+			GuiTextfield sizeYField = (GuiTextfield) getControl("sizeY");
+			
+			float x = 1;
+			try{
+				x = Float.parseFloat(sizeXField.text);
+			}catch(Exception e){
+				x = 1;
+			}
+			
+			float y = 1;
+			try{
+				y = Float.parseFloat(sizeYField.text);
+			}catch(Exception e){
+				y = 1;
+			}
+			
+			Vector2f size = DownloadThread.loadedImagesSize.get(frame.url);
+			if(size != null)
+			{
+				if(event.source.is("reX"))
+				{
+					sizeYField.text = "" + (size.y/(size.x/x));
+				}else{
+					sizeXField.text = "" + (size.x/(size.y/y));
+				}
+			}
+		}
 		if(event.source.is("Save"))
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
