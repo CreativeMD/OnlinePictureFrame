@@ -53,7 +53,7 @@ public class OPFrame{
 		
 		GameRegistry.addRecipe(new ItemStack(frame),  new Object[]
 				{
-				"AXA", "XLX", "AXA", 'X', Blocks.planks, 'L', Items.dye, 'A', Blocks.wool
+				"AXA", "XLX", "AXA", 'X', Blocks.planks, 'L', Items.iron_ingot, 'A', Blocks.wool
 				});
 	}
 }
