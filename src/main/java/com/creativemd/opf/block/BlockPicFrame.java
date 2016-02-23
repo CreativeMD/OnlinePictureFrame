@@ -3,6 +3,7 @@ package com.creativemd.opf.block;
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.IGuiCreator;
 import com.creativemd.creativecore.common.gui.SubGui;
+import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.opf.client.OPFrameClient;
 import com.creativemd.opf.gui.SubContainerPic;
@@ -20,8 +21,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockPicFrame extends BlockContainer implements IGuiCreator {
 
@@ -29,6 +32,43 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator {
 		super(Material.iron);
 		setCreativeTab(CreativeTabs.tabDecorations);
 	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+		CubeObject cube = new CubeObject(0, 0, 0, 0.05, 1, 1);
+		ForgeDirection direction = ForgeDirection.getOrientation(world.getBlockMetadata(x, y, z));
+		/*TileEntity te = world.getTileEntity(x, y, z);
+		
+		if(te instanceof TileEntityPicFrame)
+		{
+			if(direction == ForgeDirection.UP)
+			{
+				cube.minZ -= ((TileEntityPicFrame) te).sizeX-1;
+				cube.minY -= ((TileEntityPicFrame) te).sizeY-1;
+			}else{
+				cube.maxZ += ((TileEntityPicFrame) te).sizeX-1;
+				cube.maxY += ((TileEntityPicFrame) te).sizeY-1;
+			}
+			
+			
+		}*/
+		
+        return CubeObject.rotateCube(cube, direction).getAxis().getOffsetBoundingBox(x, y, z);
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityPicFrame)
+			return ((TileEntityPicFrame) te).getBoundingBox();
+		
+		ForgeDirection direction = ForgeDirection.getOrientation(world.getBlockMetadata(x, y, z));
+		CubeObject cube = new CubeObject(0, 0, 0, 0.05, 1, 1);
+        return CubeObject.rotateCube(cube, direction).getAxis().getOffsetBoundingBox(x, y, z);
+    }
 	
 	@Override
 	@SideOnly(Side.CLIENT)

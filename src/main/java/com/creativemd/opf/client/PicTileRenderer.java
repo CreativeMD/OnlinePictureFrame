@@ -51,16 +51,36 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		GL11.glTranslated(x+0.5, y+0.5, z+0.5);
 		    		
 		    		
+		    		
 		    		//GL11.glRotatef((float)System.nanoTime()/10000000F, 0, 0, 1);
 		    		ForgeDirection direction = ForgeDirection.getOrientation(frame.getBlockMetadata());
 		    		RenderHelper3D.applyDirection(direction);
 		    		if(direction == ForgeDirection.UP || direction == ForgeDirection.DOWN)
 		    			GL11.glRotatef(90, 0, 1, 0);
 		    		
-		    		GL11.glTranslated(-0.945, -0.5+sizeY/2D, -0.5+sizeX/2D);
+		    		double posX = -0.5+sizeX/2D;
+		    		if(frame.posX == 1)
+		    			posX = 0;
+		    		else if(frame.posX == 2)
+		    			posX = -posX;
+		    		double posY = -0.5+sizeY/2D;
+		    		if(frame.posY == 1)
+		    			posY = 0;
+		    		else if(frame.posY == 2)
+		    			posY = -posY;
+		    		
+		    		if((frame.rotation == 1 || frame.rotation == 3) && (frame.posX == 2 ^ frame.posY == 2))
+		    			GL11.glRotated(180, 1, 0, 0);
+		    		
+		    		GL11.glRotated(frame.rotation * 90, 1, 0, 0);
+		    		
+		    		GL11.glTranslated(-0.945, posY, posX);
+		    		
+		    		
 		    		
 		    		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		    		GL11.glScaled(1, sizeY, sizeX);
+		    		GL11.glScaled(1, frame.sizeY, frame.sizeX);
+		    		
 		    		/*GL11.glRotated(90, 1, 0, 0);
 		    		GL11.glRotated(90, 0, 0, 1);*/
 		    		//GL11.glRotated(rotateZ, 0, 0, 1);
@@ -73,13 +93,13 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		//GL11.glColor4d(red, green, blue, alpha);
 		    		GL11.glNormal3f(1.0f, 0.0F, 0.0f);
 		    		
-		    		GL11.glTexCoord3f(1, 1, 0);
+		    		GL11.glTexCoord3f(frame.flippedY ? 0 : 1, frame.flippedX ? 0 : 1, 0);
 		    		GL11.glVertex3f(0.5F, -0.5f, -0.5f);
-		    		GL11.glTexCoord3f(1, 0, 0);
+		    		GL11.glTexCoord3f(frame.flippedY ? 0 : 1, frame.flippedX ? 1 : 0, 0);
 		    		GL11.glVertex3f(0.5f, 0.5f, -0.5f);
-		    		GL11.glTexCoord3f(0, 0, 0);
+		    		GL11.glTexCoord3f(frame.flippedY ? 1 : 0, frame.flippedX ? 1 : 0, 0);
 		    		GL11.glVertex3f(0.5f, 0.5f, 0.5f);
-		    		GL11.glTexCoord3f(0, 1, 0);
+		    		GL11.glTexCoord3f(frame.flippedY ? 1 : 0, frame.flippedX ? 0 : 1, 0);
 		    		GL11.glVertex3f(0.5f, -0.5f, 0.5f);
 		    		GL11.glEnd();
 		    		

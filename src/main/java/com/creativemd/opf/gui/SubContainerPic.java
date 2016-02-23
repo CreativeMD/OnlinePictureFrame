@@ -28,6 +28,15 @@ public class SubContainerPic extends SubContainer {
 			//frame.initClient();
 			frame.sizeX = nbt.getFloat("x");
 			frame.sizeY = nbt.getFloat("y");
+			
+			frame.renderDistance = nbt.getInteger("render");
+			frame.posX = nbt.getByte("posX");
+			frame.posY = nbt.getByte("posY");
+			frame.rotation = nbt.getByte("rotation");
+			frame.visibleFrame = nbt.getBoolean("visibleFrame");
+			frame.flippedX = nbt.getBoolean("flippedX");
+			frame.flippedY = nbt.getBoolean("flippedY");
+			
 			frame.updateBlock();
 		}
 	}

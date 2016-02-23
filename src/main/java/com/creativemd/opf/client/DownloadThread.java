@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -20,6 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class DownloadThread extends Thread {
 	
 	public static HashMap<String, Integer> loadedImages = new HashMap<String, Integer>();
+	
+	public static ArrayList<String> loadingImages = new ArrayList<String>();
 	
 	private String url;
 	
