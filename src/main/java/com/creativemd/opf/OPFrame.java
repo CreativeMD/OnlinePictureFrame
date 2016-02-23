@@ -22,6 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,6 +51,9 @@ public class OPFrame{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 			initClient();
 		
-		
+		GameRegistry.addRecipe(new ItemStack(frame),  new Object[]
+				{
+				"AXA", "XLX", "AXA", 'X', Blocks.planks, 'L', Items.dye, 'A', Blocks.wool
+				});
 	}
 }
