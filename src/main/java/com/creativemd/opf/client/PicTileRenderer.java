@@ -70,13 +70,13 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		
 		    		GL11.glRotated(frame.rotation * 90, 1, 0, 0);
 		    		
-		    		double moveX = 0;//sizeX/2D-0.5;
-		    		double moveY = -0.5;//sizeY/2D-0.5;
+		    		/*double moveX = 0;//sizeX/2D-0.5;
+		    		double moveY = -0;//sizeY/2D-0.5;
 		    		double moveZ = -0.5;
-		    		GL11.glTranslated(moveZ, moveY, moveX);
+		    		GL11.glTranslated(moveZ, moveY, moveX);*/
 		    		GL11.glRotated(frame.rotationX, 0, 1, 0);
 		    		GL11.glRotated(frame.rotationY, 0, 0, 1);
-		    		GL11.glTranslated(-moveZ, -moveY, -moveX);
+		    		//GL11.glTranslated(-moveZ, -moveY, -moveX);
 		    		
 		    		GL11.glTranslated(-0.945, posY, posX);
 		    		
