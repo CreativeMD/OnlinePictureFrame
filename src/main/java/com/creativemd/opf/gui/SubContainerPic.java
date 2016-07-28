@@ -36,6 +36,9 @@ public class SubContainerPic extends SubContainer {
 			frame.flippedX = nbt.getBoolean("flippedX");
 			frame.flippedY = nbt.getBoolean("flippedY");
 			
+			frame.rotationX = nbt.getFloat("rotX");
+			frame.rotationY = nbt.getFloat("rotY");
+			
 			frame.updateBlock();
 		}
 	}

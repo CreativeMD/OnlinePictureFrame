@@ -96,7 +96,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	{
 		/*AxisAlignedBB bb = INFINITE_EXTENT_AABB;
         return bb;*/
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05, 1, 1);
+		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 		
 		float sizeX = this.sizeX;
 		if(sizeX == 0)
@@ -192,6 +192,11 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	public boolean flippedX;
 	public boolean flippedY;
 	
+	/**-90 to 90**/
+	public float rotationX;
+	/**-90 to 90**/
+	public float rotationY;
+	
 	/**0-3 all directions**/
 	public byte rotation = 0;
 	
@@ -217,6 +222,8 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		nbt.setBoolean("visibleFrame", visibleFrame);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
+		nbt.setFloat("rotX", rotationX);
+		nbt.setFloat("rotY", rotationY);
 		return nbt;
 	}
 	
@@ -234,6 +241,8 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		visibleFrame = nbt.getBoolean("visibleFrame");
 		flippedX = nbt.getBoolean("flippedX");
 		flippedY = nbt.getBoolean("flippedY");
+		rotationX = nbt.getFloat("rotX");
+		rotationY = nbt.getFloat("rotY");
 	}
 	
 	@Override
@@ -250,6 +259,8 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		nbt.setBoolean("visibleFrame", visibleFrame);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
+		nbt.setFloat("rotX", rotationX);
+		nbt.setFloat("rotY", rotationY);
 	}
 	
 	@Override
@@ -267,6 +278,8 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		visibleFrame = nbt.getBoolean("visibleFrame");
 		flippedX = nbt.getBoolean("flippedX");
 		flippedY = nbt.getBoolean("flippedY");
+		rotationX = nbt.getFloat("rotX");
+		rotationY = nbt.getFloat("rotY");
 		initClient();
 		updateRender();
     }

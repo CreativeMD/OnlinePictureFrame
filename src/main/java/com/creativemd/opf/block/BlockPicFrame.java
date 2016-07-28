@@ -152,7 +152,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
     {
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05, 1, 1);
+		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = blockState.getValue(FACING);		
         return CubeObject.rotateCube(cube, direction).getAxis(); //.offset(pos);
     }
@@ -165,7 +165,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		if(te instanceof TileEntityPicFrame)
 			return ((TileEntityPicFrame) te).getBoundingBox();
 		
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05, 1, 1);
+		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = state.getValue(FACING);		
         return CubeObject.rotateCube(cube, direction).getAxis();//.offset(pos);
     }
@@ -205,7 +205,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	public ArrayList<CubeObject> getRenderingCubes(IBlockState state, TileEntity te) {
 		ArrayList<CubeObject> cubes = new ArrayList<CubeObject>();
 		if(((TileEntityPicFrame) te).visibleFrame)
-			cubes.add(CubeObject.rotateCube(new CubeObject(0, 0, 0, 0.03, 1, 1, Blocks.PLANKS), state.getValue(FACING)));
+			cubes.add(CubeObject.rotateCube(new CubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS), state.getValue(FACING)));
 		return cubes;
 	}
 

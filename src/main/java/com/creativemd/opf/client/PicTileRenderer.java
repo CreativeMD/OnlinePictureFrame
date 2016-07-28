@@ -48,8 +48,6 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		            
 		    		GL11.glTranslated(x+0.5, y+0.5, z+0.5);
 		    		
-		    		
-		    		
 		    		//GL11.glRotatef((float)System.nanoTime()/10000000F, 0, 0, 1);
 		    		EnumFacing direction = EnumFacing.getFront(frame.getBlockMetadata());
 		    		RenderHelper3D.applyDirection(direction);
@@ -72,6 +70,14 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		
 		    		GL11.glRotated(frame.rotation * 90, 1, 0, 0);
 		    		
+		    		double moveX = 0;//sizeX/2D-0.5;
+		    		double moveY = -0.5;//sizeY/2D-0.5;
+		    		double moveZ = -0.5;
+		    		GL11.glTranslated(moveZ, moveY, moveX);
+		    		GL11.glRotated(frame.rotationX, 0, 1, 0);
+		    		GL11.glRotated(frame.rotationY, 0, 0, 1);
+		    		GL11.glTranslated(-moveZ, -moveY, -moveX);
+		    		
 		    		GL11.glTranslated(-0.945, posY, posX);
 		    		
 		    		
@@ -81,10 +87,9 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		
 		    		/*GL11.glRotated(90, 1, 0, 0);
 		    		GL11.glRotated(90, 0, 0, 1);*/
-		    		//GL11.glRotated(rotateZ, 0, 0, 1);
-		    		/*GL11.glRotated(rotateX, 1, 0, 0);
 		    		
-		    		GL11.glScaled(width, height, length);
+		    		
+		    		/*GL11.glScaled(width, height, length);
 		    		GL11.glColor4d(red, green, blue, alpha);*/
 		    		
 		    		GL11.glBegin(GL11.GL_POLYGON);

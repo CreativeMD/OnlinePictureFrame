@@ -3,6 +3,7 @@ package com.creativemd.opf.gui;
 import javax.vecmath.Vector2f;
 
 import com.creativemd.creativecore.gui.container.SubGui;
+import com.creativemd.creativecore.gui.controls.gui.GuiAnalogeSlider;
 import com.creativemd.creativecore.gui.controls.gui.GuiButton;
 import com.creativemd.creativecore.gui.controls.gui.GuiCheckBox;
 import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
@@ -31,36 +32,42 @@ public class SubGuiPic extends SubGui{
 	
 	@Override
 	public void createControls() {
-		GuiTextfield url = new GuiTextfield("url", frame.url, 5, 5, 164, 20);
+		GuiTextfield url = new GuiTextfield("url", frame.url, 0, 0, 194, 16);
 		url.maxLength = 512;
 		controls.add(url);
-		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 5, 30, 40, 20).setFloatOnly());
-		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 50, 30, 40, 20).setFloatOnly());
-		controls.add(new GuiButton("reX", "x->y", 95, 30, 50){
+		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 0, 30, 40, 16).setFloatOnly());
+		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 47, 30, 40, 16).setFloatOnly());
+		controls.add(new GuiButton("reX", "x->y", 94, 30, 50){
 			@Override
 			public void onClicked(int x, int y, int button) {
 			}
 		});
-		controls.add(new GuiButton("reY", "y->x", 145, 30, 50){
+		controls.add(new GuiButton("reY", "y->x", 144, 30, 50){
 			@Override
 			public void onClicked(int x, int y, int button) {
 			}
 		});
 		
-		controls.add(new GuiCheckBox("flipX", "flip (x-axis)", 5, 50, frame.flippedX));
-		controls.add(new GuiCheckBox("flipY", "flip (y-axis)", 80, 50, frame.flippedY));
+		controls.add(new GuiCheckBox("flipX", "flip (x-axis)", 0, 50, frame.flippedX));
+		controls.add(new GuiCheckBox("flipY", "flip (y-axis)", 75, 50, frame.flippedY));
 		
-		controls.add(new GuiStateButton("posX", frame.posX, 5, 70, 70, 20, "left (x)", "center (x)", "right (x)"));
-		controls.add(new GuiStateButton("posY", frame.posY, 80, 70, 70, 20, "left (y)", "center (y)", "right (y)"));
+		controls.add(new GuiStateButton("posX", frame.posX, 0, 70, 70, "left (x)", "center (x)", "right (x)"));
+		controls.add(new GuiStateButton("posY", frame.posY, 80, 70, 70, "left (y)", "center (y)", "right (y)"));
 		
-		controls.add(new GuiStateButton("rotation", frame.rotation, 5, 100, 80, 20, "rotation: 0", "rotation: 1", "rotation: 2", "rotation: 3"));
+		controls.add(new GuiStateButton("rotation", frame.rotation, 0, 100, 80, "rotation: 0", "rotation: 1", "rotation: 2", "rotation: 3"));
 		
-		controls.add(new GuiCheckBox("visibleFrame", "visible Frame", 90, 105, frame.visibleFrame));
+		controls.add(new GuiCheckBox("visibleFrame", "visible Frame", 90, 100, frame.visibleFrame));
 		
-		controls.add(new GuiLabel("render distance (blocks):", 5, 125));
-		controls.add(new GuiSteppedSlider("renderDistance", 5, 140, 100, 20, frame.renderDistance, 5, 1024));
+		controls.add(new GuiLabel("rotation (h):", 0, 124));
+		controls.add(new GuiAnalogeSlider("rotX", 67, 122, 122, 12, frame.rotationX, -90, 90));
 		
-		controls.add(new GuiButton("Save", 120, 140, 50){
+		controls.add(new GuiLabel("rotation (v):", 0, 143));
+		controls.add(new GuiAnalogeSlider("rotY", 67, 141, 122, 12, frame.rotationY, -90, 90));
+		
+		controls.add(new GuiLabel("render distance (blocks):", 0, 160));
+		controls.add(new GuiSteppedSlider("renderDistance", 0, 174, 100, 14, frame.renderDistance, 5, 1024));
+		
+		controls.add(new GuiButton("Save", 120, 174, 50){
 			@Override
 			public void onClicked(int x, int y, int button) {
 				NBTTagCompound nbt = new NBTTagCompound();
@@ -78,6 +85,9 @@ public class SubGuiPic extends SubGui{
 				
 				GuiSteppedSlider renderDistance = (GuiSteppedSlider) get("renderDistance");
 				
+				GuiAnalogeSlider rotX = (GuiAnalogeSlider) get("rotX");
+				GuiAnalogeSlider rotY = (GuiAnalogeSlider) get("rotY");
+				
 				nbt.setByte("posX", (byte) buttonPosX.getState());
 				nbt.setByte("posY", (byte) buttonPosY.getState());
 				
@@ -88,6 +98,8 @@ public class SubGuiPic extends SubGui{
 				nbt.setBoolean("visibleFrame", visibleFrame.value);
 				
 				nbt.setInteger("render", (int) renderDistance.value);
+				nbt.setFloat("rotX", rotX.value);
+				nbt.setFloat("rotY", rotY.value);
 				
 				nbt.setString("url", url.text);
 				float posX = 1;
