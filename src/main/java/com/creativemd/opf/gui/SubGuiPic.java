@@ -58,7 +58,7 @@ public class SubGuiPic extends SubGui{
 		controls.add(new GuiCheckBox("visibleFrame", "visible Frame", 90, 105, frame.visibleFrame));
 		
 		controls.add(new GuiLabel("render distance (blocks):", 5, 125));
-		controls.add(new GuiSteppedSlider("renderDistance", 5, 140, 100, 20, 5, 1024, frame.renderDistance));
+		controls.add(new GuiSteppedSlider("renderDistance", 5, 140, 100, 20, frame.renderDistance, 5, 1024));
 		
 		controls.add(new GuiButton("Save", 120, 140, 50){
 			@Override

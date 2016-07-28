@@ -1,40 +1,32 @@
 package com.creativemd.opf.block;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.creativecore.gui.opener.IGuiCreator;
-import com.creativemd.opf.client.OPFrameClient;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.BlockRotatedPillar;
-import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -47,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockPicFrame extends BlockContainer implements IGuiCreator {
+public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreativeRendered {
 	
 	public static final PropertyDirection FACING = BlockDirectional.FACING;
 
@@ -207,6 +199,14 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator {
 		if(te instanceof TileEntityPicFrame)
 			return new SubContainerPic((TileEntityPicFrame) te, player);
 		return null;
+	}
+
+	@Override
+	public ArrayList<CubeObject> getRenderingCubes(IBlockState state, TileEntity te) {
+		ArrayList<CubeObject> cubes = new ArrayList<CubeObject>();
+		if(((TileEntityPicFrame) te).visibleFrame)
+			cubes.add(CubeObject.rotateCube(new CubeObject(0, 0, 0, 0.03, 1, 1, Blocks.PLANKS), state.getValue(FACING)));
+		return cubes;
 	}
 
 }
