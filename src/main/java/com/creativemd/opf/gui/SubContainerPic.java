@@ -1,6 +1,6 @@
 package com.creativemd.opf.gui;
 
-import com.creativemd.creativecore.common.container.SubContainer;
+import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,10 +19,9 @@ public class SubContainerPic extends SubContainer {
 	public void createControls() {
 		
 	}
-
 	@Override
-	public void onGuiPacket(int controlID, NBTTagCompound nbt, EntityPlayer player) {
-		if(controlID == 0)
+	public void onPacketReceive(NBTTagCompound nbt) {
+		if(nbt.getInteger("type") == 0)
 		{
 			frame.url = nbt.getString("url");
 			//frame.initClient();

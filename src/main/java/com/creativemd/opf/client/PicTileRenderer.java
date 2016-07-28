@@ -4,22 +4,20 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
-import com.creativemd.creativecore.common.utils.RotationUtils;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PicTileRenderer extends TileEntitySpecialRenderer {
 
 	@Override
-	public void renderTileEntityAt(TileEntity te, double x, double y, double z,
-			float partialTick) {
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks, int destroyStage) {
 		if(te instanceof TileEntityPicFrame)
 		{
 			TileEntityPicFrame frame = (TileEntityPicFrame) te;
@@ -53,9 +51,9 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		
 		    		
 		    		//GL11.glRotatef((float)System.nanoTime()/10000000F, 0, 0, 1);
-		    		ForgeDirection direction = ForgeDirection.getOrientation(frame.getBlockMetadata());
+		    		EnumFacing direction = EnumFacing.getFront(frame.getBlockMetadata());
 		    		RenderHelper3D.applyDirection(direction);
-		    		if(direction == ForgeDirection.UP || direction == ForgeDirection.DOWN)
+		    		if(direction == EnumFacing.UP || direction == EnumFacing.DOWN)
 		    			GL11.glRotatef(90, 0, 1, 0);
 		    		
 		    		double posX = -0.5+sizeX/2D;

@@ -2,23 +2,22 @@ package com.creativemd.opf.gui;
 
 import javax.vecmath.Vector2f;
 
-import com.creativemd.creativecore.common.gui.SubGui;
-import com.creativemd.creativecore.common.gui.controls.GuiButton;
-import com.creativemd.creativecore.common.gui.controls.GuiCheckBox;
-import com.creativemd.creativecore.common.gui.controls.GuiLabel;
-import com.creativemd.creativecore.common.gui.controls.GuiStateButton;
-import com.creativemd.creativecore.common.gui.controls.GuiSteppedSlider;
-import com.creativemd.creativecore.common.gui.controls.GuiTextfield;
-import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
+import com.creativemd.creativecore.gui.container.SubGui;
+import com.creativemd.creativecore.gui.controls.gui.GuiButton;
+import com.creativemd.creativecore.gui.controls.gui.GuiCheckBox;
+import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.gui.controls.gui.GuiStateButton;
+import com.creativemd.creativecore.gui.controls.gui.GuiSteppedSlider;
+import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.client.DownloadThread;
-import com.google.common.util.concurrent.ExecutionError;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class SubGuiPic extends SubGui{
@@ -37,9 +36,16 @@ public class SubGuiPic extends SubGui{
 		controls.add(url);
 		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 5, 30, 40, 20).setFloatOnly());
 		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 50, 30, 40, 20).setFloatOnly());
-		
-		controls.add(new GuiButton("reX", "x->y", 95, 30, 50));
-		controls.add(new GuiButton("reY", "y->x", 145, 30, 50));
+		controls.add(new GuiButton("reX", "x->y", 95, 30, 50){
+			@Override
+			public void onClicked(int x, int y, int button) {
+			}
+		});
+		controls.add(new GuiButton("reY", "y->x", 145, 30, 50){
+			@Override
+			public void onClicked(int x, int y, int button) {
+			}
+		});
 		
 		controls.add(new GuiCheckBox("flipX", "flip (x-axis)", 5, 50, frame.flippedX));
 		controls.add(new GuiCheckBox("flipY", "flip (y-axis)", 80, 50, frame.flippedY));
@@ -54,16 +60,64 @@ public class SubGuiPic extends SubGui{
 		controls.add(new GuiLabel("render distance (blocks):", 5, 125));
 		controls.add(new GuiSteppedSlider("renderDistance", 5, 140, 100, 20, 5, 1024, frame.renderDistance));
 		
-		controls.add(new GuiButton("Save", 120, 140, 50));
+		controls.add(new GuiButton("Save", 120, 140, 50){
+			@Override
+			public void onClicked(int x, int y, int button) {
+				NBTTagCompound nbt = new NBTTagCompound();
+				GuiTextfield url = (GuiTextfield) get("url");
+				GuiTextfield sizeX = (GuiTextfield) get("sizeX");
+				GuiTextfield sizeY = (GuiTextfield) get("sizeY");
+				
+				GuiStateButton buttonPosX = (GuiStateButton) get("posX");
+				GuiStateButton buttonPosY = (GuiStateButton) get("posY");
+				GuiStateButton rotation = (GuiStateButton) get("rotation");
+				
+				GuiCheckBox flipX = (GuiCheckBox) get("flipX");
+				GuiCheckBox flipY = (GuiCheckBox) get("flipY");
+				GuiCheckBox visibleFrame = (GuiCheckBox) get("visibleFrame");
+				
+				GuiSteppedSlider renderDistance = (GuiSteppedSlider) get("renderDistance");
+				
+				nbt.setByte("posX", (byte) buttonPosX.getState());
+				nbt.setByte("posY", (byte) buttonPosY.getState());
+				
+				nbt.setByte("rotation", (byte) rotation.getState());
+				
+				nbt.setBoolean("flippedX", flipX.value);
+				nbt.setBoolean("flippedY", flipY.value);
+				nbt.setBoolean("visibleFrame", visibleFrame.value);
+				
+				nbt.setInteger("render", (int) renderDistance.value);
+				
+				nbt.setString("url", url.text);
+				float posX = 1;
+				float posY = 1;
+				try{
+					posX = Float.parseFloat(sizeX.text);
+				}catch(Exception e){
+					posX = 1;
+				}
+				try{
+					posY = Float.parseFloat(sizeY.text);
+				}catch(Exception e){
+					posY = 1;
+				}
+				nbt.setFloat("x", posX);
+				nbt.setFloat("y", posY);
+				
+				nbt.setInteger("type", 0);
+				sendPacketToServer(nbt);
+			}
+		});
 	}
 	
 	@CustomEventSubscribe
-	public void onClicked(ControlClickEvent event)
+	public void onClicked(GuiControlClickEvent event)
 	{
 		if(event.source.is("reX") || event.source.is("reY"))
 		{
-			GuiTextfield sizeXField = (GuiTextfield) getControl("sizeX");
-			GuiTextfield sizeYField = (GuiTextfield) getControl("sizeY");
+			GuiTextfield sizeXField = (GuiTextfield) get("sizeX");
+			GuiTextfield sizeYField = (GuiTextfield) get("sizeY");
 			
 			float x = 1;
 			try{
@@ -90,57 +144,6 @@ public class SubGuiPic extends SubGui{
 				}
 			}
 		}
-		if(event.source.is("Save"))
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			GuiTextfield url = (GuiTextfield) getControl("url");
-			GuiTextfield sizeX = (GuiTextfield) getControl("sizeX");
-			GuiTextfield sizeY = (GuiTextfield) getControl("sizeY");
-			
-			GuiStateButton buttonPosX = (GuiStateButton) getControl("posX");
-			GuiStateButton buttonPosY = (GuiStateButton) getControl("posY");
-			GuiStateButton rotation = (GuiStateButton) getControl("rotation");
-			
-			GuiCheckBox flipX = (GuiCheckBox) getControl("flipX");
-			GuiCheckBox flipY = (GuiCheckBox) getControl("flipY");
-			GuiCheckBox visibleFrame = (GuiCheckBox) getControl("visibleFrame");
-			
-			GuiSteppedSlider renderDistance = (GuiSteppedSlider) getControl("renderDistance");
-			
-			nbt.setByte("posX", (byte) buttonPosX.getState());
-			nbt.setByte("posY", (byte) buttonPosY.getState());
-			
-			nbt.setByte("rotation", (byte) rotation.getState());
-			
-			nbt.setBoolean("flippedX", flipX.value);
-			nbt.setBoolean("flippedY", flipY.value);
-			nbt.setBoolean("visibleFrame", visibleFrame.value);
-			
-			nbt.setInteger("render", (int) renderDistance.value);
-			
-			nbt.setString("url", url.text);
-			float x = 1;
-			float y = 1;
-			try{
-				x = Float.parseFloat(sizeX.text);
-			}catch(Exception e){
-				x = 1;
-			}
-			try{
-				y = Float.parseFloat(sizeY.text);
-			}catch(Exception e){
-				y = 1;
-			}
-			nbt.setFloat("x", x);
-			nbt.setFloat("y", y);
-			
-			sendPacketToServer(0, nbt);
-		}
-	}
-
-	@Override
-	public void drawOverlay(FontRenderer fontRenderer) {
-		
 	}
 
 }

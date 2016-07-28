@@ -4,24 +4,21 @@ import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.opf.client.DownloadThread;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityPicFrame extends TileEntityCreative{
 	
 	public TileEntityPicFrame() {
-		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 			initClient();
 	}
@@ -102,7 +99,11 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05, 1, 1);
 		
 		float sizeX = this.sizeX;
+		if(sizeX == 0)
+			sizeX = 1;
 		float sizeY = this.sizeY;
+		if(sizeY == 0)
+			sizeY = 1;
 		double offsetX = 0;
 		double offsetY = 0;
 		
@@ -149,8 +150,8 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		else if(posY == 2)
 			offsetY += -sizeY+1;
 		
-		ForgeDirection direction = ForgeDirection.getOrientation(getBlockMetadata());
-		if(direction == ForgeDirection.UP)
+		EnumFacing direction = EnumFacing.getFront(getBlockMetadata());
+		if(direction == EnumFacing.UP)
 		{
 			cube.minZ -= sizeX-1;
 			cube.minY -= sizeY-1;
@@ -172,14 +173,14 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		cube = new CubeObject(Math.min(cube.minX, cube.maxX), Math.min(cube.minY, cube.maxY), Math.min(cube.minZ, cube.maxZ),
 				Math.max(cube.minX, cube.maxX), Math.max(cube.minY, cube.maxY), Math.max(cube.minZ, cube.maxZ));
 		
-        return CubeObject.rotateCube(cube, direction).getAxis().getOffsetBoundingBox(xCoord, yCoord, zCoord);
+        return CubeObject.rotateCube(cube, direction).getAxis();
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
-        return getBoundingBox();
+        return getBoundingBox().offset(pos);
     }
 	
 	public int renderDistance = 512;
@@ -203,9 +204,9 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	
 	
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);
+		nbt = super.writeToNBT(nbt);
 		nbt.setString("url", url);
 		nbt.setFloat("sizeX", sizeX);
 		nbt.setFloat("sizeY", sizeY);
@@ -216,6 +217,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		nbt.setBoolean("visibleFrame", visibleFrame);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
+		return nbt;
 	}
 	
 	@Override
@@ -252,19 +254,19 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-		super.onDataPacket(net, pkt);
-		url = pkt.func_148857_g().getString("url");
-		sizeX = pkt.func_148857_g().getFloat("sizeX");
-		sizeY = pkt.func_148857_g().getFloat("sizeY");
-		renderDistance = pkt.func_148857_g().getInteger("render");
-		posX = pkt.func_148857_g().getByte("offsetX");
-		posY = pkt.func_148857_g().getByte("offsetY");
-		rotation = pkt.func_148857_g().getByte("rotation");
-		visibleFrame = pkt.func_148857_g().getBoolean("visibleFrame");
-		flippedX = pkt.func_148857_g().getBoolean("flippedX");
-		flippedY = pkt.func_148857_g().getBoolean("flippedY");
+	public void receiveUpdatePacket(NBTTagCompound nbt)
+	{
+		super.receiveUpdatePacket(nbt);
+		url = nbt.getString("url");
+		sizeX = nbt.getFloat("sizeX");
+		sizeY = nbt.getFloat("sizeY");
+		renderDistance = nbt.getInteger("render");
+		posX = nbt.getByte("offsetX");
+		posY = nbt.getByte("offsetY");
+		rotation = nbt.getByte("rotation");
+		visibleFrame = nbt.getBoolean("visibleFrame");
+		flippedX = nbt.getBoolean("flippedX");
+		flippedY = nbt.getBoolean("flippedY");
 		initClient();
 		updateRender();
     }
