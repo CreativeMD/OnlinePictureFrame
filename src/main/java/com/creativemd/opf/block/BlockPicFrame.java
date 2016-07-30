@@ -202,10 +202,12 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	}
 
 	@Override
-	public ArrayList<CubeObject> getRenderingCubes(IBlockState state, TileEntity te) {
+	public ArrayList<CubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
 		ArrayList<CubeObject> cubes = new ArrayList<CubeObject>();
-		if(((TileEntityPicFrame) te).visibleFrame)
-			cubes.add(CubeObject.rotateCube(new CubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS), state.getValue(FACING)));
+		CubeObject cube = new CubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
+		if(te instanceof TileEntityPicFrame && ((TileEntityPicFrame) te).visibleFrame)
+			cube = CubeObject.rotateCube(cube, state.getValue(FACING));
+		cubes.add(cube);
 		return cubes;
 	}
 

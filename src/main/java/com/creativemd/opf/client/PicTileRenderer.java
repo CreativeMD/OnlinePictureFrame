@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL12;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -31,20 +32,24 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 					//sizeX = 16;
 					//sizeY = 9;
 					//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-					GL11.glEnable(GL11.GL_BLEND);
+					GlStateManager.enableBlend();
+					//GL11.glEnable(GL11.GL_BLEND);
 		            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		            GL11.glDisable(GL11.GL_LIGHTING);
-		            GL11.glColor4f(1, 1, 1, 1);
-		           // GL11.glLineWidth(2.0F);
-		            GL11.glEnable(GL11.GL_TEXTURE_2D);
+		            GlStateManager.disableLighting();
+		            //GL11.glDisable(GL11.GL_LIGHTING);
+		            GlStateManager.color(1, 1, 1, 1);
+		            //GL11.glColor4f(1, 1, 1, 1);
+		            //GL11.glLineWidth(2.0F);
+		            //GL11.glEnable(GL11.GL_TEXTURE_2D);
 		            //GL11.glDepthMask(false);
-		            
-		            GL11.glBindTexture(GL11.GL_TEXTURE_2D, frame.textureID);
+		            GlStateManager.bindTexture(frame.textureID);
+		            //GL11.glBindTexture(GL11.GL_TEXTURE_2D, frame.textureID);
 		            
 		            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		            //GL11.glPushMatrix();
-		            GL11.glPushMatrix();
+		            GlStateManager.pushMatrix();
+		            //GL11.glPushMatrix();
 		            
 		    		GL11.glTranslated(x+0.5, y+0.5, z+0.5);
 		    		
@@ -81,8 +86,8 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		GL11.glTranslated(-0.945, posY, posX);
 		    		
 		    		
-		    		
-		    		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		    		GlStateManager.enableRescaleNormal();
+		    		//GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		    		GL11.glScaled(1, frame.sizeY, frame.sizeX);
 		    		
 		    		/*GL11.glRotated(90, 1, 0, 0);
@@ -106,13 +111,15 @@ public class PicTileRenderer extends TileEntitySpecialRenderer {
 		    		GL11.glVertex3f(0.5f, -0.5f, 0.5f);
 		    		GL11.glEnd();
 		    		
-		            GL11.glPopMatrix();
 		            //GL11.glPopMatrix();
+		            //GL11.glPopMatrix();
+		    		GlStateManager.popMatrix();
 		            
 		            //GL11.glDepthMask(true);
 		            //GL11.glEnable(GL11.GL_TEXTURE_2D);
-		            GL11.glDisable(GL11.GL_BLEND);
-		            GL11.glEnable(GL11.GL_LIGHTING);
+		    		GlStateManager.disableRescaleNormal();
+		            GlStateManager.disableBlend();
+		            GlStateManager.enableLighting();
 				}else{
 					frame.loadTexutre();
 				}

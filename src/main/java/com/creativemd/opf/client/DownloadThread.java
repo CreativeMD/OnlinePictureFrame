@@ -2,11 +2,13 @@ package com.creativemd.opf.client;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
 import javax.vecmath.Vector2f;
 
 import org.lwjgl.BufferUtils;
@@ -58,7 +60,7 @@ public class DownloadThread extends Thread {
 	@Override
 	public void run()
 	{
-		try {
+		try{
 			loadedImage = ImageIO.read(new URL(url));
 		} catch (Exception e) {
 			loadedImage = null;

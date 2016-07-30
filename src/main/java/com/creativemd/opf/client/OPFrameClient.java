@@ -28,12 +28,12 @@ public class OPFrameClient {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPicFrame.class, new PicTileRenderer());
 		
 		CreativeBlockRenderHelper.registerCreativeRenderedBlock(OPFrame.frame);
-		registerBlockItem(OPFrame.frame);
+		//registerBlockItem(OPFrame.frame);
 	}
 	
 	
-	private static void registerBlockItem(Block toRegister){
+	/*private static void registerBlockItem(Block toRegister){
 		Item item = Item.getItemFromBlock(toRegister);
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(OPFrame.modid + ":" + item.getUnlocalizedName(), "inventory"));
-	}
+	}*/
 }

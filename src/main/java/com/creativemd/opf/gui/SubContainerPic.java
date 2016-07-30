@@ -2,6 +2,7 @@ package com.creativemd.opf.gui;
 
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.premade.SubContainerTileEntity;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,8 +34,8 @@ public class SubContainerPic extends SubContainerTileEntity {
 		{
 			frame.url = nbt.getString("url");
 			//frame.initClient();
-			frame.sizeX = nbt.getFloat("x");
-			frame.sizeY = nbt.getFloat("y");
+			frame.sizeX = Math.min(OPFrame.sizeLimitation, nbt.getFloat("x"));
+			frame.sizeY = Math.min(OPFrame.sizeLimitation, nbt.getFloat("y"));
 			
 			frame.renderDistance = nbt.getInteger("render");
 			frame.posX = nbt.getByte("posX");
