@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.common.utils.RenderCubeObject;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
@@ -27,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -170,7 +172,6 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
         return CubeObject.rotateCube(cube, direction).getAxis();//.offset(pos);
     }
 	
-	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
@@ -202,11 +203,12 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	}
 
 	@Override
-	public ArrayList<CubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
-		ArrayList<CubeObject> cubes = new ArrayList<CubeObject>();
-		CubeObject cube = new CubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
+	@SideOnly(Side.CLIENT)
+	public ArrayList<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
+		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
+		RenderCubeObject cube = new RenderCubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
 		if(te instanceof TileEntityPicFrame && ((TileEntityPicFrame) te).visibleFrame)
-			cube = CubeObject.rotateCube(cube, state.getValue(FACING));
+			cube = new RenderCubeObject(CubeObject.rotateCube(cube, state.getValue(FACING)), cube);
 		cubes.add(cube);
 		return cubes;
 	}
