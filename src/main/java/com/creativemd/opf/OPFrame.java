@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame")
+@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame",acceptedMinecraftVersions="")
 public class OPFrame{
 	
 	public static final String modid = "opframe";
@@ -44,9 +44,7 @@ public class OPFrame{
 	}
 	
 	@EventHandler
-	public void init(FMLInitializationEvent evt) {
-		//GameRegistry.register(frame.setRegistryName("opFrame"));
-		
+	public void init(FMLInitializationEvent evt) {		
 		GameRegistry.registerBlock(frame, "opFrame");
 		
 		GameRegistry.registerTileEntity(TileEntityPicFrame.class, "OPFrameTileEntity");
