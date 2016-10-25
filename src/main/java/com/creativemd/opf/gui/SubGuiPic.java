@@ -17,6 +17,7 @@ import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,9 +26,16 @@ public class SubGuiPic extends SubGui{
 	
 	public TileEntityPicFrame frame;
 	
+	public boolean editFacing;
+	
 	public SubGuiPic(TileEntityPicFrame frame) {
-		super(200, 200);
+		this(frame, false);
+	}
+	
+	public SubGuiPic(TileEntityPicFrame frame, boolean editFacing) {
+		super(200, editFacing ? 220 : 200);
 		this.frame = frame;
+		this.editFacing = editFacing;
 	}
 	
 	@Override
@@ -118,9 +126,24 @@ public class SubGuiPic extends SubGui{
 				nbt.setFloat("y", posY);
 				
 				nbt.setInteger("type", 0);
+				
+				if(editFacing)
+				{
+					GuiStateButton facing = (GuiStateButton) get("facing");
+					nbt.setInteger("facing", facing.getState());
+				}
 				sendPacketToServer(nbt);
 			}
 		});
+		
+		if(editFacing)
+		{
+			String[] names = new String[EnumFacing.VALUES.length];
+			for (int i = 0; i < names.length; i++) {
+				names[i] = EnumFacing.VALUES[i].getName();
+			}
+			controls.add(new GuiStateButton("facing", frame.getBlockMetadata(), 0, 196, 50, names));
+		}
 	}
 	
 	@CustomEventSubscribe

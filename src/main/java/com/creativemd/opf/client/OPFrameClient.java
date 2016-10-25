@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,6 +29,9 @@ public class OPFrameClient {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPicFrame.class, new PicTileRenderer());
 		
 		CreativeBlockRenderHelper.registerCreativeRenderedBlock(OPFrame.frame);
+		
+		if(Loader.isModLoaded("littletiles"))
+			CreativeBlockRenderHelper.registerCreativeRenderedBlock(OPFrame.littleFrame);
 		//registerBlockItem(OPFrame.frame);
 	}
 	

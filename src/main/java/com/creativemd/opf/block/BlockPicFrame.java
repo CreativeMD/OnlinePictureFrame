@@ -12,6 +12,9 @@ import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.creativecore.gui.opener.IGuiCreator;
+import com.creativemd.littletiles.common.blocks.ILittleTile;
+import com.creativemd.littletiles.common.structure.LittleStructure;
+import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
 
@@ -38,6 +41,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -165,7 +170,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
     {
 		TileEntity te = source.getTileEntity(pos);
 		if(te instanceof TileEntityPicFrame)
-			return ((TileEntityPicFrame) te).getBoundingBox();
+			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) te, te.getBlockMetadata());
 		
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = state.getValue(FACING);		

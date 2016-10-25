@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityPicFrame extends TileEntityCreative{
 	
 	public TileEntityPicFrame() {
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(FMLCommonHandler.instance().getSide().isClient())
 			initClient();
 	}
 	
@@ -92,65 +92,65 @@ public class TileEntityPicFrame extends TileEntityCreative{
         return Math.pow(renderDistance, 2);
     }
 	
-	public AxisAlignedBB getBoundingBox()
+	public static AxisAlignedBB getBoundingBox(TileEntityPicFrame frame, int meta)
 	{
 		/*AxisAlignedBB bb = INFINITE_EXTENT_AABB;
         return bb;*/
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 		
-		float sizeX = this.sizeX;
+		float sizeX = frame.sizeX;
 		if(sizeX == 0)
 			sizeX = 1;
-		float sizeY = this.sizeY;
+		float sizeY = frame.sizeY;
 		if(sizeY == 0)
 			sizeY = 1;
 		double offsetX = 0;
 		double offsetY = 0;
 		
-		switch(rotation)
+		switch(frame.rotation)
 		{
 		case 1:
-			sizeX = this.sizeY;
-			sizeY = -this.sizeX;
-			if(posY == 0)
+			sizeX = frame.sizeY;
+			sizeY = -frame.sizeX;
+			if(frame.posY == 0)
 				offsetY += 1;
-			else if(posY == 2)
+			else if(frame.posY == 2)
 				offsetY -= 1;
 			break;
 		case 2:
-			sizeX = -this.sizeX;
-			sizeY = -this.sizeY;
-			if(posX == 0)
+			sizeX = -frame.sizeX;
+			sizeY = -frame.sizeY;
+			if(frame.posX == 0)
 				offsetX += 1;
-			else if(posX == 2)
+			else if(frame.posX == 2)
 				offsetX -= 1;
-			if(posY == 0)
+			if(frame.posY == 0)
 				offsetY += 1;
-			else if(posY == 2)
+			else if(frame.posY == 2)
 				offsetY -= 1;
 			break;
 		case 3:
-			sizeX = -this.sizeY;
-			sizeY = this.sizeX;
-			if(posX == 0)
+			sizeX = -frame.sizeY;
+			sizeY = frame.sizeX;
+			if(frame.posX == 0)
 				offsetX += 1;
-			else if(posX == 2)
+			else if(frame.posX == 2)
 				offsetX -= 1;
 			break;
 		}
 		
-		if(posX == 1)
+		if(frame.posX == 1)
 			offsetX += (-sizeX+1)/2D;
-		else if(posX == 2)
+		else if(frame.posX == 2)
 			offsetX += -sizeX+1;
 		
 		
-		if(posY == 1)
+		if(frame.posY == 1)
 			offsetY += (-sizeY+1)/2D;
-		else if(posY == 2)
+		else if(frame.posY == 2)
 			offsetY += -sizeY+1;
 		
-		EnumFacing direction = EnumFacing.getFront(getBlockMetadata());
+		EnumFacing direction = EnumFacing.getFront(meta);
 		if(direction == EnumFacing.UP)
 		{
 			cube.minZ -= sizeX-1;
@@ -180,7 +180,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
-        return getBoundingBox().offset(pos);
+        return getBoundingBox(this, getBlockMetadata()).offset(pos);
     }
 	
 	public int renderDistance = 512;
