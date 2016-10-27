@@ -92,7 +92,7 @@ public class OPFrame{
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
 				if(tile instanceof LittleOpFrame)
-					return new SubContainerPic((TileEntityPicFrame) ((LittleOpFrame) tile).tileEntity, player, tile);
+					return new SubContainerPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), player, tile);
 				return null;
 			}
 
@@ -100,7 +100,7 @@ public class OPFrame{
 			@SideOnly(Side.CLIENT)
 			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
 				if(tile instanceof LittleOpFrame)
-					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).tileEntity, true);
+					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true);
 				return null;
 			}
 			

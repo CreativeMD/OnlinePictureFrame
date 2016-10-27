@@ -29,7 +29,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 		if(tile instanceof LittleOpFrame)
 		{
 			((LittleOpFrame) tile).meta = facing.getIndex();
-			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).tileEntity, ((LittleOpFrame) tile).meta, "blockMetadata", "field_145847_g");
+			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).meta, "blockMetadata", "field_145847_g");
 		}
 		return tile;
 	}

@@ -55,7 +55,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	public ArrayList<RenderCubeObject> getRenderingCubes()
 	{
 		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
-		if(((TileEntityPicFrame) tileEntity).visibleFrame)
+		if(((TileEntityPicFrame) getTileEntity()).visibleFrame)
 		{
 			for (int i = 0; i < boundingBoxes.size(); i++) {
 				CubeObject cube = boundingBoxes.get(i).getCube();
@@ -121,8 +121,8 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
-		if(tileEntity != null)
-			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) tileEntity, meta).offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
+		if(getTileEntity() != null)
+			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) getTileEntity(), meta).offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
 		return super.getRenderBoundingBox();
     }
 	
@@ -134,7 +134,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 		
 		
 		
-		TileEntityPicFrame frame = (TileEntityPicFrame) tileEntity;
+		TileEntityPicFrame frame = (TileEntityPicFrame) getTileEntity();
 		
 		if(!frame.url.equals(""))
 		{
