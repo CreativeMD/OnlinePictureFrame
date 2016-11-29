@@ -3,12 +3,16 @@ package com.creativemd.opf.little;
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 
 import org.lwjgl.opengl.GL11;
 
+import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.creativecore.common.utils.RenderCubeObject;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.utils.LittleTile;
@@ -27,12 +31,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -122,7 +129,119 @@ public class LittleOpFrame extends LittleTileTileEntity {
     public AxisAlignedBB getRenderBoundingBox()
     {
 		if(getTileEntity() != null)
-			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) getTileEntity(), meta).offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
+		{
+			TileEntityPicFrame frame = (TileEntityPicFrame) getTileEntity();
+			/*AxisAlignedBB bb = INFINITE_EXTENT_AABB;
+	        return bb;*/
+			float thickness = 0.05F;
+			float offsetX = 0;
+			if(frame.posX == 1)
+				offsetX = -frame.sizeX/2F;
+			else if(frame.posX == 2)
+				offsetX = (float) (-frame.sizeX+gridMCLength);
+			float offsetY = 0;
+			if(frame.posY == 1)
+				offsetY = -frame.sizeY/2F;
+			else if(frame.posY == 2)
+				offsetY = (float) (-frame.sizeY+gridMCLength);
+			CubeObject cube = new CubeObject(0, offsetY, offsetX, thickness, frame.sizeY+offsetY, frame.sizeX+offsetX);
+			EnumFacing direction = EnumFacing.getFront(meta);
+			
+			/*float sizeX = frame.sizeX;
+			if(sizeX == 0)
+				sizeX = 1;
+			float sizeY = frame.sizeY;
+			if(sizeY == 0)
+				sizeY = 1;
+			double offsetX = 0;
+			double offsetY = 0;
+			
+			switch(frame.rotation)
+			{
+			case 1:
+				sizeX = frame.sizeY;
+				sizeY = -frame.sizeX;
+				if(frame.posY == 0)
+					offsetY += 1;
+				else if(frame.posY == 2)
+					offsetY -= 1;
+				break;
+			case 2:
+				sizeX = -frame.sizeX;
+				sizeY = -frame.sizeY;
+				if(frame.posX == 0)
+					offsetX += 1;
+				else if(frame.posX == 2)
+					offsetX -= 1;
+				if(frame.posY == 0)
+					offsetY += 1;
+				else if(frame.posY == 2)
+					offsetY -= 1;
+				break;
+			case 3:
+				sizeX = -frame.sizeY;
+				sizeY = frame.sizeX;
+				if(frame.posX == 0)
+					offsetX += 1;
+				else if(frame.posX == 2)
+					offsetX -= 1;
+				break;
+			}
+			
+			if(frame.posX == 1)
+				offsetX += (-sizeX+1)/2D;
+			else if(frame.posX == 2)
+				offsetX += -sizeX+1;
+			
+			
+			if(frame.posY == 1)
+				offsetY += (-sizeY+1)/2D;
+			else if(frame.posY == 2)
+				offsetY += -sizeY+1;
+			
+			EnumFacing direction = EnumFacing.getFront(meta);
+			if(direction == EnumFacing.UP)
+			{
+				cube.minZ -= sizeX-1;
+				cube.minY -= sizeY-1;
+				
+				cube.minZ -= offsetX;
+				cube.maxZ -= offsetX;
+				cube.minY -= offsetY;
+				cube.maxY -= offsetY;
+			}else{
+				cube.maxZ += sizeX-1;
+				cube.maxY += sizeY-1;
+				
+				cube.minZ += offsetX;
+				cube.maxZ += offsetX;
+				cube.minY += offsetY;
+				cube.maxY += offsetY;
+			}
+			
+			cube = new CubeObject(Math.min(cube.minX, cube.maxX), Math.min(cube.minY, cube.maxY), Math.min(cube.minZ, cube.maxZ),
+					Math.max(cube.minX, cube.maxX), Math.max(cube.minY, cube.maxY), Math.max(cube.minZ, cube.maxZ));*/
+			
+			Vector3f center = new Vector3f(thickness/2F, (float) LittleTile.gridMCLength/2F, (float) LittleTile.gridMCLength/2F);
+			if(frame.rotation > 0)
+			{
+				Matrix3f rotation = new Matrix3f();
+				rotation.rotX((float) Math.toRadians(frame.rotation*90F));
+				cube.rotate(rotation, center);
+			}
+			
+			if(direction.getAxis() != Axis.Y)
+				cube.rotate(direction.rotateY(), center);
+			else{
+				Matrix3f rotation = new Matrix3f();
+				if(direction == EnumFacing.UP)
+					rotation.rotZ((float) Math.toRadians(90));
+				else
+					rotation.rotZ((float) Math.toRadians(-90));
+				cube.rotate(rotation, center);
+			}
+	        return cube.getAxis().offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
+		}
 		return super.getRenderBoundingBox();
     }
 	
@@ -251,6 +370,15 @@ public class LittleOpFrame extends LittleTileTileEntity {
 		saveTileExtra(nbt);
 		nbt.setString("tID", getID());		
 		return new LittlePlacedOpFrame(boundingBoxes.get(0).copy(), nbt);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void receivePacket(NBTTagCompound nbt, NetworkManager net)
+	{
+		super.receivePacket(nbt, net);
+		te.updateRenderBoundingBox();
+		te.updateRenderDistance();
 	}
 	
 	@Override

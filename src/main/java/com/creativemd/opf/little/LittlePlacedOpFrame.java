@@ -2,7 +2,7 @@ package com.creativemd.opf.little;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.common.utils.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.creativecore.common.utils.RotationUtils;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
@@ -117,7 +117,6 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	public void rotatePreview(Rotation direction)
 	{
 		super.rotatePreview(direction);
-		//TODO Make it working for doors
 		ArrayList<EnumFacing> rotations = direction.getRotations();
 		for (int i = 0; i < rotations.size(); i++) {
 			rotateTileEntity(rotations.get(i));
