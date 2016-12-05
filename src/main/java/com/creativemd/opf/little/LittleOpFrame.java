@@ -59,7 +59,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<RenderCubeObject> getRenderingCubes()
+	public ArrayList<RenderCubeObject> getInternalRenderingCubes()
 	{
 		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
 		if(((TileEntityPicFrame) getTileEntity()).visibleFrame)
