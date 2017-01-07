@@ -7,6 +7,8 @@ import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.creativecore.common.utils.RotationUtils;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
+import com.creativemd.littletiles.common.utils.small.LittleTileVec;
+import com.creativemd.littletiles.utils.PlacePreviewTile;
 import com.creativemd.littletiles.utils.ShiftHandler;
 
 import net.minecraft.init.Blocks;
@@ -26,6 +28,19 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	public LittlePlacedOpFrame(LittleTileBox box, NBTTagCompound tileData)
 	{
 		super(box, tileData);
+	}
+	
+	@Override
+	public PlacePreviewTile getPlaceableTile(LittleTileBox box, boolean canPlaceNormal, LittleTileVec offset)
+	{
+		if(this.box == null)
+			return new LittlePlaceOpPreview(box.copy(), this);
+		else{
+			LittleTileBox newBox = this.box.copy();
+			if(!canPlaceNormal)
+				newBox.addOffset(offset);
+			return new LittlePlaceOpPreview(newBox, this);
+		}
 	}
 	
 	@Override
@@ -164,38 +179,6 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	{
 		super.rotatePreview(direction);
 		rotateTileEntity(direction);
-		/*EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
-		tileData.setInteger("meta", RotationUtils.rotateFacing(facing, direction).getIndex());
-		
-		//I really not to create a working rotation system here. This is bullshit and took me ours to solve it! Please create a uniform rotation system!
-		EnumFacing front = EnumFacing.getHorizontal(tileData.getCompoundTag("tileEntity").getInteger("rotation"));
-		if(direction.getAxis() == Axis.Y)
-		{
-			if(facing.getAxis() == Axis.Z)
-			{
-				front = front.rotateAround(Axis.Y);
-				if(facing.getAxisDirection() != direction.getAxisDirection())
-					front = front.getOpposite();
-			}else if(facing.getAxis() == Axis.X){
-				if((direction.getAxisDirection() == AxisDirection.POSITIVE && facing.getAxisDirection() == AxisDirection.NEGATIVE) ||
-						(direction.getAxisDirection() == AxisDirection.NEGATIVE && facing.getAxisDirection() == AxisDirection.NEGATIVE))
-					front = front.getOpposite();
-			//}else if(facing == EnumFacing.UP && direction == EnumFacing.UP)
-				//front = front.getOpposite();
-			}else if(facing == direction)
-				front = front.getOpposite();
-			
-		}else if(facing.getAxis() == Axis.Y){
-			boolean counter = EnumFacing.UP == facing;
-			if(direction.getAxisDirection() == AxisDirection.NEGATIVE)
-				counter = !counter;
-			if(counter)
-				front = front.rotateYCCW();
-			else
-				front = front.rotateY();
-		}
-		
-		tileData.getCompoundTag("tileEntity").setInteger("rotation", front.getHorizontalIndex());*/
 	}
 
 }

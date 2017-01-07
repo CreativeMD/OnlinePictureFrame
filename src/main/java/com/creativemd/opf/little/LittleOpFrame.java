@@ -124,123 +124,50 @@ public class LittleOpFrame extends LittleTileTileEntity {
 		return new ItemStack(this.block, 1, meta);
 	}
 	
+	public static CubeObject getBoundingBoxByTilenEntity(TileEntityPicFrame frame, int meta)
+	{
+		float thickness = 0.05F;
+		float offsetX = 0;
+		if(frame.posX == 1)
+			offsetX = -frame.sizeX/2F;
+		else if(frame.posX == 2)
+			offsetX = (float) (-frame.sizeX+gridMCLength);
+		float offsetY = 0;
+		if(frame.posY == 1)
+			offsetY = -frame.sizeY/2F;
+		else if(frame.posY == 2)
+			offsetY = (float) (-frame.sizeY+gridMCLength);
+		CubeObject cube = new CubeObject(0, offsetY, offsetX, thickness, frame.sizeY+offsetY, frame.sizeX+offsetX);
+		EnumFacing direction = EnumFacing.getFront(meta);
+		
+		Vector3f center = new Vector3f(thickness/2F, (float) LittleTile.gridMCLength/2F, (float) LittleTile.gridMCLength/2F);
+		if(frame.rotation > 0)
+		{
+			Matrix3f rotation = new Matrix3f();
+			rotation.rotX((float) Math.toRadians(frame.rotation*90F));
+			cube.rotate(rotation, center);
+		}
+		
+		if(direction.getAxis() != Axis.Y)
+			cube.rotate(direction.rotateY(), center);
+		else{
+			Matrix3f rotation = new Matrix3f();
+			if(direction == EnumFacing.UP)
+				rotation.rotZ((float) Math.toRadians(90));
+			else
+				rotation.rotZ((float) Math.toRadians(-90));
+			cube.rotate(rotation, center);
+		}
+		return cube;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
 		if(getTileEntity() != null)
 		{
-			TileEntityPicFrame frame = (TileEntityPicFrame) getTileEntity();
-			/*AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-	        return bb;*/
-			float thickness = 0.05F;
-			float offsetX = 0;
-			if(frame.posX == 1)
-				offsetX = -frame.sizeX/2F;
-			else if(frame.posX == 2)
-				offsetX = (float) (-frame.sizeX+gridMCLength);
-			float offsetY = 0;
-			if(frame.posY == 1)
-				offsetY = -frame.sizeY/2F;
-			else if(frame.posY == 2)
-				offsetY = (float) (-frame.sizeY+gridMCLength);
-			CubeObject cube = new CubeObject(0, offsetY, offsetX, thickness, frame.sizeY+offsetY, frame.sizeX+offsetX);
-			EnumFacing direction = EnumFacing.getFront(meta);
-			
-			/*float sizeX = frame.sizeX;
-			if(sizeX == 0)
-				sizeX = 1;
-			float sizeY = frame.sizeY;
-			if(sizeY == 0)
-				sizeY = 1;
-			double offsetX = 0;
-			double offsetY = 0;
-			
-			switch(frame.rotation)
-			{
-			case 1:
-				sizeX = frame.sizeY;
-				sizeY = -frame.sizeX;
-				if(frame.posY == 0)
-					offsetY += 1;
-				else if(frame.posY == 2)
-					offsetY -= 1;
-				break;
-			case 2:
-				sizeX = -frame.sizeX;
-				sizeY = -frame.sizeY;
-				if(frame.posX == 0)
-					offsetX += 1;
-				else if(frame.posX == 2)
-					offsetX -= 1;
-				if(frame.posY == 0)
-					offsetY += 1;
-				else if(frame.posY == 2)
-					offsetY -= 1;
-				break;
-			case 3:
-				sizeX = -frame.sizeY;
-				sizeY = frame.sizeX;
-				if(frame.posX == 0)
-					offsetX += 1;
-				else if(frame.posX == 2)
-					offsetX -= 1;
-				break;
-			}
-			
-			if(frame.posX == 1)
-				offsetX += (-sizeX+1)/2D;
-			else if(frame.posX == 2)
-				offsetX += -sizeX+1;
-			
-			
-			if(frame.posY == 1)
-				offsetY += (-sizeY+1)/2D;
-			else if(frame.posY == 2)
-				offsetY += -sizeY+1;
-			
-			EnumFacing direction = EnumFacing.getFront(meta);
-			if(direction == EnumFacing.UP)
-			{
-				cube.minZ -= sizeX-1;
-				cube.minY -= sizeY-1;
-				
-				cube.minZ -= offsetX;
-				cube.maxZ -= offsetX;
-				cube.minY -= offsetY;
-				cube.maxY -= offsetY;
-			}else{
-				cube.maxZ += sizeX-1;
-				cube.maxY += sizeY-1;
-				
-				cube.minZ += offsetX;
-				cube.maxZ += offsetX;
-				cube.minY += offsetY;
-				cube.maxY += offsetY;
-			}
-			
-			cube = new CubeObject(Math.min(cube.minX, cube.maxX), Math.min(cube.minY, cube.maxY), Math.min(cube.minZ, cube.maxZ),
-					Math.max(cube.minX, cube.maxX), Math.max(cube.minY, cube.maxY), Math.max(cube.minZ, cube.maxZ));*/
-			
-			Vector3f center = new Vector3f(thickness/2F, (float) LittleTile.gridMCLength/2F, (float) LittleTile.gridMCLength/2F);
-			if(frame.rotation > 0)
-			{
-				Matrix3f rotation = new Matrix3f();
-				rotation.rotX((float) Math.toRadians(frame.rotation*90F));
-				cube.rotate(rotation, center);
-			}
-			
-			if(direction.getAxis() != Axis.Y)
-				cube.rotate(direction.rotateY(), center);
-			else{
-				Matrix3f rotation = new Matrix3f();
-				if(direction == EnumFacing.UP)
-					rotation.rotZ((float) Math.toRadians(90));
-				else
-					rotation.rotZ((float) Math.toRadians(-90));
-				cube.rotate(rotation, center);
-			}
-	        return cube.getAxis().offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
+			return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), meta).getAxis().offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
 		}
 		return super.getRenderBoundingBox();
     }
