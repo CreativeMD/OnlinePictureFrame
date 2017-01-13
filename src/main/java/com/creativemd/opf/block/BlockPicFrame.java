@@ -67,7 +67,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
      * IBlockstate
      */
 	@Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         return this.getDefaultState().withProperty(FACING, facing);
     }
@@ -157,7 +157,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
     }
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
     {
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = blockState.getValue(FACING);		
@@ -178,7 +178,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
     }
 	
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		GuiHandler.openGui(playerIn, worldIn, pos);
         return true;

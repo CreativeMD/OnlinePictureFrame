@@ -7,7 +7,6 @@ import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.little.LittleOpFrame;
 
-import mezz.jei.api.JEIPlugin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

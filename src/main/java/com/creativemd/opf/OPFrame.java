@@ -44,7 +44,7 @@ public class OPFrame{
 	
 	public static float sizeLimitation = 1000;
 	
-	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame");
+	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame").setRegistryName("opFrame");
 	public static Block littleFrame;
 	
 	@SideOnly(Side.CLIENT)
@@ -64,7 +64,7 @@ public class OPFrame{
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {		
-		GameRegistry.registerBlock(frame, "opFrame");
+		GameRegistry.registerWithItem(frame);
 		
 		GameRegistry.registerTileEntity(TileEntityPicFrame.class, "OPFrameTileEntity");
 		
@@ -83,9 +83,9 @@ public class OPFrame{
 	@Method(modid = "littletiles")
 	public void loadLittleTiles()
 	{
-		littleFrame = new BlockLittlePicFrame().setUnlocalizedName("littleOpFrame");
+		littleFrame = new BlockLittlePicFrame().setUnlocalizedName("littleOpFrame").setRegistryName("littleOpFrame");
 		
-		GameRegistry.registerBlock(littleFrame, "littleOpFrame");
+		GameRegistry.registerWithItem(littleFrame);
 		
 		GuiHandler.registerGuiHandler("littleOpFrame", new LittleGuiHandler(){
 
