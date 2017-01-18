@@ -9,6 +9,10 @@ import com.creativemd.littletiles.utils.PlacePreviewTile;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class LittleOpPreview extends LittleTilePreview {
+	
+	public LittleOpPreview(NBTTagCompound nbt) {
+		super(nbt);
+	}
 
 	public LittleOpPreview(LittleTileSize size, NBTTagCompound nbt) {
 		super(size, nbt);
