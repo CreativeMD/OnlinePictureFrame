@@ -38,7 +38,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 		NBTTagCompound nbt = preview.getTileData();
 		ArrayList<ColoredCube> cubes = new ArrayList<>();
 		cubes.add(new ColoredCube(box.getCube()));
-		if(nbt.hasKey("tileEntity"))
+		if(preview.box != null && nbt.hasKey("tileEntity"))
 		{
 			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.create(Minecraft.getMinecraft().world, nbt.getCompoundTag("tileEntity"));
 			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(tileEntity, nbt.getInteger("meta"));
