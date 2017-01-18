@@ -1,14 +1,23 @@
 package com.creativemd.opf.client;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.vecmath.Vector2f;
 
 import org.lwjgl.BufferUtils;
@@ -60,8 +69,10 @@ public class DownloadThread extends Thread {
 	@Override
 	public void run()
 	{
-		try{
-			loadedImage = ImageIO.read(new URL(url));
+		try{	        
+			URLConnection con = new URL(url).openConnection();
+			con.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+			loadedImage = ImageIO.read((InputStream) con.getInputStream());
 		} catch (Exception e) {
 			loadedImage = null;
 			e.printStackTrace();
