@@ -108,7 +108,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if(!super.onBlockActivated(worldIn, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ))
 		{
-			if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || player.canUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
+			if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || player.canCommandSenderUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
 				LittleGuiHandler.openGui("littleOpFrame", new NBTTagCompound(), player, this);
 			return true;
 		}

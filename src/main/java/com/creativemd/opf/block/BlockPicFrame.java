@@ -184,7 +184,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-		if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || playerIn.canUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
+		if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || playerIn.canCommandSenderUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
 				GuiHandler.openGui(playerIn, worldIn, pos);
         return true;
     }
