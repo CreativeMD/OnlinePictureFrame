@@ -51,9 +51,11 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	public static final PropertyDirection FACING = BlockDirectional.FACING;
 
 	public BlockPicFrame() {
-		super(Material.IRON);
+		super(Material.WOOD);
 		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.EAST));
 		setCreativeTab(CreativeTabs.DECORATIONS);
+		setResistance(2.5F);
+		setHardness(2.0F);
 	}	    
 	
 	@Override
