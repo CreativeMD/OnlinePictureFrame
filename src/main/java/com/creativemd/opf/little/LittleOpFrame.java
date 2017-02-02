@@ -20,6 +20,7 @@ import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.LittleTileTileEntity;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.client.PicTileRenderer;
 
@@ -41,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -106,7 +108,8 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if(!super.onBlockActivated(worldIn, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ))
 		{
-			LittleGuiHandler.openGui("littleOpFrame", new NBTTagCompound(), player, this);
+			if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || player.canUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
+				LittleGuiHandler.openGui("littleOpFrame", new NBTTagCompound(), player, this);
 			return true;
 		}
 		return true;

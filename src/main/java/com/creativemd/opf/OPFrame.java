@@ -43,6 +43,7 @@ public class OPFrame{
 	public static final String version = "0.1";
 	
 	public static float sizeLimitation = 1000;
+	public static boolean onlyOps = false;
 	
 	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame").setRegistryName("opFrame");
 	public static Block littleFrame;
@@ -59,6 +60,7 @@ public class OPFrame{
 		Configuration config = new Configuration(evt.getSuggestedConfigurationFile());
 		config.load();
 		sizeLimitation = config.getFloat("size-limitation", "limitations", sizeLimitation, 0, 10000, "size in blocks");
+		onlyOps = config.getBoolean("onlyOperators", "limitations", false, "If only operations (opped players) are allowed to edit a frame");
 		config.save();
 	}
 	

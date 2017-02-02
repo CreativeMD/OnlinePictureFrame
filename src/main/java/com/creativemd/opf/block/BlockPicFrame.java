@@ -15,6 +15,7 @@ import com.creativemd.creativecore.gui.opener.IGuiCreator;
 import com.creativemd.littletiles.common.blocks.ILittleTile;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
 
@@ -41,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
@@ -182,7 +184,8 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-		GuiHandler.openGui(playerIn, worldIn, pos);
+		if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || playerIn.canUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
+				GuiHandler.openGui(playerIn, worldIn, pos);
         return true;
     }
 
