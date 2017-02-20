@@ -181,12 +181,12 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	{
 		GlStateManager.pushMatrix();
 		
-		
-		
 		TileEntityPicFrame frame = (TileEntityPicFrame) getTileEntity();
 		
 		if(!frame.url.equals(""))
 		{
+			if(!frame.isTextureLoaded())
+				frame.loadTexutre();
 			if(frame.isTextureLoaded())
 			{
 				float sizeX = frame.sizeX;
@@ -287,8 +287,6 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	    		GlStateManager.disableRescaleNormal();
 	            GlStateManager.disableBlend();
 	            GlStateManager.enableLighting();
-			}else{
-				frame.loadTexutre();
 			}
 		}
 		GlStateManager.popMatrix();
