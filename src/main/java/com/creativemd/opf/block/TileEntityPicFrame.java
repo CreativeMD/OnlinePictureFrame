@@ -3,6 +3,7 @@ package com.creativemd.opf.block;
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.opf.client.DownloadThread;
+import com.creativemd.opf.client.PictureTexture;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRotatedPillar;
@@ -27,7 +28,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	public DownloadThread downloader;
 	
 	@SideOnly(Side.CLIENT)
-	public int textureID;
+	public PictureTexture texture;
 	
 	@SideOnly(Side.CLIENT)
 	public boolean failed;
@@ -35,7 +36,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	@SideOnly(Side.CLIENT)
 	public void initClient()
 	{
-		textureID = -1;
+		texture = null;
 		failed = false;
 	}
 	
@@ -52,9 +53,9 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		{
 			if(downloader == null)
 			{
-				Integer id = DownloadThread.loadedImages.get(url);
+				PictureTexture loadedTexture = DownloadThread.loadedImages.get(url);
 				
-				if(id == null)
+				if(loadedTexture == null)
 				{
 					if(!DownloadThread.loadingImages.contains(url))
 					{
@@ -63,16 +64,14 @@ public class TileEntityPicFrame extends TileEntityCreative{
 					}
 				}
 				else
-					textureID = id;
+					texture = loadedTexture;
 			}
 			if(downloader != null && downloader.hasFinished())
 			{
 				if(downloader.hasFailed())
 					failed = true;
 				else
-				{
-					textureID = DownloadThread.loadImage(downloader);
-				}
+					texture = DownloadThread.loadImage(downloader);
 				DownloadThread.loadingImages.remove(url);
 				downloader = null;
 			}
@@ -82,7 +81,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	@SideOnly(Side.CLIENT)
 	public boolean isTextureLoaded()
 	{
-		return textureID != -1;
+		return texture != null;
 	}
 	
 	@Override
