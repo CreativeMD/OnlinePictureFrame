@@ -13,6 +13,7 @@ import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.client.DownloadThread;
+import com.creativemd.opf.client.PictureTexture;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -168,14 +169,13 @@ public class SubGuiPic extends SubGui{
 				y = 1;
 			}
 			
-			Vector2f size = DownloadThread.loadedImagesSize.get(frame.url);
-			if(size != null)
+			if(frame.texture != null)
 			{
 				if(event.source.is("reX"))
 				{
-					sizeYField.text = "" + (size.y/(size.x/x));
+					sizeYField.text = "" + (frame.texture.height/(frame.texture.width/x));
 				}else{
-					sizeXField.text = "" + (size.x/(size.y/y));
+					sizeXField.text = "" + (frame.texture.width/(frame.texture.height/y));
 				}
 			}
 		}

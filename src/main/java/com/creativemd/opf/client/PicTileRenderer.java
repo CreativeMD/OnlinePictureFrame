@@ -29,7 +29,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 	            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 	            GlStateManager.disableLighting();
 	            GlStateManager.color(1, 1, 1, 1);
-	            GlStateManager.bindTexture(frame.textureID);
+	            GlStateManager.bindTexture(frame.texture.getTextureID());
 	            
 	            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 	            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
