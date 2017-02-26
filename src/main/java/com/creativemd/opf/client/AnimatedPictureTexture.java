@@ -23,10 +23,10 @@ public class AnimatedPictureTexture extends PictureTexture {
 
 	@Override
 	public int getTextureID() {
-		long time = System.currentTimeMillis() % duration;
+		long time = duration > 0 ? System.currentTimeMillis() % duration : 0;
 		int index = 0;
 		for (int i = 0; i < delay.length; i++) {
-			if(delay[i] > time)
+			if(delay[i] >= time)
 			{
 				index = i;
 				break;
