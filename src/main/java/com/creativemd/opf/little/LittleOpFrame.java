@@ -68,7 +68,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 		{
 			for (int i = 0; i < boundingBoxes.size(); i++) {
 				CubeObject cube = boundingBoxes.get(i).getCube();
-				EnumFacing direction = EnumFacing.getFront(meta);
+				EnumFacing direction = EnumFacing.getFront(getMeta());
 				double width = 0.025;
 				switch(direction)
 				{
@@ -124,7 +124,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	@Override
 	public ItemStack getDrop()
 	{
-		return new ItemStack(this.block, 1, meta);
+		return new ItemStack(this.getBlock(), 1, getMeta());
 	}
 	
 	public static CubeObject getBoundingBoxByTilenEntity(TileEntityPicFrame frame, int meta)
@@ -170,7 +170,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
     {
 		if(getTileEntity() != null)
 		{
-			return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), meta).getAxis().offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
+			return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
 		}
 		return super.getRenderBoundingBox();
     }
@@ -203,7 +203,7 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	            GlStateManager.translate(-0.5, 0.5, 0.5);
 	            
 	            LittleTileVec position = cornerVec.copy();
-	            EnumFacing direction = EnumFacing.getFront(meta);
+	            EnumFacing direction = EnumFacing.getFront(getMeta());
 	            if(direction.getAxisDirection() == AxisDirection.POSITIVE)
 	            	position.addVec(new LittleTileVec(direction));
 	            

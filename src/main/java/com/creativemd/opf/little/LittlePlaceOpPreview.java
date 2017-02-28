@@ -56,8 +56,8 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 		LittleTile tile = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, forced, facing);
 		if(tile instanceof LittleOpFrame && preview.box == null)
 		{
-			((LittleOpFrame) tile).meta = facing.getIndex();
-			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).meta, "blockMetadata", "field_145847_g");
+			((LittleOpFrame) tile).setMeta(facing.getIndex());
+			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).getMeta(), "blockMetadata", "field_145847_g");
 		}
 		return tile;
 	}

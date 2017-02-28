@@ -73,7 +73,7 @@ public class SubContainerPic extends SubContainerTileEntity {
 	{
 		if(tile != null)
 		{
-			((LittleOpFrame) tile).meta = facing.getIndex();
+			((LittleOpFrame) tile).setMeta(facing.getIndex());
 			((LittleOpFrame) tile).markForUpdate();
 			ReflectionHelper.setPrivateValue(TileEntity.class, frame, facing.getIndex(), "blockMetadata", "field_145847_g");
 			((LittleOpFrame) tile).needsFullUpdate = true;
