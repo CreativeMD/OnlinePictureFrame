@@ -97,7 +97,7 @@ public class DownloadThread extends Thread {
 
 	    Iterator iter = ImageIO.getImageReaders(stream);
 	    if (!iter.hasNext()) {
-	        return null;
+	        return "";
 	    }
 	    ImageReader reader = (ImageReader) iter.next();
 	    ImageReadParam param = reader.getDefaultReadParam();
@@ -150,8 +150,11 @@ public class DownloadThread extends Thread {
 					GifDecoder gif = new GifDecoder();
 					if(gif.read(is2) == GifDecoder.STATUS_OK)
 						texture = new AnimatedPictureTexture(gif);
-				}else
-					texture = new OrdinaryTexture(ImageIO.read(is2));
+				}else{
+					BufferedImage image = ImageIO.read(is2);
+					if(image != null)
+						texture = new OrdinaryTexture(image);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
