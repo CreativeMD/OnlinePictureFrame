@@ -221,7 +221,8 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		{
 			cube = new RenderCubeObject(CubeObject.rotateCube(cube, state.getValue(FACING)), cube);
 			cubes.add(cube);
-		}
+		}else if(!(te instanceof TileEntityPicFrame))
+			cubes.add(cube);
 		return cubes;
 	}
 
