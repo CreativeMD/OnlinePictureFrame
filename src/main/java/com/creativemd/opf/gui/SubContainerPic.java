@@ -1,20 +1,16 @@
 package com.creativemd.opf.gui;
 
-import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.premade.SubContainerTileEntity;
-import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.little.LittleOpFrame;
 
-import mezz.jei.api.JEIPlugin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import scala.tools.nsc.transform.patmat.Solving.Solver.Lit;
 
 public class SubContainerPic extends SubContainerTileEntity {
 	

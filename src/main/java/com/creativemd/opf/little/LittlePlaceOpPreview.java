@@ -40,7 +40,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 		cubes.add(new ColoredCube(box.getCube()));
 		if(preview.box != null && nbt.hasKey("tileEntity"))
 		{
-			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.func_190200_a(Minecraft.getMinecraft().theWorld, nbt.getCompoundTag("tileEntity"));
+			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.create(Minecraft.getMinecraft().theWorld, nbt.getCompoundTag("tileEntity"));
 			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(tileEntity, nbt.getInteger("meta"));
 			picPreview.add(box.getMinVec().getVec());
 			cubes.add(new ColoredCube(picPreview, new Vec3d(0, 1, 1)));
