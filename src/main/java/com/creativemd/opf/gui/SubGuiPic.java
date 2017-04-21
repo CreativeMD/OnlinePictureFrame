@@ -29,14 +29,17 @@ public class SubGuiPic extends SubGui{
 	
 	public boolean editFacing;
 	
+	public float scaleMultiplier;
+	
 	public SubGuiPic(TileEntityPicFrame frame) {
-		this(frame, false);
+		this(frame, false, 16);
 	}
 	
-	public SubGuiPic(TileEntityPicFrame frame, boolean editFacing) {
+	public SubGuiPic(TileEntityPicFrame frame, boolean editFacing, int scaleSize) {
 		super(200, editFacing ? 220 : 200);
 		this.frame = frame;
 		this.editFacing = editFacing;
+		this.scaleMultiplier = 1F/(scaleSize);
 	}
 	
 	@Override
@@ -44,17 +47,83 @@ public class SubGuiPic extends SubGui{
 		GuiTextfield url = new GuiTextfield("url", frame.url, 0, 0, 194, 16);
 		url.maxLength = 512;
 		controls.add(url);
-		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 0, 30, 40, 16).setFloatOnly());
-		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 47, 30, 40, 16).setFloatOnly());
-		controls.add(new GuiButton("reX", "x->y", 94, 30, 50){
+		controls.add(new GuiButton("in-size-x", "<", 49, 26, 5, 12) {
+			
 			@Override
 			public void onClicked(int x, int y, int button) {
+				GuiTextfield sizeX = (GuiTextfield) get("sizeX");
+				float width = 1;
+				try{
+					width = Float.parseFloat(sizeX.text);
+				}catch(Exception e){
+					width = 1;
+				}
+				int scaled = (int) (width / scaleMultiplier);
+				scaled++;
+				sizeX.text = Float.toString(scaled * scaleMultiplier);
 			}
+		}.setRotation(90));
+		controls.add(new GuiButton("de-size-x", ">", 49, 36, 5, 12) {
+			
+			@Override
+			public void onClicked(int x, int y, int button) {
+				GuiTextfield sizeX = (GuiTextfield) get("sizeX");
+				float width = 1;
+				try{
+					width = Float.parseFloat(sizeX.text);
+				}catch(Exception e){
+					width = 1;
+				}
+				int scaled = (int) (width / scaleMultiplier);
+				scaled--;
+				sizeX.text = Float.toString(scaled * scaleMultiplier);
+			}
+		}.setRotation(90));
+		
+		controls.add(new GuiButton("in-size-y", "<", 145, 26, 5, 12) {
+			
+			@Override
+			public void onClicked(int x, int y, int button) {
+				GuiTextfield sizeY = (GuiTextfield) get("sizeY");
+				float height = 1;
+				try{
+					height = Float.parseFloat(sizeY.text);
+				}catch(Exception e){
+					height = 1;
+				}
+				int scaled = (int) (height / scaleMultiplier);
+				scaled++;
+				sizeY.text = Float.toString(scaled * scaleMultiplier);
+			}
+		}.setRotation(90));
+		controls.add(new GuiButton("de-size-y", ">", 145, 36, 5, 12) {
+			
+			@Override
+			public void onClicked(int x, int y, int button) {
+				GuiTextfield sizeY = (GuiTextfield) get("sizeY");
+				float height = 1;
+				try{
+					height = Float.parseFloat(sizeY.text);
+				}catch(Exception e){
+					height = 1;
+				}
+				int scaled = (int) (height / scaleMultiplier);
+				scaled--;
+				sizeY.text = Float.toString(scaled * scaleMultiplier);
+			}
+		}.setRotation(90));
+		
+		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 0, 30, 40, 15).setFloatOnly());
+		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 96, 30, 40, 15).setFloatOnly());
+		
+		controls.add(new GuiButton("reX", "x->y", 62, 30, 25, 15){
+			@Override
+			public void onClicked(int x, int y, int button) {}
 		});
-		controls.add(new GuiButton("reY", "y->x", 144, 30, 50){
+		
+		controls.add(new GuiButton("reY", "y->x", 158, 30, 25, 15){
 			@Override
-			public void onClicked(int x, int y, int button) {
-			}
+			public void onClicked(int x, int y, int button) {}
 		});
 		
 		controls.add(new GuiCheckBox("flipX", "flip (x-axis)", 0, 50, frame.flippedX));

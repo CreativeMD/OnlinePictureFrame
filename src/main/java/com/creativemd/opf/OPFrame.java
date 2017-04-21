@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class OPFrame{
 	
 	public static final String modid = "opframe";
-	public static final String version = "0.1";
+	public static final String version = "1.0";
 	
 	public static float sizeLimitation = 1000;
 	public static boolean onlyOps = false;
@@ -102,7 +102,7 @@ public class OPFrame{
 			@SideOnly(Side.CLIENT)
 			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
 				if(tile instanceof LittleOpFrame)
-					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true);
+					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true, LittleTile.gridSize);
 				return null;
 			}
 			
