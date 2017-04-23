@@ -165,8 +165,6 @@ public class DownloadThread extends Thread {
     private static final int BYTES_PER_PIXEL = 4;
 
     public static int loadTexture(BufferedImage image) {
-        long time = System.currentTimeMillis();
-
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
@@ -197,8 +195,6 @@ public class DownloadThread extends Thread {
 
         //Send texel data to OpenGL
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-
-        System.out.println("Took " + (System.currentTimeMillis() - time) + "ms to upload image");
 
         //Return the texture ID so we can bind it later again
         return textureID;
