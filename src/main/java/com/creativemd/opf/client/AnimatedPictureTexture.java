@@ -1,7 +1,5 @@
 package com.creativemd.opf.client;
 
-import com.porpit.lib.GifDecoder;
-
 public class AnimatedPictureTexture extends PictureTexture {
 
     private final int[] textureIDs;
@@ -9,20 +7,17 @@ public class AnimatedPictureTexture extends PictureTexture {
     private final long duration;
 
     private int completedFrames;
-    private GifDecoder gif;
+    private ProcessedImageData imageData;
 
-    public AnimatedPictureTexture(GifDecoder decoder) {
-        super((int) decoder.getFrameSize().getWidth(), (int) decoder.getFrameSize().getHeight());
-        gif = decoder;
-        textureIDs = new int[decoder.getFrameCount()];
-        delay = new long[decoder.getFrameCount()];
-        long time = 0;
+    public AnimatedPictureTexture(ProcessedImageData image) {
+        super(image.getWidth(), image.getHeight());
+        imageData = image;
+        textureIDs = new int[image.getFrameCount()];
+        delay = image.getDelay();
+        duration = image.getDuration();
         for (int i = 0; i < textureIDs.length; i++) {
             textureIDs[i] = -1;
-            delay[i] = time;
-            time += decoder.getDelay(i);
         }
-        duration = time;
     }
 
     @Override
@@ -37,10 +32,11 @@ public class AnimatedPictureTexture extends PictureTexture {
         }
         int id = textureIDs[index];
         if (id == -1) {
-            id = DownloadThread.loadTexture(gif.getFrame(index));
+            id = imageData.uploadFrame(index);
             textureIDs[index] = id;
-            if (++completedFrames >= gif.getFrameCount()) {
-                gif = null;
+            if (++completedFrames >= imageData.getFrameCount()) {
+                //Unload imageData after all frames have been loaded
+                imageData = null;
             }
         }
         return id;

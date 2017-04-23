@@ -1,7 +1,6 @@
 package com.creativemd.opf.client;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -9,7 +8,6 @@ import com.creativemd.opf.block.TileEntityPicFrame;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -87,7 +85,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 	            GlStateManager.disableBlend();
 	            GlStateManager.enableLighting();
 			}else{
-				frame.loadTexutre();
+				frame.loadTexture();
 			}
 		}
 	}

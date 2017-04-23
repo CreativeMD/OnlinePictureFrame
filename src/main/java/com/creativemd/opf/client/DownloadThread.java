@@ -4,9 +4,6 @@ import com.porpit.lib.GifDecoder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.IOUtils;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -22,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -31,21 +27,26 @@ import java.util.Iterator;
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
     public static final File TEMP = new File(System.getProperty("java.io.tmpdir"), "opframe");
+    public static final Object LOCK = new Object();
+    public static final int MAXIMUM_ACTIVE_DOWNLOADS = 5;
+
+    public static int activeDownloads = 0;
 
     public static HashMap<String, PictureTexture> loadedImages = new HashMap<String, PictureTexture>();
-
     public static ArrayList<String> loadingImages = new ArrayList<String>();
 
     private String url;
 
-    private BufferedImage loadedImage;
-    private GifDecoder loadedGif;
+    private ProcessedImageData processedImage;
     private boolean failed;
     private boolean complete;
 
     public DownloadThread(String url) {
         this.url = url;
-        setName("OpF Download Thread " + url);
+        synchronized (LOCK) {
+            activeDownloads++;
+        }
+        setName("OPF Download \"" + url + "\"");
         setDaemon(true);
         start();
     }
@@ -73,11 +74,14 @@ public class DownloadThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
             if (saveFile.exists()) {
+                IOUtils.closeQuietly(loadedStream);
+                //If we failed to load from saved file, delete it and retry
                 saveFile.delete();
                 run();
                 return;
             }
         }
+        boolean deleteSave = false;
         if (loadedStream != null) {
             InputStream is1 = null;
             InputStream is2 = null;
@@ -88,15 +92,30 @@ public class DownloadThread extends Thread {
                 baos.flush();
                 is1 = new ByteArrayInputStream(baos.toByteArray());
                 is2 = new ByteArrayInputStream(baos.toByteArray());
-                if (readType(is1).equals("gif")) {
+                String type = readType(is1);
+                if (type.equals("gif")) {
                     GifDecoder gif = new GifDecoder();
                     if (gif.read(is2) == GifDecoder.STATUS_OK) {
-                        loadedGif = gif;
+                        processedImage = new ProcessedImageData(gif);
                     } else {
                         failed = true;
+                        //Delete invalid gifs
+                        deleteSave = true;
                     }
                 } else {
-                    loadedImage = ImageIO.read(is2);
+                    try {
+                        BufferedImage image = ImageIO.read(is2);
+                        if (image != null) {
+                            processedImage = new ProcessedImageData(image);
+                        } else {
+                            //Delete invalid image
+                            deleteSave = true;
+                            failed = true;
+                        }
+                    } catch (IOException e1) {
+                        deleteSave = true;
+                        e1.printStackTrace();
+                    }
                 }
                 try (FileOutputStream writer = new FileOutputStream(saveFile)) {
                     writer.write(bytes);
@@ -107,11 +126,18 @@ public class DownloadThread extends Thread {
             } finally {
                 IOUtils.closeQuietly(is1);
                 IOUtils.closeQuietly(is2);
+                IOUtils.closeQuietly(loadedStream);
             }
         } else {
             failed = true;
         }
+        if (deleteSave) {
+            saveFile.delete();
+        }
         complete = true;
+        synchronized (LOCK) {
+            activeDownloads--;
+        }
     }
 
     public static String readType(InputStream input) throws IOException {
@@ -142,14 +168,16 @@ public class DownloadThread extends Thread {
     public static PictureTexture loadImage(DownloadThread thread) {
         PictureTexture texture = null;
         if (!thread.hasFailed()) {
-            if (thread.loadedGif != null) {
-                texture = new AnimatedPictureTexture(thread.loadedGif);
-            } else if (thread.loadedImage != null) {
-                texture = new OrdinaryTexture(thread.loadedImage);
+            if (thread.processedImage.isAnimated()) {
+                texture = new AnimatedPictureTexture(thread.processedImage);
+            } else {
+                texture = new OrdinaryTexture(thread.processedImage);
             }
         }
         if (texture != null) {
-            loadedImages.put(thread.url, texture);
+            synchronized (LOCK) {
+                loadedImages.put(thread.url, texture);
+            }
         }
         return texture;
     }
@@ -160,43 +188,5 @@ public class DownloadThread extends Thread {
         }
         String identifier = new String(Base64.getUrlEncoder().encode(url.getBytes()));
         return new File(TEMP, identifier);
-    }
-
-    private static final int BYTES_PER_PIXEL = 4;
-
-    public static int loadTexture(BufferedImage image) {
-        int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
-
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
-                buffer.put((byte) ((pixel >> 8) & 0xFF));      // Green component
-                buffer.put((byte) (pixel & 0xFF));               // Blue component
-                buffer.put((byte) ((pixel >> 24) & 0xFF));    // Alpha component. Only for RGBA
-            }
-        }
-
-        buffer.flip();
-
-        int textureID = GL11.glGenTextures(); //Generate texture ID
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID); //Bind texture ID
-
-        //Setup wrap mode
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-
-        //Setup texture scaling filtering
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-
-        //Send texel data to OpenGL
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-
-        //Return the texture ID so we can bind it later again
-        return textureID;
     }
 }
