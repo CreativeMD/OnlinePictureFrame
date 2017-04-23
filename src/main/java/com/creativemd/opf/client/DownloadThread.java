@@ -15,17 +15,22 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
+    public static final File TEMP = new File(System.getProperty("java.io.tmpdir"), "opframe");
 
     public static HashMap<String, PictureTexture> loadedImages = new HashMap<String, PictureTexture>();
 
@@ -55,21 +60,31 @@ public class DownloadThread extends Thread {
 
     @Override
     public void run() {
+        File saveFile = getSaveFile(url);
         InputStream loadedStream = null;
         try {
-            URLConnection con = new URL(url).openConnection();
-            con.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-            loadedStream = con.getInputStream();
+            if (!saveFile.exists()) {
+                URLConnection con = new URL(url).openConnection();
+                con.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+                loadedStream = con.getInputStream();
+            } else {
+                loadedStream = new FileInputStream(saveFile);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            if (saveFile.exists()) {
+                saveFile.delete();
+                run();
+                return;
+            }
         }
         if (loadedStream != null) {
             InputStream is1 = null;
             InputStream is2 = null;
             try {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buffer = IOUtils.toByteArray(loadedStream);
-                baos.write(buffer);
+                byte[] bytes = IOUtils.toByteArray(loadedStream);
+                baos.write(bytes);
                 baos.flush();
                 is1 = new ByteArrayInputStream(baos.toByteArray());
                 is2 = new ByteArrayInputStream(baos.toByteArray());
@@ -82,6 +97,9 @@ public class DownloadThread extends Thread {
                     }
                 } else {
                     loadedImage = ImageIO.read(is2);
+                }
+                try (FileOutputStream writer = new FileOutputStream(saveFile)) {
+                    writer.write(bytes);
                 }
             } catch (IOException e) {
                 failed = true;
@@ -136,9 +154,19 @@ public class DownloadThread extends Thread {
         return texture;
     }
 
+    private static File getSaveFile(String url) {
+        if (!TEMP.exists()) {
+            TEMP.mkdirs();
+        }
+        String identifier = new String(Base64.getUrlEncoder().encode(url.getBytes()));
+        return new File(TEMP, identifier);
+    }
+
     private static final int BYTES_PER_PIXEL = 4;
 
     public static int loadTexture(BufferedImage image) {
+        long time = System.currentTimeMillis();
+
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
@@ -169,6 +197,8 @@ public class DownloadThread extends Thread {
 
         //Send texel data to OpenGL
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+
+        System.out.println("Took " + (System.currentTimeMillis() - time) + "ms to upload image");
 
         //Return the texture ID so we can bind it later again
         return textureID;
