@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class OPFrame{
 	
 	public static final String modid = "opframe";
-	public static final String version = "1.0";
+	public static final String version = "1.4.0";
 	
 	public static float sizeLimitation = 1000;
 	public static boolean onlyOps = false;
@@ -57,6 +57,8 @@ public class OPFrame{
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt)
 	{
+		evt.getModMetadata().version = version;
+		
 		Configuration config = new Configuration(evt.getSuggestedConfigurationFile());
 		config.load();
 		sizeLimitation = config.getFloat("size-limitation", "limitations", sizeLimitation, 0, 10000, "size in blocks");
