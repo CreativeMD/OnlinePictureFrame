@@ -1,10 +1,13 @@
 package com.creativemd.opf.client;
 
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.client.cache.TextureCache;
 import com.porpit.lib.GifDecoder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -29,6 +32,8 @@ import java.util.Iterator;
 
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
+    public static final Logger LOGGER = LogManager.getLogger(OPFrame.class);
+
     public static final TextureCache TEXTURE_CACHE = new TextureCache();
     public static final DateFormat FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
     public static final Object LOCK = new Object();
@@ -68,11 +73,16 @@ public class DownloadThread extends Thread {
         try {
             byte[] data = load(url);
             String type = readType(data);
-            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+            ByteArrayInputStream in = null;
+            try {
+                in = new ByteArrayInputStream(data);
                 if (type.equalsIgnoreCase("gif")) {
                     GifDecoder gif = new GifDecoder();
-                    if (gif.read(in) == GifDecoder.STATUS_OK) {
+                    int status = gif.read(in);
+                    if (status == GifDecoder.STATUS_OK) {
                         processedImage = new ProcessedImageData(gif);
+                    } else {
+                        LOGGER.error("Failed to read gif: " + status);
                     }
                 } else {
                     try {
@@ -81,12 +91,14 @@ public class DownloadThread extends Thread {
                             processedImage = new ProcessedImageData(image);
                         }
                     } catch (IOException e1) {
-                        e1.printStackTrace();
+                        LOGGER.error("Failed to parse BufferedImage from stream", e1);
                     }
                 }
+            } finally {
+                IOUtils.closeQuietly(in);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("An exception occurred while loading OPFrame image", e);
         }
         if (processedImage == null) {
             failed = true;
@@ -115,7 +127,9 @@ public class DownloadThread extends Thread {
             }
             responseCode = httpConnection.getResponseCode();
         }
-        try (InputStream in = connection.getInputStream()) {
+        InputStream in = null;
+        try {
+            in = connection.getInputStream();
             String etag = connection.getHeaderField("ETag");
             long lastModifiedTimestamp;
             long expireTimestamp = -1;
@@ -158,12 +172,18 @@ public class DownloadThread extends Thread {
             byte[] data = IOUtils.toByteArray(in);
             TEXTURE_CACHE.save(url, etag, lastModifiedTimestamp, expireTimestamp, data);
             return data;
+        } finally {
+            IOUtils.closeQuietly(in);
         }
     }
 
     private static String readType(byte[] input) throws IOException {
-        try (InputStream in = new ByteArrayInputStream(input)) {
+        InputStream in = null;
+        try {
+            in = new ByteArrayInputStream(input);
             return readType(in);
+        } finally {
+            IOUtils.closeQuietly(in);
         }
     }
 
@@ -179,14 +199,10 @@ public class DownloadThread extends Thread {
         try {
             reader.read(0, param);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to parse input format", e);
         } finally {
             reader.dispose();
-            try {
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeQuietly(stream);
         }
         input.reset();
         return reader.getFormatName();
