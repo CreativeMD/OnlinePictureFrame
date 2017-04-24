@@ -1,5 +1,6 @@
 package com.creativemd.opf.client;
 
+import com.creativemd.opf.client.cache.TextureCache;
 import com.porpit.lib.GifDecoder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -11,22 +12,25 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
-    public static final File TEMP = new File(System.getProperty("java.io.tmpdir"), "opframe");
+    public static final TextureCache TEXTURE_CACHE = new TextureCache();
+    public static final DateFormat FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
     public static final Object LOCK = new Object();
     public static final int MAXIMUM_ACTIVE_DOWNLOADS = 5;
 
@@ -61,78 +65,31 @@ public class DownloadThread extends Thread {
 
     @Override
     public void run() {
-        File saveFile = getSaveFile(url);
-        InputStream loadedStream = null;
         try {
-            if (!saveFile.exists()) {
-                URLConnection con = new URL(url).openConnection();
-                con.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-                loadedStream = con.getInputStream();
-            } else {
-                loadedStream = new FileInputStream(saveFile);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (saveFile.exists()) {
-                IOUtils.closeQuietly(loadedStream);
-                //If we failed to load from saved file, delete it and retry
-                saveFile.delete();
-                run();
-                return;
-            }
-        }
-        boolean deleteSave = false;
-        if (loadedStream != null) {
-            InputStream is1 = null;
-            InputStream is2 = null;
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] bytes = IOUtils.toByteArray(loadedStream);
-                baos.write(bytes);
-                baos.flush();
-                is1 = new ByteArrayInputStream(baos.toByteArray());
-                is2 = new ByteArrayInputStream(baos.toByteArray());
-                String type = readType(is1);
-                if (type.equals("gif")) {
+            byte[] data = load(url);
+            String type = readType(data);
+            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                if (type.equalsIgnoreCase("gif")) {
                     GifDecoder gif = new GifDecoder();
-                    if (gif.read(is2) == GifDecoder.STATUS_OK) {
+                    if (gif.read(in) == GifDecoder.STATUS_OK) {
                         processedImage = new ProcessedImageData(gif);
-                    } else {
-                        failed = true;
-                        //Delete invalid gifs
-                        deleteSave = true;
                     }
                 } else {
                     try {
-                        BufferedImage image = ImageIO.read(is2);
+                        BufferedImage image = ImageIO.read(in);
                         if (image != null) {
                             processedImage = new ProcessedImageData(image);
-                        } else {
-                            //Delete invalid image
-                            deleteSave = true;
-                            failed = true;
                         }
                     } catch (IOException e1) {
-                        deleteSave = true;
                         e1.printStackTrace();
                     }
                 }
-                try (FileOutputStream writer = new FileOutputStream(saveFile)) {
-                    writer.write(bytes);
-                }
-            } catch (IOException e) {
-                failed = true;
-                e.printStackTrace();
-            } finally {
-                IOUtils.closeQuietly(is1);
-                IOUtils.closeQuietly(is2);
-                IOUtils.closeQuietly(loadedStream);
             }
-        } else {
-            failed = true;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (deleteSave) {
-            saveFile.delete();
+        if (processedImage == null) {
+            failed = true;
         }
         complete = true;
         synchronized (LOCK) {
@@ -140,7 +97,77 @@ public class DownloadThread extends Thread {
         }
     }
 
-    public static String readType(InputStream input) throws IOException {
+    public static byte[] load(String url) throws IOException {
+        TextureCache.CacheEntry entry = TEXTURE_CACHE.getEntry(url);
+        long requestTime = System.currentTimeMillis();
+        URLConnection connection = new URL(url).openConnection();
+        connection.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+        int responseCode = -1;
+        if (connection instanceof HttpURLConnection) {
+            HttpURLConnection httpConnection = (HttpURLConnection) connection;
+            if (entry != null) {
+                if (entry.getTime() != -1) {
+                    httpConnection.setRequestProperty("If-Modified-Since", FORMAT.format(new Date(entry.getTime())));
+                }
+                if (entry.getEtag() != null) {
+                    httpConnection.setRequestProperty("If-None-Match", entry.getEtag());
+                }
+            }
+            responseCode = httpConnection.getResponseCode();
+        }
+        try (InputStream in = connection.getInputStream()) {
+            String etag = connection.getHeaderField("ETag");
+            long lastModifiedTimestamp;
+            long expireTimestamp = -1;
+            String maxAge = connection.getHeaderField("max-age");
+            if (maxAge != null && !maxAge.isEmpty()) {
+                try {
+                    expireTimestamp = requestTime + Long.parseLong(maxAge) * 1000;
+                } catch (NumberFormatException e) {
+                }
+            }
+            String expires = connection.getHeaderField("Expires");
+            if (expires != null && !expires.isEmpty()) {
+                try {
+                    expireTimestamp = FORMAT.parse(expires).getTime();
+                } catch (ParseException e) {
+                }
+            }
+            String lastModified = connection.getHeaderField("Last-Modified");
+            if (lastModified != null && !lastModified.isEmpty()) {
+                try {
+                    lastModifiedTimestamp = FORMAT.parse(lastModified).getTime();
+                } catch (ParseException e) {
+                    lastModifiedTimestamp = requestTime;
+                }
+            } else {
+                lastModifiedTimestamp = requestTime;
+            }
+            if (entry != null) {
+                if (etag != null && !etag.isEmpty()) {
+                    entry.setEtag(etag);
+                }
+                entry.setTime(lastModifiedTimestamp);
+                if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                    File file = entry.getFile();
+                    if (file.exists()) {
+                        return IOUtils.toByteArray(new FileInputStream(file));
+                    }
+                }
+            }
+            byte[] data = IOUtils.toByteArray(in);
+            TEXTURE_CACHE.save(url, etag, lastModifiedTimestamp, expireTimestamp, data);
+            return data;
+        }
+    }
+
+    private static String readType(byte[] input) throws IOException {
+        try (InputStream in = new ByteArrayInputStream(input)) {
+            return readType(in);
+        }
+    }
+
+    private static String readType(InputStream input) throws IOException {
         ImageInputStream stream = ImageIO.createImageInputStream(input);
         Iterator iter = ImageIO.getImageReaders(stream);
         if (!iter.hasNext()) {
@@ -180,13 +207,5 @@ public class DownloadThread extends Thread {
             }
         }
         return texture;
-    }
-
-    private static File getSaveFile(String url) {
-        if (!TEMP.exists()) {
-            TEMP.mkdirs();
-        }
-        String identifier = new String(Base64.getUrlEncoder().encode(url.getBytes()));
-        return new File(TEMP, identifier);
     }
 }
