@@ -6,12 +6,13 @@ import com.creativemd.opf.client.DownloadThread;
 import com.creativemd.opf.client.PictureTexture;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityPicFrame extends TileEntityCreative {
+public class TileEntityPicFrame extends TileEntityCreative implements ITickable {
 
 	public TileEntityPicFrame() {
 		if (FMLCommonHandler.instance().getSide().isClient()) {
@@ -288,5 +289,18 @@ public class TileEntityPicFrame extends TileEntityCreative {
 		rotationY = nbt.getFloat("rotY");
 		initClient();
 		updateRender();
+	}
+
+	@Override
+	public void update() {
+		if (world.isRemote) {
+			tickTexture();
+		}
+	}
+
+	private void tickTexture() {
+		if (texture != null) {
+			texture.tick();
+		}
 	}
 }

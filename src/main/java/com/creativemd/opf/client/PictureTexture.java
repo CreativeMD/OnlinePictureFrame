@@ -1,7 +1,5 @@
 package com.creativemd.opf.client;
 
-import java.awt.image.BufferedImage;
-
 public abstract class PictureTexture {
 	
 	
@@ -14,7 +12,9 @@ public abstract class PictureTexture {
 		this.height = height;
 		
 	}
-	
+
+	public abstract void tick();
+
 	public abstract int getTextureID();
 	
 }

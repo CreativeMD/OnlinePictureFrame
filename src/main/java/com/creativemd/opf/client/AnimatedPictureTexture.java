@@ -21,6 +21,23 @@ public class AnimatedPictureTexture extends PictureTexture {
 	}
 
 	@Override
+	public void tick() {
+		if (imageData != null) {
+			//Upload as many frames as possible in 10 ms
+			long startTime = System.currentTimeMillis();
+			int index = 0;
+			while (completedFrames < textureIDs.length && index < textureIDs.length && System.currentTimeMillis() - startTime < 10) {
+				while (textureIDs[index] != -1 && index < textureIDs.length - 1) {
+					index++;
+				}
+				if (textureIDs[index] == -1) {
+					textureIDs[index] = uploadFrame(index);
+				}
+			}
+		}
+	}
+
+	@Override
 	public int getTextureID() {
 		long time = duration > 0 ? System.currentTimeMillis() % duration : 0;
 		int index = 0;
@@ -30,14 +47,16 @@ public class AnimatedPictureTexture extends PictureTexture {
 				break;
 			}
 		}
-		int id = textureIDs[index];
-		if (id == -1) {
-			id = imageData.uploadFrame(index);
-			textureIDs[index] = id;
-			if (++completedFrames >= imageData.getFrameCount()) {
-				//Unload imageData after all frames have been loaded
-				imageData = null;
-			}
+		return textureIDs[index];
+	}
+
+	private int uploadFrame(int index) {
+		int id;
+		id = imageData.uploadFrame(index);
+		textureIDs[index] = id;
+		if (++completedFrames >= imageData.getFrameCount()) {
+			//Unload imageData after all frames have been loaded
+			imageData = null;
 		}
 		return id;
 	}

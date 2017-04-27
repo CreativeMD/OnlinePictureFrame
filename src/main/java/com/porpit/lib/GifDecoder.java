@@ -281,8 +281,7 @@ public class GifDecoder {
 		status = STATUS_OK;
 		try {
 			name = name.trim().toLowerCase();
-			if ((name.indexOf("file:") >= 0) ||
-					(name.indexOf(":/") > 0)) {
+			if ((name.startsWith("file:")) || (name.indexOf(":/") > 0)) {
 				URL url = new URL(name);
 				in = new BufferedInputStream(url.openStream());
 			} else {
@@ -555,11 +554,11 @@ public class GifDecoder {
 	 * Reads GIF file header information.
 	 */
 	protected void readHeader() {
-		String id = "";
+		StringBuilder id = new StringBuilder();
 		for (int i = 0; i < 6; i++) {
-			id += (char) read();
+			id.append(read());
 		}
-		if (!id.startsWith("GIF")) {
+		if (!id.toString().startsWith("GIF")) {
 			status = STATUS_FORMAT_ERROR;
 			return;
 		}

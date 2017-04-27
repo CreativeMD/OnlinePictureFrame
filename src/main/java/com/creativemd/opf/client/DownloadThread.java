@@ -25,10 +25,11 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
@@ -42,7 +43,7 @@ public class DownloadThread extends Thread {
 	public static int activeDownloads = 0;
 
 	public static HashMap<String, PictureTexture> loadedImages = new HashMap<String, PictureTexture>();
-	public static ArrayList<String> loadingImages = new ArrayList<String>();
+	public static Set<String> loadingImages = new HashSet<String>();
 
 	private String url;
 
@@ -83,7 +84,7 @@ public class DownloadThread extends Thread {
 						processedImage = new ProcessedImageData(gif);
 					}
 					else {
-						LOGGER.error("Failed to read gif: " + status);
+						LOGGER.error("Failed to read gif: {}", status);
 					}
 				}
 				else {

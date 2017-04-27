@@ -10,6 +10,10 @@ public class OrdinaryTexture extends PictureTexture {
 	}
 
 	@Override
+	public void tick() {
+	}
+
+	@Override
 	public int getTextureID() {
 		return textureID;
 	}

@@ -40,7 +40,7 @@ public class TextureCache {
 			saved = true;
 		}
 		catch (IOException e) {
-			DownloadThread.LOGGER.error("Failed to save cache entry " + url, e);
+			DownloadThread.LOGGER.error("Failed to save cache entry {}", e, url);
 		}
 		finally {
 			IOUtils.closeQuietly(out);
