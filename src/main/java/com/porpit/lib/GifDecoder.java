@@ -556,7 +556,7 @@ public class GifDecoder {
 	protected void readHeader() {
 		StringBuilder id = new StringBuilder();
 		for (int i = 0; i < 6; i++) {
-			id.append(read());
+			id.append((char) read());
 		}
 		if (!id.toString().startsWith("GIF")) {
 			status = STATUS_FORMAT_ERROR;
