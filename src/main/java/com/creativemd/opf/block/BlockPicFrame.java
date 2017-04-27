@@ -1,9 +1,5 @@
 package com.creativemd.opf.block;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nullable;
-
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.block.TileEntityState;
@@ -12,13 +8,9 @@ import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.creativecore.gui.opener.IGuiCreator;
-import com.creativemd.littletiles.common.blocks.ILittleTile;
-import com.creativemd.littletiles.common.structure.LittleStructure;
-import com.creativemd.littletiles.common.utils.LittleTilePreview;
-import com.creativemd.opf.OPFrame;
+import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
-
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -32,7 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -42,14 +33,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+
 public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreativeRendered {
-	
+
 	public static final PropertyDirection FACING = BlockDirectional.FACING;
 
 	public BlockPicFrame() {
@@ -58,14 +48,14 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		setCreativeTab(CreativeTabs.DECORATIONS);
 		setResistance(2.5F);
 		setHardness(2.0F);
-	}	    
-	
+	}
+
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
 		return new TileEntityState(state, world.getTileEntity(pos));
     }
-	
+
     /**
      * Called by ItemBlocks just before a block is actually set in the world, to allow for adjustments to the
      * IBlockstate
@@ -85,7 +75,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
         //worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
     }
-	    
+
     /**
      * Convert the given metadata into a BlockState for this Block
      */
@@ -123,19 +113,19 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
     {
         return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
     }
-	
+
 	@Override
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, new IProperty[] {FACING});
     }
-	
+
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
     {
         return EnumBlockRenderType.MODEL;
     }
-	
+
 	/**
      * Checks if an IBlockState represents a block that is opaque and a full cube.
      */
@@ -153,21 +143,21 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
     {
         return false;
     }
-	
+
 	@Override
 	public boolean isFullCube(IBlockState state)
     {
         return false;
     }
-	
+
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
     {
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
-		EnumFacing direction = blockState.getValue(FACING);		
+		EnumFacing direction = blockState.getValue(FACING);
         return CubeObject.rotateCube(cube, direction).getAxis(); //.offset(pos);
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
@@ -175,17 +165,17 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		TileEntity te = source.getTileEntity(pos);
 		if(te instanceof TileEntityPicFrame)
 			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) te, te.getBlockMetadata());
-		
+
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
-		EnumFacing direction = state.getValue(FACING);		
+		EnumFacing direction = state.getValue(FACING);
         return CubeObject.rotateCube(cube, direction).getAxis();//.offset(pos);
     }
-	
+
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-		if(!worldIn.isRemote && (!OPFrame.onlyOps || ((WorldServer) worldIn).getMinecraftServer().isSinglePlayer() || playerIn.canUseCommand(((WorldServer) worldIn).getMinecraftServer().getOpPermissionLevel(), "")))
-				GuiHandler.openGui(playerIn, worldIn, pos);
+    	if (!world.isRemote && OPFrameConfig.limitations.canInteract(player, world))
+			GuiHandler.openGui(player, world, pos);
         return true;
     }
 

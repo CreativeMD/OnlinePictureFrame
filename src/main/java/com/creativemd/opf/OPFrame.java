@@ -1,5 +1,7 @@
 package com.creativemd.opf;
 
+import com.creativemd.creativecore.common.packet.CreativeCorePacket;
+import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
@@ -14,17 +16,15 @@ import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
 import com.creativemd.opf.little.LittleOpFrame;
 import com.creativemd.opf.little.LittleOpPreview;
-import com.creativemd.opf.little.LittlePlaceOpPreview;
 import com.creativemd.opf.little.LittlePlacedOpFrame;
-
+import com.creativemd.opf.packet.OPFrameConfigPacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -32,19 +32,19 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame",acceptedMinecraftVersions="")
+@Mod.EventBusSubscriber
 public class OPFrame{
 	
 	public static final String modid = "opframe";
-	public static final String version = "1.4.0";
-	
-	public static float sizeLimitation = 1000;
-	public static boolean onlyOps = false;
-	
+	public static final String version = "0.1";
+
 	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame").setRegistryName("opFrame");
 	public static Block littleFrame;
 	
@@ -55,15 +55,8 @@ public class OPFrame{
 	}
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent evt)
-	{
-		evt.getModMetadata().version = version;
-		
-		Configuration config = new Configuration(evt.getSuggestedConfigurationFile());
-		config.load();
-		sizeLimitation = config.getFloat("size-limitation", "limitations", sizeLimitation, 0, 10000, "size in blocks");
-		onlyOps = config.getBoolean("onlyOperators", "limitations", false, "If only operations (opped players) are allowed to edit a frame");
-		config.save();
+	public void preInit(FMLPreInitializationEvent evt) {
+		CreativeCorePacket.registerPacket(OPFrameConfigPacket.class, "OPFCfg");
 	}
 	
 	@EventHandler
@@ -78,10 +71,11 @@ public class OPFrame{
 		if(FMLCommonHandler.instance().getSide().isClient())
 			initClient();
 		
-		GameRegistry.addRecipe(new ItemStack(frame),  new Object[]
-				{
-				"AXA", "XLX", "AXA", 'X', Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL
-				});
+		GameRegistry.addRecipe(new ItemStack(frame),
+				"AXA",
+				"XLX",
+				"AXA",
+				'X', Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
 	}
 	
 	@Method(modid = "littletiles")
@@ -109,13 +103,22 @@ public class OPFrame{
 			}
 			
 		});
-		GameRegistry.addRecipe(new ItemStack(littleFrame),  new Object[]
-				{
-				"AX", "XL", 'X', Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL
-				});
+		GameRegistry.addRecipe(new ItemStack(littleFrame),
+				"AX",
+				"XL",
+				'X',
+				Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
 		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame");
 		
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
+	}
+
+	@SubscribeEvent
+	public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+		EntityPlayer player = event.player;
+		if (!player.world.isRemote && player instanceof EntityPlayerMP) {
+			PacketHandler.sendPacketToPlayer(new OPFrameConfigPacket(), (EntityPlayerMP) player);
+		}
 	}
 }

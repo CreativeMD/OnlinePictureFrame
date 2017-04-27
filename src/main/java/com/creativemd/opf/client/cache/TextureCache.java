@@ -103,6 +103,18 @@ public class TextureCache {
 		}
 	}
 
+	public void deleteEntry(String url) {
+		entries.remove(url);
+		File file = getFile(url);
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
+	private static File getFile(String url) {
+		return new File(DownloadThread.TEXTURE_CACHE.cacheDirectory, Base64.encodeBase64String(url.getBytes()));
+	}
+
 	public static class CacheEntry {
 		private String url;
 		private String etag;
@@ -145,7 +157,7 @@ public class TextureCache {
 		}
 
 		public File getFile() {
-			return new File(DownloadThread.TEXTURE_CACHE.cacheDirectory, Base64.encodeBase64String(url.getBytes()));
+			return TextureCache.getFile(url);
 		}
 	}
 }
