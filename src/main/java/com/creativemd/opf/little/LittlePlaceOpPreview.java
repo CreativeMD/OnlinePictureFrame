@@ -1,7 +1,5 @@
 package com.creativemd.opf.little;
 
-import java.util.ArrayList;
-
 import com.creativemd.creativecore.common.utils.ColoredCube;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.common.structure.LittleStructure;
@@ -11,8 +9,6 @@ import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.utils.PlacePreviewTile;
 import com.creativemd.opf.block.TileEntityPicFrame;
-
-import io.netty.util.concurrent.ProgressiveFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,6 +21,8 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+
 public class LittlePlaceOpPreview extends PlacePreviewTile {
 
 	public LittlePlaceOpPreview(LittleTileBox box, LittleTilePreview preview) {
@@ -36,7 +34,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	public ArrayList<ColoredCube> getPreviews()
 	{
 		NBTTagCompound nbt = preview.getTileData();
-		ArrayList<ColoredCube> cubes = new ArrayList<>();
+		ArrayList<ColoredCube> cubes = new ArrayList<ColoredCube>();
 		cubes.add(new ColoredCube(box.getCube()));
 		if(preview.box != null && nbt.hasKey("tileEntity"))
 		{

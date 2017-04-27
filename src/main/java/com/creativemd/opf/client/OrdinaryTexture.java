@@ -1,14 +1,16 @@
 package com.creativemd.opf.client;
 
-import java.awt.image.BufferedImage;
-
 public class OrdinaryTexture extends PictureTexture {
 
 	private final int textureID;
-	
-	public OrdinaryTexture(BufferedImage image) {
+
+	public OrdinaryTexture(ProcessedImageData image) {
 		super(image.getWidth(), image.getHeight());
-		this.textureID = DownloadThread.loadTexture(image);
+		textureID = image.uploadFrame(0);
+	}
+
+	@Override
+	public void tick() {
 	}
 
 	@Override
