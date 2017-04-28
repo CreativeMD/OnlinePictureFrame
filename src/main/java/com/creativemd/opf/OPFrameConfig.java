@@ -59,38 +59,41 @@ public class OPFrameConfig {
 		@Config.RequiresMcRestart
 		public String[] whitelist = new String[] {
 				"imgur.com",
-				"giphy.com",
-				"gfycat.com",
-				"i.redd.it",
-				"google.com",
 				"gyazo.com",
+				"prntscr.com",
+				"tinypic.com",
+				"puu.sh",
+				"pinimg.com",
+				"photobucket.com",
+				"staticflickr.com",
+				"flic.kr",
+				"tenor.co",
+				"gfycat.com",
+				"giphy.com",
+				"gph.is",
+				"gifbin.com",
+				"i.redd.it",
 				"media.tumblr.com",
 				"twimg.com",
 				"discordapp.com",
 				"images.discordapp.net",
-				"tinypic.com",
-				"github.com",
 				"githubusercontent.com",
-				"photobucket.com",
-				"staticflickr.com",
-				"flic.kr",
 				"googleusercontent.com",
-				"tenor.co",
-				"pinimg.com",
-				"gifbin.com",
+				"googleapis.com",
 				"wikimedia.org",
-				"youtube.com",
-				"prntscr.com",
-				"puu.sh",
-				"gph.is"
+				"ytimg.com"
 		};
 
 		public boolean canUse(EntityPlayer player, String url) {
+			return canUse(player, url, false);
+		}
+
+		public boolean canUse(EntityPlayer player, String url, boolean ignoreToggle) {
 			World world = player.world;
 			if (!world.isRemote && (world.getMinecraftServer().isSinglePlayer() || player.canUseCommand(world.getMinecraftServer().getOpPermissionLevel(), ""))) {
 				return true;
 			}
-			if (whitelistEnabled) {
+			if (whitelistEnabled || ignoreToggle) {
 				try {
 					return isDomainWhitelisted(new URI(url.toLowerCase(Locale.ROOT)).getHost());
 				}
