@@ -47,10 +47,14 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 				PictureTexture loadedTexture = DownloadThread.loadedImages.get(url);
 
 				if (loadedTexture == null) {
-					if (!DownloadThread.loadingImages.contains(url)) {
-						synchronized (DownloadThread.LOCK) {
+					boolean startDownloader = false;
+					synchronized (DownloadThread.LOCK) {
+						if (!DownloadThread.loadingImages.contains(url)) {
 							DownloadThread.loadingImages.add(url);
+							startDownloader = true;
 						}
+					}
+					if (startDownloader) {
 						downloader = new DownloadThread(url);
 					}
 				}
@@ -86,7 +90,7 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 
 	public static AxisAlignedBB getBoundingBox(TileEntityPicFrame frame, int meta) {
 		/*AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-        return bb;*/
+		return bb;*/
 		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
 
 		float sizeX = frame.sizeX;

@@ -108,6 +108,7 @@ public class DownloadThread extends Thread {
 		}
 		if (processedImage == null) {
 			failed = true;
+			TEXTURE_CACHE.deleteEntry(url);
 		}
 		complete = true;
 		synchronized (LOCK) {
@@ -124,11 +125,10 @@ public class DownloadThread extends Thread {
 		if (connection instanceof HttpURLConnection) {
 			HttpURLConnection httpConnection = (HttpURLConnection) connection;
 			if (entry != null) {
-				if (entry.getTime() != -1) {
-					httpConnection.setRequestProperty("If-Modified-Since", FORMAT.format(new Date(entry.getTime())));
-				}
 				if (entry.getEtag() != null) {
 					httpConnection.setRequestProperty("If-None-Match", entry.getEtag());
+				} else if (entry.getTime() != -1) {
+					httpConnection.setRequestProperty("If-Modified-Since", FORMAT.format(new Date(entry.getTime())));
 				}
 			}
 			responseCode = httpConnection.getResponseCode();
