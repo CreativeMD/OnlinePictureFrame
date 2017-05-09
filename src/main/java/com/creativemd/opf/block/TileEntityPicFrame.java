@@ -12,12 +12,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityPicFrame extends TileEntityCreative{
+public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 	
 	public TileEntityPicFrame() {
 		if(FMLCommonHandler.instance().getSide().isClient())
@@ -47,32 +48,38 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void loadTexutre()
-	{
-		if(shouldLoadTexture())
-		{
-			if(downloader == null)
-			{
+	public void loadTexture() {
+		texture=null;
+		if (shouldLoadTexture()) {
+			if (downloader == null && DownloadThread.activeDownloads < DownloadThread.MAXIMUM_ACTIVE_DOWNLOADS) {
 				PictureTexture loadedTexture = DownloadThread.loadedImages.get(url);
-				
-				if(loadedTexture == null)
-				{
-					if(!DownloadThread.loadingImages.contains(url))
-					{
-						DownloadThread.loadingImages.add(url);
-						downloader = new DownloadThread(url);
+
+				if (loadedTexture == null) {
+					boolean startDownloader = false;
+					synchronized (DownloadThread.LOCK) {
+						if (!DownloadThread.loadingImages.contains(url)) {
+							DownloadThread.loadingImages.add(url);
+							startDownloader = true;
+						}
+					}
+					if (startDownloader) {
+						downloader = new DownloadThread(url,this.pos,this.getWorld().provider.getDimension());
 					}
 				}
-				else
+				else {
 					texture = loadedTexture;
+				}
 			}
-			if(downloader != null && downloader.hasFinished())
-			{
-				if(downloader.hasFailed())
+			if (downloader != null && downloader.hasFinished()) {
+				if (downloader.hasFailed()) {
 					failed = true;
-				else
+				}
+				else {
 					texture = DownloadThread.loadImage(downloader);
-				DownloadThread.loadingImages.remove(url);
+				}
+				synchronized (DownloadThread.LOCK) {
+					DownloadThread.loadingImages.remove(url);
+				}
 				downloader = null;
 			}
 		}
@@ -81,7 +88,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	@SideOnly(Side.CLIENT)
 	public boolean isTextureLoaded()
 	{
-		return texture != null;
+		return texture != null&&DownloadThread.loadedImages.containsKey(url);
 	}
 	
 	@Override
@@ -182,8 +189,9 @@ public class TileEntityPicFrame extends TileEntityCreative{
         return getBoundingBox(this, getBlockMetadata()).offset(pos);
     }
 	
-	public int renderDistance = 512;
+	public int renderDistance = 128;
 	
+	public String owner = "";
 	public String url = "";
 	public float sizeX = 1F;
 	public float sizeY = 1F;
@@ -205,8 +213,12 @@ public class TileEntityPicFrame extends TileEntityCreative{
 	public byte posY = 0;
 	
 	public boolean visibleFrame = true;
+	public boolean isPrivate = true;
 	
-	
+	public void setOwner(String playername)
+	{
+		owner=playername;
+	}
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
@@ -219,6 +231,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		nbt.setByte("offsetY", posY);
 		nbt.setByte("rotation", rotation);
 		nbt.setBoolean("visibleFrame", visibleFrame);
+		nbt.setBoolean("isPrivate", isPrivate);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
 		nbt.setFloat("rotX", rotationX);
@@ -238,6 +251,8 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		posY = nbt.getByte("offsetY");
 		rotation = nbt.getByte("rotation");
 		visibleFrame = nbt.getBoolean("visibleFrame");
+		isPrivate = nbt.getBoolean("isPrivate");
+		
 		flippedX = nbt.getBoolean("flippedX");
 		flippedY = nbt.getBoolean("flippedY");
 		rotationX = nbt.getFloat("rotX");
@@ -256,6 +271,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		nbt.setByte("offsetY", posY);
 		nbt.setByte("rotation", rotation);
 		nbt.setBoolean("visibleFrame", visibleFrame);
+		nbt.setBoolean("isPrivate", isPrivate);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
 		nbt.setFloat("rotX", rotationX);
@@ -275,6 +291,7 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		posY = nbt.getByte("offsetY");
 		rotation = nbt.getByte("rotation");
 		visibleFrame = nbt.getBoolean("visibleFrame");
+		isPrivate = nbt.getBoolean("isPrivate");
 		flippedX = nbt.getBoolean("flippedX");
 		flippedY = nbt.getBoolean("flippedY");
 		rotationX = nbt.getFloat("rotX");
@@ -282,5 +299,17 @@ public class TileEntityPicFrame extends TileEntityCreative{
 		initClient();
 		updateRender();
     }
+	@Override
+	public void update() {
+		if (this.getWorld().isRemote) {
+			tickTexture();
+		}
+	}
 
+	private void tickTexture() {
+		if (texture != null) {
+			texture.tick();
+		}
+	}
 }
+
