@@ -28,6 +28,7 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 	@SideOnly(Side.CLIENT)
 	public DownloadThread downloader;
 	
+	
 	@SideOnly(Side.CLIENT)
 	public PictureTexture texture;
 	
