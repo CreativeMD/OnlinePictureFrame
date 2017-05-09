@@ -191,7 +191,6 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 	
 	public int renderDistance = 128;
 	
-	public String owner = "";
 	public String url = "";
 	public float sizeX = 1F;
 	public float sizeY = 1F;
@@ -213,7 +212,6 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 	public byte posY = 0;
 	
 	public boolean visibleFrame = true;
-	public boolean isPrivate = true;
 	
 	public void setOwner(String playername)
 	{
@@ -231,7 +229,6 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 		nbt.setByte("offsetY", posY);
 		nbt.setByte("rotation", rotation);
 		nbt.setBoolean("visibleFrame", visibleFrame);
-		nbt.setBoolean("isPrivate", isPrivate);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
 		nbt.setFloat("rotX", rotationX);
@@ -251,8 +248,6 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 		posY = nbt.getByte("offsetY");
 		rotation = nbt.getByte("rotation");
 		visibleFrame = nbt.getBoolean("visibleFrame");
-		isPrivate = nbt.getBoolean("isPrivate");
-		
 		flippedX = nbt.getBoolean("flippedX");
 		flippedY = nbt.getBoolean("flippedY");
 		rotationX = nbt.getFloat("rotX");
@@ -271,7 +266,6 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 		nbt.setByte("offsetY", posY);
 		nbt.setByte("rotation", rotation);
 		nbt.setBoolean("visibleFrame", visibleFrame);
-		nbt.setBoolean("isPrivate", isPrivate);
 		nbt.setBoolean("flippedX", flippedX);
 		nbt.setBoolean("flippedY", flippedY);
 		nbt.setFloat("rotX", rotationX);
@@ -291,7 +285,6 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable{
 		posY = nbt.getByte("offsetY");
 		rotation = nbt.getByte("rotation");
 		visibleFrame = nbt.getBoolean("visibleFrame");
-		isPrivate = nbt.getBoolean("isPrivate");
 		flippedX = nbt.getBoolean("flippedX");
 		flippedY = nbt.getBoolean("flippedY");
 		rotationX = nbt.getFloat("rotX");
