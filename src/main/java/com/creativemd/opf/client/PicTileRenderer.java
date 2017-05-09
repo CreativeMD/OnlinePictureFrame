@@ -19,8 +19,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFrame> {
-	static boolean isdeleting=false;
-	static long lasttime =Minecraft.getSystemTime();
+	boolean isdeleting=false;
+	long lasttime =Minecraft.getSystemTime();
 	public static void renderTileEntityAt(TileEntityPicFrame frame, double x, double y, double z, float partialTicks, int meta, boolean isLittle) { 
 		if(!frame.url.equals(""))
 		{
@@ -104,7 +104,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 	@Override
 	public void renderTileEntityAt(TileEntityPicFrame frame, double x, double y, double z, float partialTicks, int destroyStage) {
 		renderTileEntityAt(frame, x, y, z, partialTicks, frame.getBlockMetadata(), false);
-		if(isdeleting==false&&Minecraft.getSystemTime()-lasttime>=8000)
+		if(isdeleting==false&&Minecraft.getSystemTime()-lasttime>=60000)
 		{
 			lasttime=Minecraft.getSystemTime();
 			isdeleting=true;
@@ -120,7 +120,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 				System.out.println(pttemp);
 				System.out.println(pttemp instanceof AnimatedPictureTexture);
 				if (pttemp instanceof AnimatedPictureTexture) {
-					if (Minecraft.getSystemTime() - pttemp.lastticktime >= 6000
+					if (Minecraft.getSystemTime() - pttemp.lastticktime >= 60000
 							&& (Math.abs(pttemp.bp.getX() - bptemp.getX()) >= 64
 							|| Math.abs(pttemp.bp.getZ() - bptemp.getZ()) >= 64||this.getWorld().provider.getDimension()!=pttemp.dim)) {
 						for (int i : ((AnimatedPictureTexture) pttemp).getTextureIDs()) {
@@ -137,7 +137,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 					}
 				} else if (pttemp instanceof OrdinaryTexture) {
 					System.out.println(pttemp.bp);
-					if (Minecraft.getSystemTime() - pttemp.lastticktime >= 6000
+					if (Minecraft.getSystemTime() - pttemp.lastticktime >= 60000
 							&& (Math.abs(pttemp.bp.getX() - bptemp.getX()) >= 64
 							|| Math.abs(pttemp.bp.getZ() - bptemp.getZ()) >= 64||this.getWorld().provider.getDimension()!=pttemp.dim)) {
 						GlStateManager.deleteTexture(pttemp.getTextureID());
