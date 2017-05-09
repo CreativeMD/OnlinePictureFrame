@@ -1,206 +1,249 @@
 package com.creativemd.opf.client;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.ByteBuffer;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import com.creativemd.opf.OPFrame;
+import com.creativemd.opf.client.cache.TextureCache;
+import com.porpit.lib.GifDecoder;
+
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.vecmath.Vector2f;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import com.porpit.lib.GifDecoder;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
-	
+	public static final Logger LOGGER = LogManager.getLogger(OPFrame.class);
+
+	public static final TextureCache TEXTURE_CACHE = new TextureCache();
+	public static final DateFormat FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+	public static final Object LOCK = new Object();
+	public static final int MAXIMUM_ACTIVE_DOWNLOADS = 5;
+
+	public static int activeDownloads = 0;
+
 	public static HashMap<String, PictureTexture> loadedImages = new HashMap<String, PictureTexture>();
-	
-	public static ArrayList<String> loadingImages = new ArrayList<String>();
-	
+	public static Set<String> loadingImages = new HashSet<String>();
+
 	private String url;
+
+	private int dim;
+	private BlockPos bp;
 	
-	private float progress = 0F;
-	
-	private InputStream loadedStream = null; 
-	
-	public DownloadThread(String url) {
+	private ProcessedImageData processedImage;
+	private boolean failed;
+	private boolean complete;
+
+	public DownloadThread(String url,BlockPos bp,int dim) {
 		this.url = url;
+		this.dim=dim;
+		this.bp=bp;
+		synchronized (LOCK) {
+			activeDownloads++;
+		}
+		setName("OPF Download \"" + url + "\"");
+		setDaemon(true);
 		start();
 	}
-	
-	public boolean hasFinished()
-	{
-		return progress == 1F;
-	}
-	
-	public boolean hasFailed()
-	{
-		return hasFinished() && loadedStream == null;
-	}
-	
-	public InputStream getDownloadedImage()
-	{
-		return loadedStream;
-	}
-	
-	public float getProgress()
-	{
-		return progress;
-	}
-	
-	@Override
-	public void run()
-	{
-		try{	        
-			URLConnection con = new URL(url).openConnection();
-			con.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-			loadedStream = (InputStream) con.getInputStream();
-		} catch (Exception e) {
-			loadedStream = null;
-			e.printStackTrace();
-		}
-		
-		
-		
-		progress = 1F;
-	}
-	
-	public static String readType(InputStream input) throws IOException
-	{
-	    ImageInputStream stream = ImageIO.createImageInputStream(input);
 
-	    Iterator iter = ImageIO.getImageReaders(stream);
-	    if (!iter.hasNext()) {
-	        return "";
-	    }
-	    ImageReader reader = (ImageReader) iter.next();
-	    ImageReadParam param = reader.getDefaultReadParam();
-	    reader.setInput(stream, true, true);
-	    BufferedImage bi;
-	    try {
-	        bi = reader.read(0, param);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    } finally {
-	        reader.dispose();
-	        try {
-	            stream.close();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    input.reset();
-	    return reader.getFormatName();
+	public boolean hasFinished() {
+		return complete;
 	}
-	
-	public static PictureTexture loadImage(DownloadThread thread)
-	{
-		PictureTexture texture = null;
-		if(!thread.hasFailed())
-		{
-			InputStream stream = thread.getDownloadedImage();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			
-			byte[] buffer = new byte[1024];
-			int len;
+
+	public boolean hasFailed() {
+		return hasFinished() && failed;
+	}
+
+	@Override
+	public void run() {
+		try {
+			byte[] data = load(url);
+			String type = readType(data);
+			ByteArrayInputStream in = null;
 			try {
-				while ((len = stream.read(buffer)) > -1 ) {
-				    baos.write(buffer, 0, len);
-				}
-			} catch (IOException e2) {
-				e2.printStackTrace();
-			}
-			try {
-				baos.flush();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			
-			InputStream is1 = new ByteArrayInputStream(baos.toByteArray()); 
-			InputStream is2 = new ByteArrayInputStream(baos.toByteArray()); 
-			try {
-				if(readType(is1).equals("gif"))
-				{
+				in = new ByteArrayInputStream(data);
+				if (type.equalsIgnoreCase("gif")) {
 					GifDecoder gif = new GifDecoder();
-					if(gif.read(is2) == GifDecoder.STATUS_OK)
-						texture = new AnimatedPictureTexture(gif);
-				}else{
-					BufferedImage image = ImageIO.read(is2);
-					if(image != null)
-						texture = new OrdinaryTexture(image);
+					int status = gif.read(in);
+					if (status == GifDecoder.STATUS_OK) {
+						processedImage = new ProcessedImageData(gif);
+					}
+					else {
+						LOGGER.error("Failed to read gif: {}", status);
+					}
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				else {
+					try {
+						BufferedImage image = ImageIO.read(in);
+						if (image != null) {
+							processedImage = new ProcessedImageData(image);
+						}
+					}
+					catch (IOException e1) {
+						LOGGER.error("Failed to parse BufferedImage from stream", e1);
+					}
+				}
+			}
+			finally {
+				IOUtils.closeQuietly(in);
 			}
 		}
-		if(texture != null)
-			loadedImages.put(thread.url, texture);
+		catch (IOException e) {
+			LOGGER.error("An exception occurred while loading OPFrame image", e);
+		}
+		if (processedImage == null) {
+			failed = true;
+			TEXTURE_CACHE.deleteEntry(url);
+		}
+		complete = true;
+		synchronized (LOCK) {
+			activeDownloads--;
+		}
+	}
+
+	public static byte[] load(String url) throws IOException {
+		TextureCache.CacheEntry entry = TEXTURE_CACHE.getEntry(url);
+		long requestTime = System.currentTimeMillis();
+		URLConnection connection = new URL(url).openConnection();
+		connection.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		int responseCode = -1;
+		if (connection instanceof HttpURLConnection) {
+			HttpURLConnection httpConnection = (HttpURLConnection) connection;
+			if (entry != null) {
+				if (entry.getEtag() != null) {
+					httpConnection.setRequestProperty("If-None-Match", entry.getEtag());
+				} else if (entry.getTime() != -1) {
+					httpConnection.setRequestProperty("If-Modified-Since", FORMAT.format(new Date(entry.getTime())));
+				}
+			}
+			responseCode = httpConnection.getResponseCode();
+		}
+		InputStream in = null;
+		try {
+			in = connection.getInputStream();
+			String etag = connection.getHeaderField("ETag");
+			long lastModifiedTimestamp;
+			long expireTimestamp = -1;
+			String maxAge = connection.getHeaderField("max-age");
+			if (maxAge != null && !maxAge.isEmpty()) {
+				try {
+					expireTimestamp = requestTime + Long.parseLong(maxAge) * 1000;
+				}
+				catch (NumberFormatException e) {
+				}
+			}
+			String expires = connection.getHeaderField("Expires");
+			if (expires != null && !expires.isEmpty()) {
+				try {
+					expireTimestamp = FORMAT.parse(expires).getTime();
+				}
+				catch (ParseException e) {
+				}
+			}
+			String lastModified = connection.getHeaderField("Last-Modified");
+			if (lastModified != null && !lastModified.isEmpty()) {
+				try {
+					lastModifiedTimestamp = FORMAT.parse(lastModified).getTime();
+				}
+				catch (ParseException e) {
+					lastModifiedTimestamp = requestTime;
+				}
+			}
+			else {
+				lastModifiedTimestamp = requestTime;
+			}
+			if (entry != null) {
+				if (etag != null && !etag.isEmpty()) {
+					entry.setEtag(etag);
+				}
+				entry.setTime(lastModifiedTimestamp);
+				if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
+					File file = entry.getFile();
+					if (file.exists()) {
+						return IOUtils.toByteArray(new FileInputStream(file));
+					}
+				}
+			}
+			byte[] data = IOUtils.toByteArray(in);
+			TEXTURE_CACHE.save(url, etag, lastModifiedTimestamp, expireTimestamp, data);
+			return data;
+		}
+		finally {
+			IOUtils.closeQuietly(in);
+		}
+	}
+
+	private static String readType(byte[] input) throws IOException {
+		InputStream in = null;
+		try {
+			in = new ByteArrayInputStream(input);
+			return readType(in);
+		}
+		finally {
+			IOUtils.closeQuietly(in);
+		}
+	}
+
+	private static String readType(InputStream input) throws IOException {
+		ImageInputStream stream = ImageIO.createImageInputStream(input);
+		Iterator iter = ImageIO.getImageReaders(stream);
+		if (!iter.hasNext()) {
+			return "";
+		}
+		ImageReader reader = (ImageReader) iter.next();
+		ImageReadParam param = reader.getDefaultReadParam();
+		reader.setInput(stream, true, true);
+		try {
+			reader.read(0, param);
+		}
+		catch (IOException e) {
+			LOGGER.error("Failed to parse input format", e);
+		}
+		finally {
+			reader.dispose();
+			IOUtils.closeQuietly(stream);
+		}
+		input.reset();
+		return reader.getFormatName();
+	}
+
+	public static PictureTexture loadImage(DownloadThread thread) {
+		PictureTexture texture = null;
+		if (!thread.hasFailed()) {
+			if (thread.processedImage.isAnimated()) {
+				texture = new AnimatedPictureTexture(thread.processedImage,thread.bp,thread.dim);
+			}
+			else {
+				texture = new OrdinaryTexture(thread.processedImage,thread.bp,thread.dim);
+			}
+		}
+		if (texture != null) {
+			synchronized (LOCK) {
+				loadedImages.put(thread.url, texture);
+			}
+		}
 		return texture;
 	}
-	
-	private static final int BYTES_PER_PIXEL = 4;
-	
-	public static int loadTexture(BufferedImage image)
-	{
-		int[] pixels = new int[image.getWidth() * image.getHeight()];
-		image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-		
-		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
-		
-		for(int y = 0; y < image.getHeight(); y++){
-			for(int x = 0; x < image.getWidth(); x++){
-				int pixel = pixels[y * image.getWidth() + x];
-				buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
-				buffer.put((byte) ((pixel >> 8) & 0xFF));      // Green component
-				buffer.put((byte) (pixel & 0xFF));               // Blue component
-				buffer.put((byte) ((pixel >> 24) & 0xFF));    // Alpha component. Only for RGBA
-			}
-		}
-		
-		buffer.flip();
-		
-		int textureID = GL11.glGenTextures(); //Generate texture ID
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID); //Bind texture ID
-		
-		//Setup wrap mode
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-		
-		//Setup texture scaling filtering
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		
-		//Send texel data to OpenGL
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-		
-		//Return the texture ID so we can bind it later again
-		return textureID;
-	}
-	
 }
