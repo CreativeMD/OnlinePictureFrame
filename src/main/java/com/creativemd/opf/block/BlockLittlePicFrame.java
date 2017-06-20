@@ -1,6 +1,7 @@
 package com.creativemd.opf.block;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
@@ -73,10 +74,15 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 	}
 
 	@Override
-	public void saveLittlePreview(ItemStack stack, ArrayList<LittleTilePreview> previews) {
+	public void saveLittlePreview(ItemStack stack, List<LittleTilePreview> previews) {
 		stack.setTagCompound(new NBTTagCompound());
 		if(previews.size() > 0)
 			previews.get(0).writeToNBT(stack.getTagCompound());
+	}
+
+	@Override
+	public boolean hasLittlePreview(ItemStack stack) {
+		return true;
 	}
 
 }
