@@ -291,9 +291,9 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void receivePacket(NBTTagCompound nbt, NetworkManager net)
+	public void receivePacket(NBTTagCompound nbt, NetworkManager net, NBTTagCompound completeData)
 	{
-		super.receivePacket(nbt, net);
+		super.receivePacket(nbt, net, completeData);
 		te.updateRenderBoundingBox();
 		te.updateRenderDistance();
 	}
