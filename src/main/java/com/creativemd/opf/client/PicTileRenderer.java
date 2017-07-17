@@ -95,7 +95,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityPicFrame frame, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileEntityPicFrame frame, double x, double y, double z, float partialTicks, int destroyStage, float alpha){
 		renderTileEntityAt(frame, x, y, z, partialTicks, frame.getBlockMetadata(), false);
 	}
 	

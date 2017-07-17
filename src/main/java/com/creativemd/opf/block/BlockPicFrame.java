@@ -126,15 +126,6 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
         return EnumBlockRenderType.MODEL;
     }
 
-	/**
-     * Checks if an IBlockState represents a block that is opaque and a full cube.
-     */
-	@Override
-    public boolean isFullyOpaque(IBlockState state)
-    {
-        return false;
-    }
-
     /**
      * Used to determine ambient occlusion and culling when rebuilding chunks for render
      */

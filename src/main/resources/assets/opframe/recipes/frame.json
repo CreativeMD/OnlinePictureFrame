@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "opframe:opFrame"
+  },
+  "pattern": [
+    "AXA",
+	"XLX",
+	"AXA"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+	"L": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:wool",
+	  "data": 32767
+    }
+  }
+}
