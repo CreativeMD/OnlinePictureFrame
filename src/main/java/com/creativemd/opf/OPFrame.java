@@ -66,7 +66,7 @@ public class OPFrame{
 	public void preInit(FMLPreInitializationEvent evt) {
 		CreativeCorePacket.registerPacket(OPFrameConfigPacket.class, "OPFCfg");
 		
-		MinecraftForge.EVENT_BUS.register(LittleTiles.class);
+		MinecraftForge.EVENT_BUS.register(OPFrame.class);
 		
 		if(Loader.isModLoaded("littletiles"))
 			loadLittleTiles();
