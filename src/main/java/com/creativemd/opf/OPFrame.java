@@ -119,6 +119,8 @@ public class OPFrame{
 			
 		});
 		
+		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame");
+		
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
 	}
