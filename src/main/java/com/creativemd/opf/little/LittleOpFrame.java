@@ -4,10 +4,10 @@ import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
-import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTilePreview;
-import com.creativemd.littletiles.common.utils.LittleTileTileEntity;
-import com.creativemd.littletiles.common.utils.small.LittleTileVec;
+import com.creativemd.littletiles.common.tiles.LittleTile;
+import com.creativemd.littletiles.common.tiles.LittleTilePreview;
+import com.creativemd.littletiles.common.tiles.LittleTileTE;
+import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import net.minecraft.block.Block;
@@ -35,7 +35,7 @@ import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 
-public class LittleOpFrame extends LittleTileTileEntity {
+public class LittleOpFrame extends LittleTileTE {
 	
 	public LittleOpFrame()
 	{
@@ -291,9 +291,9 @@ public class LittleOpFrame extends LittleTileTileEntity {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void receivePacket(NBTTagCompound nbt, NetworkManager net, NBTTagCompound completeData)
+	public void receivePacket(NBTTagCompound nbt, NetworkManager net)
 	{
-		super.receivePacket(nbt, net, completeData);
+		super.receivePacket(nbt, net);
 		te.updateRenderBoundingBox();
 		te.updateRenderDistance();
 	}

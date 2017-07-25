@@ -73,9 +73,7 @@ public class SubContainerPic extends SubContainerTileEntity {
 	public void setFacing(EnumFacing facing) {
 		if (tile != null) {
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
-			((LittleOpFrame) tile).markForUpdate();
-			ReflectionHelper.setPrivateValue(TileEntity.class, frame, facing.getIndex(), "blockMetadata", "field_145847_g");
-			((LittleOpFrame) tile).needsFullUpdate = true;
+			((LittleOpFrame) tile).sendUpdatePacketToClient();
 		}
 	}
 
