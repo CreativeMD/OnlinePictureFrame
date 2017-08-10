@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.creativecore.common.utils.RotationUtils;
-import com.creativemd.littletiles.common.items.ItemTileContainer.BlockEntry;
-import com.creativemd.littletiles.common.tiles.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
+import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
 
@@ -179,12 +178,6 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	{
 		super.rotatePreview(direction);
 		rotateTileEntity(direction);
-	}
-	
-	@Override
-	public BlockEntry getBlockEntry()
-	{
-		return new BlockEntry(getPreviewBlock(), 0, size.getPercentVolume());
 	}
 
 }

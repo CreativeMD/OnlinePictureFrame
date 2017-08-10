@@ -9,8 +9,10 @@ import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.blocks.ItemBlockColored;
 import com.creativemd.littletiles.common.blocks.ItemBlockTransparentColored;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
+import com.creativemd.littletiles.common.ingredients.BlockIngredient;
 import com.creativemd.littletiles.common.tiles.LittleTile;
-import com.creativemd.littletiles.common.tiles.LittleTilePreview;
+import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
+import com.creativemd.littletiles.common.tiles.preview.LittleTilePreviewHandler;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -118,7 +120,14 @@ public class OPFrame{
 			
 		});
 		
-		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame");
+		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler(){
+			@Override
+			public BlockIngredient getBlockIngredient(LittleTilePreview preview)
+			{
+				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.size.getPercentVolume());
+			}
+			
+		});
 		
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
