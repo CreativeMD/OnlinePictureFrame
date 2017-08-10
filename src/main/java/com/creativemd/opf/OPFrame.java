@@ -6,8 +6,10 @@ import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
+import com.creativemd.littletiles.common.ingredients.BlockIngredient;
 import com.creativemd.littletiles.common.tiles.LittleTile;
-import com.creativemd.littletiles.common.tiles.LittleTilePreview;
+import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
+import com.creativemd.littletiles.common.tiles.preview.LittleTilePreviewHandler;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -108,7 +110,14 @@ public class OPFrame{
 				"XL",
 				'X',
 				Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
-		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame");
+		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler(){
+			@Override
+			public BlockIngredient getBlockIngredient(LittleTilePreview preview)
+			{
+				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.size.getPercentVolume());
+			}
+			
+		});
 		
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
