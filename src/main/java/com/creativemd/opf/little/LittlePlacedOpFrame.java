@@ -43,12 +43,12 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	}
 	
 	@Override
-	public void flipPreview(EnumFacing direction)
+	public void flipPreview(Axis axis)
 	{
-		super.flipPreview(direction);
+		super.flipPreview(axis);
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
 		
-		if(facing.getAxis() == direction.getAxis())
+		if(facing.getAxis() == axis)
 			facing = facing.getOpposite();
 		
 		boolean reverseX = false;
@@ -58,13 +58,13 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 		{
 		case X:
 		case Z:
-			if(direction.getAxis() != Axis.Y)
+			if(axis != Axis.Y)
 				reverseX = !reverseX;
 			else
 				reverseY = !reverseY;
 			break;
 		case Y:
-			if(direction.getAxis() != Axis.Z)
+			if(axis != Axis.Z)
 				reverseY = !reverseY;
 			else
 				reverseX = !reverseX;
@@ -130,21 +130,13 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	@Override
 	public void rotatePreview(Rotation direction)
 	{
-		super.rotatePreview(direction);
-		ArrayList<EnumFacing> rotations = direction.getRotations();
-		for (int i = 0; i < rotations.size(); i++) {
-			rotateTileEntity(rotations.get(i));
-		}
-	}
-	
-	public void rotateTileEntity(EnumFacing direction)
-	{
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
 		tileData.setInteger("meta", RotationUtils.rotateFacing(facing, direction).getIndex());
 		
-		//I really not to create a working rotation system here. This is bullshit and took me ours to solve it! Please create a uniform rotation system!
+		//I really need to create a working rotation system here. This is bullshit and took me hours to solve it! Please create a uniform rotation system!
 		EnumFacing front = EnumFacing.getHorizontal(tileData.getCompoundTag("tileEntity").getInteger("rotation"));
-		if(direction.getAxis() == Axis.Y)
+		front = RotationUtils.rotateFacing(front, direction);
+		/*if(direction.getAxis() == Axis.Y)
 		{
 			if(facing.getAxis() == Axis.Z)
 			{
@@ -168,16 +160,9 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 				front = front.rotateYCCW();
 			else
 				front = front.rotateY();
-		}
+		}*/
 		
 		tileData.getCompoundTag("tileEntity").setInteger("rotation", front.getHorizontalIndex());
-	}
-	
-	@Override
-	public void rotatePreview(EnumFacing direction)
-	{
-		super.rotatePreview(direction);
-		rotateTileEntity(direction);
 	}
 
 }

@@ -6,9 +6,11 @@ import java.util.List;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.littletiles.common.api.ILittleTile;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
+import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileSize;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.little.LittleOpFrame;
@@ -23,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,21 +43,23 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 		ArrayList<LittleTilePreview> preview = new ArrayList<LittleTilePreview>();
 		NBTTagCompound nbt = new NBTTagCompound();
 		LittleOpFrame frame = new LittleOpFrame(new TileEntityPicFrame(), OPFrame.littleFrame, stack.getItemDamage());
+		frame.box = new LittleTileBox(0, 0, 0, 1, 1, 1);
 		frame.saveTile(nbt);
-		new LittleTileSize(1, 1, 1).writeToNBT("size", nbt);
-		preview.add(new LittleOpPreview(new LittleTileSize(1, 1, 1), nbt));
+		nbt.setBoolean("fresh", true);
+		//new LittleTileSize(1, 1, 1).writeToNBT("size", nbt);
+		preview.add(new LittleOpPreview(new LittleTileBox(0, 0, 0, 1, 1, 1), nbt));
 		return preview;
 	}
 
 	@Override
 	@Method(modid = "littletiles")
-	public void rotateLittlePreview(ItemStack stack, EnumFacing facing) {
+	public void rotateLittlePreview(ItemStack stack, Rotation rotation) {
 		
 	}
 
 	@Override
 	@Method(modid = "littletiles")
-	public void flipLittlePreview(ItemStack stack, EnumFacing facing) {
+	public void flipLittlePreview(ItemStack stack, Axis axis) {
 		
 	}
 

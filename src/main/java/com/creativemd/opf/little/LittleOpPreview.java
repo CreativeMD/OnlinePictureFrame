@@ -14,21 +14,16 @@ public class LittleOpPreview extends LittleTilePreview {
 		super(nbt);
 	}
 
-	public LittleOpPreview(LittleTileSize size, NBTTagCompound nbt) {
-		super(size, nbt);
+	public LittleOpPreview(LittleTileBox box, NBTTagCompound nbt) {
+		super(box, nbt);
 	}
 	
 	@Override
 	public PlacePreviewTile getPlaceableTile(LittleTileBox box, boolean canPlaceNormal, LittleTileVec offset)
 	{
-		if(this.box == null)
-		{
-			return new LittlePlaceOpPreview(box.copy(), this);
-		}else{
-			if(!canPlaceNormal)
-				this.box.addOffset(offset);
-			return new LittlePlaceOpPreview(this.box, this);
-		}
+		if(!canPlaceNormal)
+			this.box.addOffset(offset);
+		return new LittlePlaceOpPreview(this.box, this);
 	}
 	
 }

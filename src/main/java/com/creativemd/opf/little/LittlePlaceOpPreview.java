@@ -1,7 +1,10 @@
 package com.creativemd.opf.little;
 
+import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.ColoredCube;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.common.utils.RotationUtils;
+import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.tiles.LittleTile;
@@ -22,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LittlePlaceOpPreview extends PlacePreviewTile {
 
@@ -31,17 +35,19 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<ColoredCube> getPreviews()
+	public List<LittleRenderingCube> getPreviews()
 	{
 		NBTTagCompound nbt = preview.getTileData();
-		ArrayList<ColoredCube> cubes = new ArrayList<ColoredCube>();
-		cubes.add(new ColoredCube(box.getCube()));
-		if(preview.box != null && nbt.hasKey("tileEntity"))
+		List<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
+		cubes.add(box.getRenderingCube(null, 0));
+		if(!nbt.getBoolean("fresh"))
 		{
 			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.create(Minecraft.getMinecraft().world, nbt.getCompoundTag("tileEntity"));
 			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(tileEntity, nbt.getInteger("meta"));
 			picPreview.add(box.getMinVec().getVec());
-			cubes.add(new ColoredCube(picPreview, new Vec3d(0, 1, 1)));
+			LittleRenderingCube renderingCube = box.getRenderingCube(picPreview, null, 0);
+			renderingCube.color = ColorUtils.VecToInt(new Vec3d(0, 1, 1));
+			cubes.add(renderingCube);
 		}
 		
 		
@@ -52,7 +58,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	public LittleTile placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, TileEntityLittleTiles teLT, LittleStructure structure, ArrayList<LittleTile> unplaceableTiles, boolean forced, EnumFacing facing, boolean requiresCollisionTest)
 	{
 		LittleTile tile = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, forced, facing, requiresCollisionTest);
-		if(tile instanceof LittleOpFrame && preview.box == null)
+		if(tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh"))
 		{
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
 			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).getMeta(), "blockMetadata", "field_145847_g");
