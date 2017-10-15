@@ -114,7 +114,7 @@ public class OPFrame{
 			@Override
 			public BlockIngredient getBlockIngredient(LittleTilePreview preview)
 			{
-				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.size.getPercentVolume());
+				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume());
 			}
 			
 		});

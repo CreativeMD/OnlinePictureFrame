@@ -3,6 +3,7 @@ package com.creativemd.opf.little;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.LittleTileTE;
@@ -49,40 +50,38 @@ public class LittleOpFrame extends LittleTileTE {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<RenderCubeObject> getInternalRenderingCubes()
+	public ArrayList<LittleRenderingCube> getInternalRenderingCubes()
 	{
-		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
+		ArrayList<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
 		if(((TileEntityPicFrame) getTileEntity()).visibleFrame)
 		{
-			for (int i = 0; i < boundingBoxes.size(); i++) {
-				CubeObject cube = boundingBoxes.get(i).getCube();
-				EnumFacing direction = EnumFacing.getFront(getMeta());
-				double width = 0.025;
-				switch(direction)
-				{
-				case EAST:
-					cube.maxX = (float) (cube.minX+width);
-					break;
-				case WEST:
-					cube.minX = (float) (cube.maxX-width);
-					break;
-				case UP:
-					cube.maxY = (float) (cube.minY+width);
-					break;
-				case DOWN:
-					cube.minY = (float) (cube.maxY-width);
-					break;
-				case SOUTH:
-					cube.maxZ = (float) (cube.minZ+width);
-					break;
-				case NORTH:
-					cube.minZ = (float) (cube.maxZ-width);
-					break;
-				default:
-					break;
-				}
-				cubes.add(new RenderCubeObject(cube, Blocks.PLANKS, 0));
+			CubeObject cube = box.getCube();
+			EnumFacing direction = EnumFacing.getFront(getMeta());
+			double width = 0.025;
+			switch(direction)
+			{
+			case EAST:
+				cube.maxX = (float) (cube.minX+width);
+				break;
+			case WEST:
+				cube.minX = (float) (cube.maxX-width);
+				break;
+			case UP:
+				cube.maxY = (float) (cube.minY+width);
+				break;
+			case DOWN:
+				cube.minY = (float) (cube.maxY-width);
+				break;
+			case SOUTH:
+				cube.maxZ = (float) (cube.minZ+width);
+				break;
+			case NORTH:
+				cube.minZ = (float) (cube.maxZ-width);
+				break;
+			default:
+				break;
 			}
+			cubes.add(new LittleRenderingCube(cube, box, Blocks.PLANKS, 0));
 		}
 		return cubes;
 	}
@@ -158,7 +157,7 @@ public class LittleOpFrame extends LittleTileTE {
     {
 		if(getTileEntity() != null)
 		{
-			return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
+			//return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(box.minX, box.minY, box.minZ);
 		}
 		return super.getRenderBoundingBox();
     }
@@ -192,10 +191,10 @@ public class LittleOpFrame extends LittleTileTE {
 
 					GlStateManager.translate(-0.5, 0.5, 0.5);
 
-					LittleTileVec position = cornerVec.copy();
+					LittleTileVec position = box.getMinVec();
 					EnumFacing direction = EnumFacing.getFront(getMeta());
 					if (direction.getAxisDirection() == AxisDirection.POSITIVE)
-						position.addVec(new LittleTileVec(direction));
+						position.add(new LittleTileVec(direction));
 
 					switch (direction) {
 						case SOUTH:
@@ -286,7 +285,7 @@ public class LittleOpFrame extends LittleTileTE {
 		NBTTagCompound nbt = new NBTTagCompound();
 		saveTileExtra(nbt);
 		nbt.setString("tID", getID());		
-		return new LittlePlacedOpFrame(boundingBoxes.get(0).copy(), nbt);
+		return new LittlePlacedOpFrame(box.copy(), nbt);
 	}
 	
 	@Override
