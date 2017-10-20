@@ -9,6 +9,7 @@ import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.LittleTileTE;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
+import com.creativemd.littletiles.common.tiles.vec.LittleUtils;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import net.minecraft.block.Block;
@@ -157,7 +158,7 @@ public class LittleOpFrame extends LittleTileTE {
     {
 		if(getTileEntity() != null)
 		{
-			//return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(box.minX, box.minY, box.minZ);
+			return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(LittleUtils.toVanillaGrid(box.minX), LittleUtils.toVanillaGrid(box.minY), LittleUtils.toVanillaGrid(box.minZ));
 		}
 		return super.getRenderBoundingBox();
     }
