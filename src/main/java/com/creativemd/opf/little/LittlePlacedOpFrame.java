@@ -43,9 +43,9 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	}
 	
 	@Override
-	public void flipPreview(Axis axis)
+	public void flipPreview(Axis axis, LittleTileVec doubledCenter)
 	{
-		super.flipPreview(axis);
+		super.flipPreview(axis, doubledCenter);
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
 		
 		if(facing.getAxis() == axis)
@@ -128,8 +128,9 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	}
 	
 	@Override
-	public void rotatePreview(Rotation direction)
+	public void rotatePreview(Rotation direction, LittleTileVec doubledCenter)
 	{
+		super.rotatePreview(direction, doubledCenter);
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
 		tileData.setInteger("meta", RotationUtils.rotateFacing(facing, direction).getIndex());
 		
