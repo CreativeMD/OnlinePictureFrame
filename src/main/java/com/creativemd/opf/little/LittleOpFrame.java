@@ -176,8 +176,9 @@ public class LittleOpFrame extends LittleTileTE {
 			if(!frame.isTextureLoaded())
 				frame.loadTexture();
 			if(frame.isTextureLoaded()) {
+				frame.texture.tick();
 				int textureID = frame.texture.getTextureID();
-
+				
 				if (textureID != -1 && frame.transparency > 0) {
 					float sizeX = frame.sizeX;
 					float sizeY = frame.sizeY;
