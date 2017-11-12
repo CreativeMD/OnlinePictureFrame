@@ -312,6 +312,12 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 		initClient();
 		updateRender();
 	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag()
+    {
+		return writeToNBT(new NBTTagCompound());
+    }
 
 	@Override
 	public void update() {
