@@ -222,6 +222,10 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 	public byte posY = 0;
 
 	public boolean visibleFrame = true;
+	
+	public float transparency = 1;
+	
+	public float brightness = 1;
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
@@ -238,6 +242,8 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 		nbt.setBoolean("flippedY", flippedY);
 		nbt.setFloat("rotX", rotationX);
 		nbt.setFloat("rotY", rotationY);
+		nbt.setFloat("transparency", transparency);
+		nbt.setFloat("brightness", brightness);
 		return nbt;
 	}
 
@@ -256,6 +262,14 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 		flippedY = nbt.getBoolean("flippedY");
 		rotationX = nbt.getFloat("rotX");
 		rotationY = nbt.getFloat("rotY");
+		if(nbt.hasKey("transparency"))
+			transparency = nbt.getFloat("transparency");
+		else
+			transparency = 1;
+		if(nbt.hasKey("brightness"))
+			brightness = nbt.getFloat("brightness");
+		else
+			brightness = 1;
 	}
 
 	@Override
@@ -273,6 +287,8 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 		nbt.setBoolean("flippedY", flippedY);
 		nbt.setFloat("rotX", rotationX);
 		nbt.setFloat("rotY", rotationY);
+		nbt.setFloat("transparency", transparency);
+		nbt.setFloat("brightness", brightness);
 	}
 
 	@Override
@@ -291,6 +307,8 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 		flippedY = nbt.getBoolean("flippedY");
 		rotationX = nbt.getFloat("rotX");
 		rotationY = nbt.getFloat("rotY");
+		transparency = nbt.getFloat("transparency");
+		brightness = nbt.getFloat("brightness");
 		initClient();
 		updateRender();
 	}

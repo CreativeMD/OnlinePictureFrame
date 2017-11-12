@@ -178,13 +178,13 @@ public class LittleOpFrame extends LittleTileTE {
 			if(frame.isTextureLoaded()) {
 				int textureID = frame.texture.getTextureID();
 
-				if (textureID != -1) {
+				if (textureID != -1 && frame.transparency > 0) {
 					float sizeX = frame.sizeX;
 					float sizeY = frame.sizeY;
 					GlStateManager.enableBlend();
 					OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 					GlStateManager.disableLighting();
-					GlStateManager.color(1, 1, 1, 1);
+					GlStateManager.color(frame.brightness, frame.brightness, frame.brightness, frame.transparency);
 					GlStateManager.bindTexture(textureID);
 
 					GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
