@@ -136,15 +136,21 @@ public class SubGuiPic extends SubGui {
 		controls.add(new GuiStateButton("posX", frame.posX, 0, 70, 70, "left (x)", "center (x)", "right (x)"));
 		controls.add(new GuiStateButton("posY", frame.posY, 80, 70, 70, "left (y)", "center (y)", "right (y)"));
 
-		controls.add(new GuiStateButton("rotation", frame.rotation, 0, 100, 80, "rotation: 0", "rotation: 1", "rotation: 2", "rotation: 3"));
+		controls.add(new GuiStateButton("rotation", frame.rotation, 0, 93, 80, 10, "rotation: 0", "rotation: 1", "rotation: 2", "rotation: 3"));
 
-		controls.add(new GuiCheckBox("visibleFrame", "visible Frame", 90, 100, frame.visibleFrame));
+		controls.add(new GuiCheckBox("visibleFrame", "visible Frame", 90, 91, frame.visibleFrame));
+		
+		controls.add(new GuiLabel("transparency:", 0, 110));
+		controls.add(new GuiAnalogeSlider("transparency", 80, 112, 109, 5, frame.transparency, 0, 1));
+		
+		controls.add(new GuiLabel("brightness:", 0, 122));
+		controls.add(new GuiAnalogeSlider("brightness", 80, 124, 109, 5, frame.brightness, 0, 1));
 
-		controls.add(new GuiLabel("rotation (h):", 0, 124));
-		controls.add(new GuiAnalogeSlider("rotX", 67, 122, 122, 12, frame.rotationX, -90, 90));
+		controls.add(new GuiLabel("rotation (h):", 0, 134));
+		controls.add(new GuiAnalogeSlider("rotX", 67, 136, 122, 5, frame.rotationX, -90, 90));
 
-		controls.add(new GuiLabel("rotation (v):", 0, 143));
-		controls.add(new GuiAnalogeSlider("rotY", 67, 141, 122, 12, frame.rotationY, -90, 90));
+		controls.add(new GuiLabel("rotation (v):", 0, 146));
+		controls.add(new GuiAnalogeSlider("rotY", 67, 148, 122, 5, frame.rotationY, -90, 90));
 
 		controls.add(new GuiLabel("render distance (blocks):", 0, 160));
 		controls.add(new GuiSteppedSlider("renderDistance", 0, 174, 100, 14, frame.renderDistance, 5, 1024));
@@ -166,9 +172,12 @@ public class SubGuiPic extends SubGui {
 				GuiCheckBox visibleFrame = (GuiCheckBox) get("visibleFrame");
 
 				GuiSteppedSlider renderDistance = (GuiSteppedSlider) get("renderDistance");
-
+				
 				GuiAnalogeSlider rotX = (GuiAnalogeSlider) get("rotX");
 				GuiAnalogeSlider rotY = (GuiAnalogeSlider) get("rotY");
+
+				GuiAnalogeSlider transparency = (GuiAnalogeSlider) get("transparency");
+				GuiAnalogeSlider brightness = (GuiAnalogeSlider) get("brightness");
 
 				nbt.setByte("posX", (byte) buttonPosX.getState());
 				nbt.setByte("posY", (byte) buttonPosY.getState());
@@ -182,6 +191,9 @@ public class SubGuiPic extends SubGui {
 				nbt.setInteger("render", (int) renderDistance.value);
 				nbt.setFloat("rotX", rotX.value);
 				nbt.setFloat("rotY", rotY.value);
+				
+				nbt.setFloat("transparency", transparency.value);
+				nbt.setFloat("brightness", brightness.value);
 
 				nbt.setString("url", url.text);
 				float posX = 1;

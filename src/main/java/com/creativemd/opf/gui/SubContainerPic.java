@@ -59,6 +59,9 @@ public class SubContainerPic extends SubContainerTileEntity {
 
 				frame.rotationX = nbt.getFloat("rotX");
 				frame.rotationY = nbt.getFloat("rotY");
+				
+				frame.transparency = nbt.getFloat("transparency");
+				frame.brightness = nbt.getFloat("brightness");
 
 				if (nbt.hasKey("facing")) {
 					setFacing(EnumFacing.getFront(nbt.getInteger("facing")));
