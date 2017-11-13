@@ -221,6 +221,7 @@ public class LittleOpFrame extends LittleTileTE {
 					if (direction == EnumFacing.UP) {
 						GL11.glRotated(90, 0, 0, 1);
 						GlStateManager.translate(0, -gridMCLength, -gridMCLength);
+						GL11.glRotated(180, 1, 0, 0);
 					}
 					else if (direction == EnumFacing.DOWN)
 						GL11.glRotated(-90, 0, 0, 1);
@@ -231,7 +232,7 @@ public class LittleOpFrame extends LittleTileTE {
 					//GL11.glRotated(180, 1, 0, 0);
 
 					GlStateManager.translate(0.001, gridMCLength / 2, gridMCLength / 2);
-
+					
 					GL11.glRotated(frame.rotation * 90, 1, 0, 0);
 					//GL11.glRotated(System.nanoTime()/10000000D, 1, 0, 0);
 
