@@ -47,15 +47,11 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 				PictureTexture loadedTexture = DownloadThread.loadedImages.get(url);
 
 				if (loadedTexture == null) {
-					boolean startDownloader = false;
 					synchronized (DownloadThread.LOCK) {
 						if (!DownloadThread.loadingImages.contains(url)) {
-							DownloadThread.loadingImages.add(url);
-							startDownloader = true;
+							downloader = new DownloadThread(url);
+							return ;
 						}
-					}
-					if (startDownloader) {
-						downloader = new DownloadThread(url);
 					}
 				}
 				else {
@@ -69,9 +65,7 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 				else {
 					texture = DownloadThread.loadImage(downloader);
 				}
-				synchronized (DownloadThread.LOCK) {
-					DownloadThread.loadingImages.remove(url);
-				}
+				
 				downloader = null;
 			}
 		}
