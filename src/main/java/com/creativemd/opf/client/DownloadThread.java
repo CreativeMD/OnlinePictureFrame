@@ -53,8 +53,9 @@ public class DownloadThread extends Thread {
 
 	public DownloadThread(String url) {
 		this.url = url;
-		synchronized (LOCK) {
-			activeDownloads++;
+		synchronized (DownloadThread.LOCK) {
+			DownloadThread.loadingImages.add(url);
+			DownloadThread.activeDownloads++;
 		}
 		setName("OPF Download \"" + url + "\"");
 		setDaemon(true);
@@ -111,8 +112,10 @@ public class DownloadThread extends Thread {
 			TEXTURE_CACHE.deleteEntry(url);
 		}
 		complete = true;
-		synchronized (LOCK) {
-			activeDownloads--;
+		
+		synchronized (DownloadThread.LOCK) {
+			DownloadThread.loadingImages.remove(url);
+			DownloadThread.activeDownloads--;
 		}
 	}
 
