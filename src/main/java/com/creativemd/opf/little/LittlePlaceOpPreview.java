@@ -55,15 +55,16 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public LittleTile placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, TileEntityLittleTiles teLT, LittleStructure structure, ArrayList<LittleTile> unplaceableTiles, boolean forced, EnumFacing facing, boolean requiresCollisionTest)
+	public List<LittleTile> placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, TileEntityLittleTiles teLT, LittleStructure structure, ArrayList<LittleTile> unplaceableTiles, boolean forced, EnumFacing facing, boolean requiresCollisionTest)
 	{
-		LittleTile tile = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, forced, facing, requiresCollisionTest);
+		List<LittleTile> tiles = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, forced, facing, requiresCollisionTest);
+		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if(tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh"))
 		{
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
 			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).getMeta(), "blockMetadata", "field_145847_g");
 		}
-		return tile;
+		return tiles;
 	}
 	
 	@Override
