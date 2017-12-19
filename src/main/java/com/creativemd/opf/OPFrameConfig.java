@@ -1,6 +1,8 @@
 package com.creativemd.opf;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -117,6 +119,8 @@ public class OPFrameConfig {
 		}
 
 		public boolean canInteract(EntityPlayer player, World world) {
+			if(disableAdventure && ((EntityPlayerMP) player).interactionManager.getGameType() == GameType.ADVENTURE)
+				return false;
 			boolean isOperator = world.getMinecraftServer().isSinglePlayer() || player.canUseCommand(world.getMinecraftServer().getOpPermissionLevel(), "");
 			if (onlyOps) {
 				return isOperator;
