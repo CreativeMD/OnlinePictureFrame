@@ -11,6 +11,7 @@ import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
+import com.creativemd.littletiles.common.utils.placing.PlacementMode;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,9 +56,9 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public List<LittleTile> placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, TileEntityLittleTiles teLT, LittleStructure structure, ArrayList<LittleTile> unplaceableTiles, boolean forced, EnumFacing facing, boolean requiresCollisionTest)
+	public List<LittleTile> placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, TileEntityLittleTiles teLT, LittleStructure structure, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, EnumFacing facing, boolean requiresCollisionTest)
 	{
-		List<LittleTile> tiles = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, forced, facing, requiresCollisionTest);
+		List<LittleTile> tiles = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if(tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh"))
 		{
