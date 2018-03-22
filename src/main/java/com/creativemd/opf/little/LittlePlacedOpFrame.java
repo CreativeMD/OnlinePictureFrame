@@ -9,6 +9,7 @@ import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -96,9 +97,9 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public RenderCubeObject getCubeBlock()
+	public RenderCubeObject getCubeBlock(LittleGridContext context)
 	{
-		RenderCubeObject cube = super.getCubeBlock();
+		RenderCubeObject cube = super.getCubeBlock(context);
 		EnumFacing direction = EnumFacing.getFront(tileData.getInteger("meta"));
 		double width = 0.025;
 		switch(direction)
