@@ -10,6 +10,7 @@ import com.creativemd.littletiles.common.tiles.LittleTileTE;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
 import com.creativemd.littletiles.common.tiles.vec.LittleUtils;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import net.minecraft.block.Block;
@@ -56,7 +57,7 @@ public class LittleOpFrame extends LittleTileTE {
 		ArrayList<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
 		if(((TileEntityPicFrame) getTileEntity()).visibleFrame)
 		{
-			CubeObject cube = box.getCube();
+			CubeObject cube = box.getCube(getContext());
 			EnumFacing direction = EnumFacing.getFront(getMeta());
 			double width = 0.025;
 			switch(direction)
@@ -115,23 +116,23 @@ public class LittleOpFrame extends LittleTileTE {
 		return new ItemStack(this.getBlock(), 1, getMeta());
 	}
 	
-	public static CubeObject getBoundingBoxByTilenEntity(TileEntityPicFrame frame, int meta)
+	public static CubeObject getBoundingBoxByTilenEntity(LittleGridContext context, TileEntityPicFrame frame, int meta)
 	{
 		float thickness = 0.05F;
 		float offsetX = 0;
 		if(frame.posX == 1)
 			offsetX = -frame.sizeX/2F;
 		else if(frame.posX == 2)
-			offsetX = (float) (-frame.sizeX+gridMCLength);
+			offsetX = (float) (-frame.sizeX+context.gridMCLength);
 		float offsetY = 0;
 		if(frame.posY == 1)
 			offsetY = -frame.sizeY/2F;
 		else if(frame.posY == 2)
-			offsetY = (float) (-frame.sizeY+gridMCLength);
+			offsetY = (float) (-frame.sizeY+context.gridMCLength);
 		CubeObject cube = new CubeObject(0, offsetY, offsetX, thickness, frame.sizeY+offsetY, frame.sizeX+offsetX);
 		EnumFacing direction = EnumFacing.getFront(meta);
 		
-		Vector3f center = new Vector3f(thickness/2F, (float) LittleTile.gridMCLength/2F, (float) LittleTile.gridMCLength/2F);
+		Vector3f center = new Vector3f(thickness/2F, (float) context.gridMCLength/2F, (float) context.gridMCLength/2F);
 		if(frame.rotation > 0)
 		{
 			Matrix3f rotation = new Matrix3f();
@@ -158,7 +159,7 @@ public class LittleOpFrame extends LittleTileTE {
     {
 		if(getTileEntity() != null)
 		{
-			return getBoundingBoxByTilenEntity((TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(LittleUtils.toVanillaGrid(box.minX), LittleUtils.toVanillaGrid(box.minY), LittleUtils.toVanillaGrid(box.minZ));
+			return getBoundingBoxByTilenEntity(getContext(), (TileEntityPicFrame) getTileEntity(), getMeta()).getAxis().offset(getContext().toVanillaGrid(box.minX), getContext().toVanillaGrid(box.minY), getContext().toVanillaGrid(box.minZ));
 		}
 		return super.getRenderBoundingBox();
     }
@@ -170,6 +171,8 @@ public class LittleOpFrame extends LittleTileTE {
 		GlStateManager.pushMatrix();
 		
 		TileEntityPicFrame frame = (TileEntityPicFrame) getTileEntity();
+		
+		LittleGridContext context = getContext();
 		
 		if(!frame.url.equals(""))
 		{
@@ -212,7 +215,7 @@ public class LittleOpFrame extends LittleTileTE {
 							break;
 					}
 
-					GlStateManager.translate(position.getPosX(), position.getPosY(), position.getPosZ());
+					GlStateManager.translate(position.getPosX(context), position.getPosY(context), position.getPosZ(context));
 					GlStateManager.pushMatrix();
 					GlStateManager.translate(x, y, z);
 					GlStateManager.translate(0.5, -0.5, -0.5);
@@ -220,9 +223,9 @@ public class LittleOpFrame extends LittleTileTE {
 
 					if (direction == EnumFacing.UP) {
 						GL11.glRotated(90, 0, 0, 1);
-						GlStateManager.translate(0, -gridMCLength, -gridMCLength);
+						GlStateManager.translate(0, -context.gridMCLength, -context.gridMCLength);
 						GL11.glRotated(180, 1, 0, 0);
-						GlStateManager.translate(0, -gridMCLength, -gridMCLength);
+						GlStateManager.translate(0, -context.gridMCLength, -context.gridMCLength);
 						
 					}
 					else if (direction == EnumFacing.DOWN)
@@ -233,7 +236,7 @@ public class LittleOpFrame extends LittleTileTE {
 					//if((frame.rotation == 1 || frame.rotation == 3) && (frame.posX == 2 ^ frame.posY == 2))
 					//GL11.glRotated(180, 1, 0, 0);
 
-					GlStateManager.translate(0.001, gridMCLength / 2, gridMCLength / 2);
+					GlStateManager.translate(0.001, context.gridMCLength / 2, context.gridMCLength / 2);
 					
 					GL11.glRotated(frame.rotation * 90, 1, 0, 0);
 					//GL11.glRotated(System.nanoTime()/10000000D, 1, 0, 0);
@@ -241,18 +244,18 @@ public class LittleOpFrame extends LittleTileTE {
 					GL11.glRotated(frame.rotationX, 0, 1, 0);
 					GL11.glRotated(frame.rotationY, 0, 0, 1);
 
-					GlStateManager.translate(-0.5, 0.5 + (frame.sizeY - 1) / 2 - gridMCLength / 2, 0.5 + (frame.sizeX - 1) / 2 - gridMCLength / 2);
+					GlStateManager.translate(-0.5, 0.5 + (frame.sizeY - 1) / 2 - context.gridMCLength / 2, 0.5 + (frame.sizeX - 1) / 2 - context.gridMCLength / 2);
 
 					double posX = 0;
 					if (frame.posX == 1)
 						posX = -sizeX / 2;
 					else if (frame.posX == 2)
-						posX = -sizeX + gridMCLength;
+						posX = -sizeX + context.gridMCLength;
 					double posY = 0;
 					if (frame.posY == 1)
 						posY = -sizeY / 2;
 					else if (frame.posY == 2)
-						posY = -sizeY + gridMCLength;
+						posY = -sizeY + context.gridMCLength;
 
 					GL11.glTranslated(0, posY, posX);
 

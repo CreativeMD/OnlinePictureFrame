@@ -15,6 +15,7 @@ import com.creativemd.littletiles.common.ingredients.BlockIngredient;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreviewHandler;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -122,7 +123,7 @@ public class OPFrame{
 			@SideOnly(Side.CLIENT)
 			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
 				if(tile instanceof LittleOpFrame)
-					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true, LittleTile.gridSize);
+					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true, LittleGridContext.get().size);
 				return null;
 			}
 			
@@ -130,9 +131,9 @@ public class OPFrame{
 		
 		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler(){
 			@Override
-			public BlockIngredient getBlockIngredient(LittleTilePreview preview)
+			public BlockIngredient getBlockIngredient(LittleGridContext context, LittleTilePreview preview)
 			{
-				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume());
+				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume(context));
 			}
 			
 		});

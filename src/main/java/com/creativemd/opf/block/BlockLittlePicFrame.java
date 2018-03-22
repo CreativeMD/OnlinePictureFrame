@@ -9,9 +9,11 @@ import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.littletiles.common.api.ILittleTile;
 import com.creativemd.littletiles.common.structure.LittleStructure;
+import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileSize;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.little.LittleOpFrame;
 import com.creativemd.opf.little.LittleOpPreview;
@@ -39,28 +41,28 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 
 	@Override
 	@Method(modid = "littletiles")
-	public ArrayList<LittleTilePreview> getLittlePreview(ItemStack stack) {
-		ArrayList<LittleTilePreview> preview = new ArrayList<LittleTilePreview>();
+	public LittlePreviews getLittlePreview(ItemStack stack) {
+		LittlePreviews previews = new LittlePreviews(LittleGridContext.get());
 		NBTTagCompound nbt = new NBTTagCompound();
 		LittleOpFrame frame = new LittleOpFrame(new TileEntityPicFrame(), OPFrame.littleFrame, stack.getItemDamage());
 		frame.box = new LittleTileBox(0, 0, 0, 1, 1, 1);
 		frame.saveTile(nbt);
 		nbt.setBoolean("fresh", true);
 		//new LittleTileSize(1, 1, 1).writeToNBT("size", nbt);
-		preview.add(new LittleOpPreview(new LittleTileBox(0, 0, 0, 1, 1, 1), nbt));
-		return preview;
+		previews.addWithoutCheckingPreview(new LittleOpPreview(new LittleTileBox(0, 0, 0, 1, 1, 1), nbt));
+		return previews;
 	}
 
 	@Override
 	@Method(modid = "littletiles")
-	public void rotateLittlePreview(ItemStack stack, Rotation rotation) {
-		
+	public LittleGridContext rotateLittlePreview(ItemStack stack, Rotation rotation) {
+		return LittleGridContext.get();
 	}
 
 	@Override
 	@Method(modid = "littletiles")
-	public void flipLittlePreview(ItemStack stack, Axis axis) {
-		
+	public LittleGridContext flipLittlePreview(ItemStack stack, Axis axis) {
+		return LittleGridContext.get();
 	}
 
 	@Override
@@ -79,10 +81,15 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 	}
 
 	@Override
-	public void saveLittlePreview(ItemStack stack, List<LittleTilePreview> previews) {
+	public void saveLittlePreview(ItemStack stack, LittlePreviews previews) {
 		stack.setTagCompound(new NBTTagCompound());
 		if(previews.size() > 0)
 			previews.get(0).writeToNBT(stack.getTagCompound());
+	}
+	
+	@Override
+	public boolean containsIngredients(ItemStack stack) {
+		return true;
 	}
 
 	@Override

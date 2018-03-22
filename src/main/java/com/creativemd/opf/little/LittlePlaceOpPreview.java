@@ -11,6 +11,7 @@ import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.placing.PlacementMode;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import net.minecraft.client.Minecraft;
@@ -36,17 +37,17 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<LittleRenderingCube> getPreviews()
+	public List<LittleRenderingCube> getPreviews(LittleGridContext context)
 	{
 		NBTTagCompound nbt = preview.getTileData();
 		List<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
-		cubes.add(box.getRenderingCube(null, 0));
+		cubes.add(box.getRenderingCube(context, null, 0));
 		if(!nbt.getBoolean("fresh"))
 		{
 			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.create(Minecraft.getMinecraft().world, nbt.getCompoundTag("tileEntity"));
-			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(tileEntity, nbt.getInteger("meta"));
-			picPreview.add(box.getMinVec().getVec());
-			LittleRenderingCube renderingCube = box.getRenderingCube(picPreview, null, 0);
+			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(context, tileEntity, nbt.getInteger("meta"));
+			picPreview.add(box.getMinVec().getVec(context));
+			LittleRenderingCube renderingCube = box.getRenderingCube(context, picPreview, null, 0);
 			renderingCube.color = ColorUtils.VecToInt(new Vec3d(0, 1, 1));
 			cubes.add(renderingCube);
 		}
@@ -56,9 +57,9 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public List<LittleTile> placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, TileEntityLittleTiles teLT, LittleStructure structure, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, EnumFacing facing, boolean requiresCollisionTest)
+	public List<LittleTile> placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles teLT, LittleStructure structure, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, EnumFacing facing, boolean requiresCollisionTest)
 	{
-		List<LittleTile> tiles = super.placeTile(player, stack, pos, teLT, structure, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
+		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, teLT, structure, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if(tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh"))
 		{
