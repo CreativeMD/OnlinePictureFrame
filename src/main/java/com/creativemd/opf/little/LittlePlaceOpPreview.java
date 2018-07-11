@@ -1,9 +1,9 @@
 package com.creativemd.opf.little;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
-import com.creativemd.creativecore.common.utils.ColoredCube;
-import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.creativecore.common.utils.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.ColoredCube;
+import com.creativemd.creativecore.common.utils.math.CubeObject;
+import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;

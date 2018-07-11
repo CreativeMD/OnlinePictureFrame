@@ -3,8 +3,8 @@ package com.creativemd.opf.little;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
-import com.creativemd.creativecore.common.utils.Rotation;
-import com.creativemd.creativecore.common.utils.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.Rotation;
+import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
