@@ -2,7 +2,7 @@ package com.creativemd.opf.little;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
-import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.common.utils.math.CubeObject;
 import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.tiles.LittleTile;
