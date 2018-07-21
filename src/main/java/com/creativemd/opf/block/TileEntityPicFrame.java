@@ -1,7 +1,7 @@
 package com.creativemd.opf.block;
 
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
-import com.creativemd.creativecore.common.utils.math.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.opf.client.DownloadThread;
 import com.creativemd.opf.client.PictureTexture;
 import net.minecraft.nbt.NBTTagCompound;
