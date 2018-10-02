@@ -1,0 +1,9 @@
+tile.opFrame.name=Веб-изображение
+tile.littleOpFrame.name=Малое веб-изображение
+config.opframe.limitations=Лимиты
+config.opframe.sizeLimit=Максимальный размер
+config.opframe.onlyOpped=Рестриктировать к операторам
+config.opframe.enableWhitelist=Список URL активен
+config.opframe.whitelist=Список URL
+label.opframe.not_whitelisted.name=URL не в списке, не могу сохранить
+label.opframe.whitelist_warning.name=Внимание: список URL не активен
