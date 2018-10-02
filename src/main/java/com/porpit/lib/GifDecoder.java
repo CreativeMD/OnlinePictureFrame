@@ -1,14 +1,22 @@
 package com.porpit.lib;
 
-import java.net.*;
-
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * This class has been written by PorPit who offered me to use it for this mod.
+ * 
  * @author PorPit
  *
  */
@@ -64,18 +72,22 @@ public class GifDecoder {
 	protected byte[] pixels;
 	protected ArrayList frames; // frames read from current file
 	protected int frameCount;
+	
 	static class GifFrame {
 		public GifFrame(BufferedImage im, int del) {
 			image = im;
 			delay = del;
 		}
+		
 		public BufferedImage image;
 		public int delay;
 	}
+	
 	/**
 	 * Gets display duration for specified frame.
 	 *
-	 * @param n int index of frame
+	 * @param n
+	 *            int index of frame
 	 * @return delay in milliseconds
 	 */
 	public int getDelay(int n) {
@@ -86,13 +98,16 @@ public class GifDecoder {
 		}
 		return delay;
 	}
+	
 	/**
 	 * Gets the number of frames read from file.
+	 * 
 	 * @return frame count
 	 */
 	public int getFrameCount() {
 		return frameCount;
 	}
+	
 	/**
 	 * Gets the first (or only) image read.
 	 *
@@ -101,6 +116,7 @@ public class GifDecoder {
 	public BufferedImage getImage() {
 		return getFrame(0);
 	}
+	
 	/**
 	 * Gets the "Netscape" iteration count, if any.
 	 * A count of 0 means repeat indefinitiely.
@@ -110,14 +126,14 @@ public class GifDecoder {
 	public int getLoopCount() {
 		return loopCount;
 	}
+	
 	/**
 	 * Creates new frame image from current data (and previous
 	 * frames as specified by their disposition codes).
 	 */
 	protected void setPixels() {
 		// expose destination image's pixels as int array
-		int[] dest =
-				((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		int[] dest = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		// fill in starting image contents based on last image's dispose code
 		if (lastDispose > 0) {
 			if (lastDispose == 3) {
@@ -130,8 +146,7 @@ public class GifDecoder {
 				}
 			}
 			if (lastImage != null) {
-				int[] prev =
-						((DataBufferInt) lastImage.getRaster().getDataBuffer()).getData();
+				int[] prev = ((DataBufferInt) lastImage.getRaster().getDataBuffer()).getData();
 				System.arraycopy(prev, 0, dest, 0, width * height);
 				// copy pixels
 				if (lastDispose == 2) {
@@ -139,7 +154,7 @@ public class GifDecoder {
 					Graphics2D g = image.createGraphics();
 					Color c = null;
 					if (transparency) {
-						c = new Color(0, 0, 0, 0);  // assume background is transparent
+						c = new Color(0, 0, 0, 0); // assume background is transparent
 					} else {
 						c = new Color(lastBgColor); // use given background color
 					}
@@ -160,14 +175,14 @@ public class GifDecoder {
 				if (iline >= ih) {
 					pass++;
 					switch (pass) {
-					case 2 :
+					case 2:
 						iline = 4;
 						break;
-					case 3 :
+					case 3:
 						iline = 2;
 						inc = 4;
 						break;
-					case 4 :
+					case 4:
 						iline = 1;
 						inc = 2;
 					}
@@ -196,6 +211,7 @@ public class GifDecoder {
 			}
 		}
 	}
+	
 	/**
 	 * Gets the image contents of frame n.
 	 *
@@ -208,6 +224,7 @@ public class GifDecoder {
 		}
 		return im;
 	}
+	
 	/**
 	 * Gets image size.
 	 *
@@ -216,10 +233,12 @@ public class GifDecoder {
 	public Dimension getFrameSize() {
 		return new Dimension(width, height);
 	}
+	
 	/**
 	 * Reads GIF image from stream
 	 *
-	 * @param BufferedInputStream containing GIF file.
+	 * @param BufferedInputStream
+	 *            containing GIF file.
 	 * @return read status code (0 = no errors)
 	 */
 	public int read(BufferedInputStream is) {
@@ -242,10 +261,12 @@ public class GifDecoder {
 		}
 		return status;
 	}
+	
 	/**
 	 * Reads GIF image from stream
 	 *
-	 * @param InputStream containing GIF file.
+	 * @param InputStream
+	 *            containing GIF file.
 	 * @return read status code (0 = no errors)
 	 */
 	public int read(InputStream is) {
@@ -270,11 +291,13 @@ public class GifDecoder {
 		}
 		return status;
 	}
+	
 	/**
-	 * Reads GIF file from specified file/URL source  
+	 * Reads GIF file from specified file/URL source
 	 * (URL assumed if name contains ":/" or "file:")
 	 *
-	 * @param name String containing source
+	 * @param name
+	 *            String containing source
 	 * @return read status code (0 = no errors)
 	 */
 	public int read(String name) {
@@ -293,6 +316,7 @@ public class GifDecoder {
 		}
 		return status;
 	}
+	
 	/**
 	 * Decodes LZW image data into pixel array.
 	 * Adapted from John Cristy's ImageMagick.
@@ -300,29 +324,17 @@ public class GifDecoder {
 	protected void decodeImageData() {
 		int NullCode = -1;
 		int npix = iw * ih;
-		int available, 
-		clear,
-		code_mask,
-		code_size,
-		end_of_information,
-		in_code,
-		old_code,
-		bits,
-		code,
-		count,
-		i,
-		datum,
-		data_size,
-		first,
-		top,
-		bi,
-		pi;
+		int available, clear, code_mask, code_size, end_of_information, in_code, old_code, bits, code, count, i, datum,
+		        data_size, first, top, bi, pi;
 		if ((pixels == null) || (pixels.length < npix)) {
 			pixels = new byte[npix]; // allocate new pixel array
 		}
-		if (prefix == null) prefix = new short[MaxStackSize];
-		if (suffix == null) suffix = new byte[MaxStackSize];
-		if (pixelStack == null) pixelStack = new byte[MaxStackSize + 1];
+		if (prefix == null)
+			prefix = new short[MaxStackSize];
+		if (suffix == null)
+			suffix = new byte[MaxStackSize];
+		if (pixelStack == null)
+			pixelStack = new byte[MaxStackSize + 1];
 		//  Initialize GIF data stream decoder.
 		data_size = read();
 		clear = 1 << data_size;
@@ -357,47 +369,46 @@ public class GifDecoder {
 				//  Get the next code.
 				code = datum & code_mask;
 				datum >>= code_size;
-					bits -= code_size;
-					//  Interpret the code
-					if ((code > available) || (code == end_of_information))
-						break;
-					if (code == clear) {
-						//  Reset decoder.
-						code_size = data_size + 1;
-						code_mask = (1 << code_size) - 1;
-						available = clear + 2;
-						old_code = NullCode;
-						continue;
-					}
-					if (old_code == NullCode) {
-						pixelStack[top++] = suffix[code];
-						old_code = code;
-						first = code;
-						continue;
-					}
-					in_code = code;
-					if (code == available) {
-						pixelStack[top++] = (byte) first;
-						code = old_code;
-					}
-					while (code > clear) {
-						pixelStack[top++] = suffix[code];
-						code = prefix[code];
-					}
-					first = ((int) suffix[code]) & 0xff;
-					//  Add a new string to the string table,
-					if (available >= MaxStackSize)
-						break;
+				bits -= code_size;
+				//  Interpret the code
+				if ((code > available) || (code == end_of_information))
+					break;
+				if (code == clear) {
+					//  Reset decoder.
+					code_size = data_size + 1;
+					code_mask = (1 << code_size) - 1;
+					available = clear + 2;
+					old_code = NullCode;
+					continue;
+				}
+				if (old_code == NullCode) {
+					pixelStack[top++] = suffix[code];
+					old_code = code;
+					first = code;
+					continue;
+				}
+				in_code = code;
+				if (code == available) {
 					pixelStack[top++] = (byte) first;
-					prefix[available] = (short) old_code;
-					suffix[available] = (byte) first;
-					available++;
-					if (((available & code_mask) == 0)
-							&& (available < MaxStackSize)) {
-						code_size++;
-						code_mask += available;
-					}
-					old_code = in_code;
+					code = old_code;
+				}
+				while (code > clear) {
+					pixelStack[top++] = suffix[code];
+					code = prefix[code];
+				}
+				first = ((int) suffix[code]) & 0xff;
+				//  Add a new string to the string table,
+				if (available >= MaxStackSize)
+					break;
+				pixelStack[top++] = (byte) first;
+				prefix[available] = (short) old_code;
+				suffix[available] = (byte) first;
+				available++;
+				if (((available & code_mask) == 0) && (available < MaxStackSize)) {
+					code_size++;
+					code_mask += available;
+				}
+				old_code = in_code;
 			}
 			//  Pop a pixel off the pixel stack.
 			top--;
@@ -408,12 +419,14 @@ public class GifDecoder {
 			pixels[i] = 0; // clear missing pixels
 		}
 	}
+	
 	/**
 	 * Returns true if an error was encountered during reading/decoding
 	 */
 	protected boolean err() {
 		return status != STATUS_OK;
 	}
+	
 	/**
 	 * Initializes or re-initializes reader
 	 */
@@ -424,6 +437,7 @@ public class GifDecoder {
 		gct = null;
 		lct = null;
 	}
+	
 	/**
 	 * Reads a single byte from the input stream.
 	 */
@@ -436,6 +450,7 @@ public class GifDecoder {
 		}
 		return curByte;
 	}
+	
 	/**
 	 * Reads next variable length block from input.
 	 *
@@ -449,7 +464,7 @@ public class GifDecoder {
 				int count = 0;
 				while (n < blockSize) {
 					count = in.read(block, n, blockSize - n);
-					if (count == -1) 
+					if (count == -1)
 						break;
 					n += count;
 				}
@@ -461,10 +476,12 @@ public class GifDecoder {
 		}
 		return n;
 	}
+	
 	/**
 	 * Reads color table as 256 RGB integer values
 	 *
-	 * @param ncolors int number of colors to read
+	 * @param ncolors
+	 *            int number of colors to read
 	 * @return int array containing 256 colors (packed ARGB with full alpha)
 	 */
 	protected int[] readColorTable(int ncolors) {
@@ -491,8 +508,9 @@ public class GifDecoder {
 		}
 		return tab;
 	}
+	
 	/**
-	 * Main file parser.  Reads GIF content blocks.
+	 * Main file parser. Reads GIF content blocks.
 	 */
 	protected void readContents() {
 		// read GIF file content blocks
@@ -500,16 +518,16 @@ public class GifDecoder {
 		while (!(done || err())) {
 			int code = read();
 			switch (code) {
-			case 0x2C : // image separator
+			case 0x2C: // image separator
 				readImage();
 				break;
-			case 0x21 : // extension
+			case 0x21: // extension
 				code = read();
 				switch (code) {
-				case 0xf9 : // graphics control extension
+				case 0xf9: // graphics control extension
 					readGraphicControlExt();
 					break;
-				case 0xff : // application extension
+				case 0xff: // application extension
 					readBlock();
 					String app = "";
 					for (int i = 0; i < 11; i++) {
@@ -517,24 +535,24 @@ public class GifDecoder {
 					}
 					if (app.equals("NETSCAPE2.0")) {
 						readNetscapeExt();
-					}
-					else
+					} else
 						skip(); // don't care
 					break;
-				default : // uninteresting extension
+				default: // uninteresting extension
 					skip();
 				}
 				break;
-			case 0x3b : // terminator
+			case 0x3b: // terminator
 				done = true;
 				break;
-			case 0x00 : // bad byte, but keep going and see what happens
+			case 0x00: // bad byte, but keep going and see what happens
 				break;
-			default :
+			default:
 				status = STATUS_FORMAT_ERROR;
 			}
 		}
 	}
+	
 	/**
 	 * Reads Graphics Control Extension values
 	 */
@@ -542,14 +560,15 @@ public class GifDecoder {
 		read(); // block size
 		int packed = read(); // packed fields
 		dispose = (packed & 0x1c) >> 2; // disposal method
-					if (dispose == 0) {
-						dispose = 1; // elect to keep old image if discretionary
-					}
-					transparency = (packed & 1) != 0;
-					delay = readShort() * 10; // delay in milliseconds
-					transIndex = read(); // transparent color index
-					read(); // block terminator
+		if (dispose == 0) {
+			dispose = 1; // elect to keep old image if discretionary
+		}
+		transparency = (packed & 1) != 0;
+		delay = readShort() * 10; // delay in milliseconds
+		transIndex = read(); // transparent color index
+		read(); // block terminator
 	}
+	
 	/**
 	 * Reads GIF file header information.
 	 */
@@ -568,6 +587,7 @@ public class GifDecoder {
 			bgColor = gct[bgIndex];
 		}
 	}
+	
 	/**
 	 * Reads next frame image
 	 */
@@ -598,14 +618,15 @@ public class GifDecoder {
 		if (act == null) {
 			status = STATUS_FORMAT_ERROR; // no color table defined
 		}
-		if (err()) return;
+		if (err())
+			return;
 		decodeImageData(); // decode pixel data
 		skip();
-		if (err()) return;
+		if (err())
+			return;
 		frameCount++;
 		// create new image to receive frame data
-		image =
-				new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
 		setPixels(); // transfer pixel data to image
 		frames.add(new GifFrame(image, delay)); // add image to frame list
 		if (transparency) {
@@ -613,6 +634,7 @@ public class GifDecoder {
 		}
 		resetFrame();
 	}
+	
 	/**
 	 * Reads Logical Screen Descriptor
 	 */
@@ -629,6 +651,7 @@ public class GifDecoder {
 		bgIndex = read(); // background color index
 		pixelAspect = read(); // pixel aspect ratio
 	}
+	
 	/**
 	 * Reads Netscape extenstion to obtain iteration count
 	 */
@@ -643,6 +666,7 @@ public class GifDecoder {
 			}
 		} while ((blockSize > 0) && !err());
 	}
+	
 	/**
 	 * Reads next 16-bit value, LSB first
 	 */
@@ -650,6 +674,7 @@ public class GifDecoder {
 		// read 16-bit value, LSB first
 		return read() | (read() << 8);
 	}
+	
 	/**
 	 * Resets frame state for reading next image.
 	 */
@@ -663,7 +688,7 @@ public class GifDecoder {
 		int delay = 0;
 		lct = null;
 	}
-
+	
 	protected void skip() {
 		do {
 			readBlock();

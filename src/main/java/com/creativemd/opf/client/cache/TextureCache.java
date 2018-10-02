@@ -1,10 +1,5 @@
 package com.creativemd.opf.client.cache;
 
-import com.creativemd.opf.client.DownloadThread;
-import net.minecraft.client.Minecraft;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -17,19 +12,26 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+
+import com.creativemd.opf.client.DownloadThread;
+
+import net.minecraft.client.Minecraft;
+
 public class TextureCache {
 	private File cacheDirectory = new File(Minecraft.getMinecraft().mcDataDir, "opframe_cache");
 	private File index = new File(cacheDirectory, "index");
-
+	
 	private Map<String, CacheEntry> entries = new HashMap<String, CacheEntry>();
-
+	
 	public TextureCache() {
 		if (!cacheDirectory.exists()) {
 			cacheDirectory.mkdirs();
 		}
 		loadIndex();
 	}
-
+	
 	public void save(String url, String etag, long time, long expireTime, byte[] data) {
 		CacheEntry entry = new CacheEntry(url, etag, time, expireTime);
 		boolean saved = false;
@@ -38,11 +40,9 @@ public class TextureCache {
 			out = new FileOutputStream(entry.getFile());
 			out.write(data);
 			saved = true;
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			DownloadThread.LOGGER.error("Failed to save cache entry {}", e, url);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(out);
 		}
 		if (saved) {
@@ -50,11 +50,11 @@ public class TextureCache {
 			saveIndex();
 		}
 	}
-
+	
 	public CacheEntry getEntry(String url) {
 		return entries.get(url);
 	}
-
+	
 	private void loadIndex() {
 		if (index.exists()) {
 			Map<String, CacheEntry> previousEntries = entries;
@@ -71,17 +71,15 @@ public class TextureCache {
 					CacheEntry entry = new CacheEntry(url, etag.length() > 0 ? etag : null, time, expireTime);
 					entries.put(entry.getUrl(), entry);
 				}
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				DownloadThread.LOGGER.error("Failed to load cache index", e);
 				entries = previousEntries;
-			}
-			finally {
+			} finally {
 				IOUtils.closeQuietly(in);
 			}
 		}
 	}
-
+	
 	private void saveIndex() {
 		DataOutputStream out = null;
 		try {
@@ -94,15 +92,13 @@ public class TextureCache {
 				out.writeLong(entry.getTime());
 				out.writeLong(entry.getExpireTime());
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			DownloadThread.LOGGER.error("Failed to save cache index", e);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(out);
 		}
 	}
-
+	
 	public void deleteEntry(String url) {
 		entries.remove(url);
 		File file = getFile(url);
@@ -110,52 +106,52 @@ public class TextureCache {
 			file.delete();
 		}
 	}
-
+	
 	private static File getFile(String url) {
 		return new File(DownloadThread.TEXTURE_CACHE.cacheDirectory, Base64.encodeBase64String(url.getBytes()));
 	}
-
+	
 	public static class CacheEntry {
 		private String url;
 		private String etag;
 		private long time;
 		private long expireTime;
-
+		
 		public CacheEntry(String url, String etag, long time, long expireTime) {
 			this.url = url;
 			this.etag = etag;
 			this.time = time;
 			this.expireTime = expireTime;
 		}
-
+		
 		public void setEtag(String etag) {
 			this.etag = etag;
 		}
-
+		
 		public void setTime(long time) {
 			this.time = time;
 		}
-
+		
 		public void setExpireTime(long expireTime) {
 			this.expireTime = expireTime;
 		}
-
+		
 		public String getUrl() {
 			return url;
 		}
-
+		
 		public String getEtag() {
 			return etag;
 		}
-
+		
 		public long getTime() {
 			return time;
 		}
-
+		
 		public long getExpireTime() {
 			return expireTime;
 		}
-
+		
 		public File getFile() {
 			return TextureCache.getFile(url);
 		}

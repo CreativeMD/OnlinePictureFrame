@@ -2,16 +2,17 @@ package com.creativemd.opf.packet;
 
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.opf.OPFrameConfig;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class OPFrameConfigPacket extends CreativeCorePacket {
 	private OPFrameConfig.Limitations limitations = OPFrameConfig.limitations;
-
+	
 	public OPFrameConfigPacket() {
 	}
-
+	
 	@Override
 	public void writeBytes(ByteBuf buf) {
 		buf.writeFloat((float) limitations.sizeLimitation);
@@ -23,7 +24,7 @@ public class OPFrameConfigPacket extends CreativeCorePacket {
 			}
 		}
 	}
-
+	
 	@Override
 	public void readBytes(ByteBuf buf) {
 		limitations.sizeLimitation = buf.readFloat();
@@ -37,12 +38,12 @@ public class OPFrameConfigPacket extends CreativeCorePacket {
 			limitations.whitelist = whitelist;
 		}
 	}
-
+	
 	@Override
 	public void executeClient(EntityPlayer player) {
 		OPFrameConfig.setGlobalLimitations(limitations);
 	}
-
+	
 	@Override
 	public void executeServer(EntityPlayer player) {
 	}

@@ -4,14 +4,7 @@ import com.creativemd.creativecore.client.rendering.model.CreativeBlockRenderHel
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,8 +14,7 @@ public class OPFrameClient {
 	
 	//public static int modelID;
 	
-	public static void initClient()
-	{
+	public static void initClient() {
 		//modelID = RenderingRegistry.getNextAvailableRenderId();
 		//RenderingRegistry.registerBlockHandler(modelID, new PicBlockRenderer());
 		
@@ -30,14 +22,13 @@ public class OPFrameClient {
 		
 		CreativeBlockRenderHelper.registerCreativeRenderedBlock(OPFrame.frame);
 		
-		if(Loader.isModLoaded("littletiles"))
+		if (Loader.isModLoaded("littletiles"))
 			CreativeBlockRenderHelper.registerCreativeRenderedBlock(OPFrame.littleFrame);
 		//registerBlockItem(OPFrame.frame);
 	}
 	
-	
-	/*private static void registerBlockItem(Block toRegister){
-		Item item = Item.getItemFromBlock(toRegister);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(OPFrame.modid + ":" + item.getUnlocalizedName(), "inventory"));
-	}*/
+	/* private static void registerBlockItem(Block toRegister){
+	 * Item item = Item.getItemFromBlock(toRegister);
+	 * Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(OPFrame.modid + ":" + item.getUnlocalizedName(), "inventory"));
+	 * } */
 }

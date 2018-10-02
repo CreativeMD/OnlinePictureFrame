@@ -1,15 +1,10 @@
 package com.creativemd.opf;
 
-import java.util.function.BooleanSupplier;
-
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
-import com.creativemd.littletiles.LittleTiles;
-import com.creativemd.littletiles.common.blocks.ItemBlockColored;
-import com.creativemd.littletiles.common.blocks.ItemBlockTransparentColored;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.ingredients.BlockIngredient;
 import com.creativemd.littletiles.common.tiles.LittleTile;
@@ -26,22 +21,14 @@ import com.creativemd.opf.little.LittleOpFrame;
 import com.creativemd.opf.little.LittleOpPreview;
 import com.creativemd.opf.little.LittlePlacedOpFrame;
 import com.creativemd.opf.packet.OPFrameConfigPacket;
-import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IConditionFactory;
-import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -56,19 +43,18 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame",acceptedMinecraftVersions="")
+@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame", acceptedMinecraftVersions = "")
 @Mod.EventBusSubscriber
-public class OPFrame{
+public class OPFrame {
 	
 	public static final String modid = "opframe";
 	public static final String version = "1.4.0";
-
+	
 	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame").setRegistryName("opFrame");
 	public static Block littleFrame;
 	
 	@SideOnly(Side.CLIENT)
-	public static void initClient()
-	{
+	public static void initClient() {
 		OPFrameClient.initClient();
 	}
 	
@@ -78,61 +64,59 @@ public class OPFrame{
 		
 		MinecraftForge.EVENT_BUS.register(OPFrame.class);
 		
-		if(Loader.isModLoaded("littletiles"))
+		if (Loader.isModLoaded("littletiles"))
 			loadLittleTiles();
 	}
 	
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event) {
 		event.getRegistry().registerAll(frame);
-		if(littleFrame != null)
+		if (littleFrame != null)
 			event.getRegistry().register(littleFrame);
 	}
 	
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event) {
 		event.getRegistry().registerAll(new ItemBlock(frame).setRegistryName(frame.getRegistryName()));
-		if(littleFrame != null)
+		if (littleFrame != null)
 			event.getRegistry().register(new ItemBlock(littleFrame).setRegistryName(littleFrame.getRegistryName()));
 		
-		if(FMLCommonHandler.instance().getSide().isClient())
+		if (FMLCommonHandler.instance().getSide().isClient())
 			initClient();
 	}
 	
 	@EventHandler
-	public void init(FMLInitializationEvent evt) {		
+	public void init(FMLInitializationEvent evt) {
 		
 		GameRegistry.registerTileEntity(TileEntityPicFrame.class, "OPFrameTileEntity");
 	}
 	
 	@Method(modid = "littletiles")
-	public void loadLittleTiles()
-	{
+	public void loadLittleTiles() {
 		littleFrame = new BlockLittlePicFrame().setUnlocalizedName("littleOpFrame").setRegistryName("littleOpFrame");
 		
-		GuiHandler.registerGuiHandler("littleOpFrame", new LittleGuiHandler(){
-
+		GuiHandler.registerGuiHandler("littleOpFrame", new LittleGuiHandler() {
+			
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
-				if(tile instanceof LittleOpFrame)
+				if (tile instanceof LittleOpFrame)
 					return new SubContainerPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), player, tile);
 				return null;
 			}
-
+			
 			@Override
 			@SideOnly(Side.CLIENT)
 			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
-				if(tile instanceof LittleOpFrame)
+				if (tile instanceof LittleOpFrame)
 					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true, LittleGridContext.get().size);
 				return null;
 			}
 			
 		});
 		
-		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler(){
+		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler() {
 			@Override
-			public BlockIngredient getBlockIngredient(LittleGridContext context, LittleTilePreview preview)
-			{
+			public BlockIngredient getBlockIngredient(LittleGridContext context, LittleTilePreview preview) {
 				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume(context));
 			}
 			
@@ -141,9 +125,8 @@ public class OPFrame{
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
 		
-		
 	}
-
+	
 	@SubscribeEvent
 	public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
 		EntityPlayer player = event.player;
