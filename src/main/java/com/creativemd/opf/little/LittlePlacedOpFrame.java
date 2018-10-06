@@ -6,6 +6,7 @@ import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
+import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
@@ -31,15 +32,15 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	}
 	
 	@Override
-	public PlacePreviewTile getPlaceableTile(LittleTileBox box, boolean canPlaceNormal, LittleTileVec offset)
+	public PlacePreviewTile getPlaceableTile(LittleTileBox box, boolean canPlaceNormal, LittleTileVec offset, LittlePreviews previews)
 	{
 		if(this.box == null)
-			return new LittlePlaceOpPreview(box.copy(), this);
+			return new LittlePlaceOpPreview(box.copy(), this, previews);
 		else{
 			LittleTileBox newBox = this.box.copy();
 			if(!canPlaceNormal)
 				newBox.addOffset(offset);
-			return new LittlePlaceOpPreview(newBox, this);
+			return new LittlePlaceOpPreview(newBox, this, previews);
 		}
 	}
 	

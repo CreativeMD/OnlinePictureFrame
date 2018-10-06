@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -55,20 +56,12 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 
 	@Override
 	@Method(modid = "littletiles")
-	public LittleGridContext rotateLittlePreview(ItemStack stack, Rotation rotation) {
-		return LittleGridContext.get();
+	public void rotateLittlePreview(EntityPlayer player, ItemStack stack, Rotation rotation) {
 	}
 
 	@Override
 	@Method(modid = "littletiles")
-	public LittleGridContext flipLittlePreview(ItemStack stack, Axis axis) {
-		return LittleGridContext.get();
-	}
-
-	@Override
-	@Method(modid = "littletiles")
-	public LittleStructure getLittleStructure(ItemStack stack) {
-		return null;
+	public void flipLittlePreview(EntityPlayer player, ItemStack stack, Axis axis) {
 	}
 	
 	@Override

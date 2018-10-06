@@ -9,6 +9,7 @@ import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
+import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
@@ -29,10 +30,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class LittlePlaceOpPreview extends PlacePreviewTile {
 
-	public LittlePlaceOpPreview(LittleTileBox box, LittleTilePreview preview) {
-		super(box, preview);
+	public LittlePlaceOpPreview(LittleTileBox box, LittleTilePreview preview, LittlePreviews previews) {
+		super(box, preview, previews);
 	}
 	
 	@Override
@@ -57,9 +60,8 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public List<LittleTile> placeTile(EntityPlayer player, ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles teLT, LittleStructure structure, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, EnumFacing facing, boolean requiresCollisionTest)
-	{
-		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, teLT, structure, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
+	public List<LittleTile> placeTile(@Nullable EntityPlayer player, @Nullable ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles te, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, @Nullable EnumFacing facing, boolean requiresCollisionTest) {
+		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, te, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if(tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh"))
 		{
@@ -72,7 +74,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	@Override
 	public PlacePreviewTile copy()
 	{
-		return new LittlePlaceOpPreview(box.copy(), preview.copy());
+		return new LittlePlaceOpPreview(box.copy(), preview.copy(), structurePreview);
 	}
 
 }
