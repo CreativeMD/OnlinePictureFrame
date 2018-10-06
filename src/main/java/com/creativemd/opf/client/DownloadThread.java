@@ -1,18 +1,5 @@
 package com.creativemd.opf.client;
 
-import com.creativemd.opf.OPFrame;
-import com.creativemd.opf.client.cache.TextureCache;
-import com.porpit.lib.GifDecoder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,26 +18,42 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.creativemd.opf.OPFrame;
+import com.creativemd.opf.client.cache.TextureCache;
+import com.porpit.lib.GifDecoder;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class DownloadThread extends Thread {
 	public static final Logger LOGGER = LogManager.getLogger(OPFrame.class);
-
+	
 	public static final TextureCache TEXTURE_CACHE = new TextureCache();
 	public static final DateFormat FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
 	public static final Object LOCK = new Object();
 	public static final int MAXIMUM_ACTIVE_DOWNLOADS = 5;
-
+	
 	public static int activeDownloads = 0;
-
+	
 	public static HashMap<String, PictureTexture> loadedImages = new HashMap<String, PictureTexture>();
 	public static Set<String> loadingImages = new HashSet<String>();
-
+	
 	private String url;
-
+	
 	private ProcessedImageData processedImage;
 	private boolean failed;
 	private boolean complete;
-
+	
 	public DownloadThread(String url) {
 		this.url = url;
 		synchronized (DownloadThread.LOCK) {
@@ -61,15 +64,15 @@ public class DownloadThread extends Thread {
 		setDaemon(true);
 		start();
 	}
-
+	
 	public boolean hasFinished() {
 		return complete;
 	}
-
+	
 	public boolean hasFailed() {
 		return hasFinished() && failed;
 	}
-
+	
 	@Override
 	public void run() {
 		try {
@@ -83,28 +86,23 @@ public class DownloadThread extends Thread {
 					int status = gif.read(in);
 					if (status == GifDecoder.STATUS_OK) {
 						processedImage = new ProcessedImageData(gif);
-					}
-					else {
+					} else {
 						LOGGER.error("Failed to read gif: {}", status);
 					}
-				}
-				else {
+				} else {
 					try {
 						BufferedImage image = ImageIO.read(in);
 						if (image != null) {
 							processedImage = new ProcessedImageData(image);
 						}
-					}
-					catch (IOException e1) {
+					} catch (IOException e1) {
 						LOGGER.error("Failed to parse BufferedImage from stream", e1);
 					}
 				}
-			}
-			finally {
+			} finally {
 				IOUtils.closeQuietly(in);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOGGER.error("An exception occurred while loading OPFrame image", e);
 		}
 		if (processedImage == null) {
@@ -118,7 +116,7 @@ public class DownloadThread extends Thread {
 			DownloadThread.activeDownloads--;
 		}
 	}
-
+	
 	public static byte[] load(String url) throws IOException {
 		TextureCache.CacheEntry entry = TEXTURE_CACHE.getEntry(url);
 		long requestTime = System.currentTimeMillis();
@@ -146,28 +144,24 @@ public class DownloadThread extends Thread {
 			if (maxAge != null && !maxAge.isEmpty()) {
 				try {
 					expireTimestamp = requestTime + Long.parseLong(maxAge) * 1000;
-				}
-				catch (NumberFormatException e) {
+				} catch (NumberFormatException e) {
 				}
 			}
 			String expires = connection.getHeaderField("Expires");
 			if (expires != null && !expires.isEmpty()) {
 				try {
 					expireTimestamp = FORMAT.parse(expires).getTime();
-				}
-				catch (ParseException e) {
+				} catch (ParseException e) {
 				}
 			}
 			String lastModified = connection.getHeaderField("Last-Modified");
 			if (lastModified != null && !lastModified.isEmpty()) {
 				try {
 					lastModifiedTimestamp = FORMAT.parse(lastModified).getTime();
-				}
-				catch (ParseException e) {
+				} catch (ParseException e) {
 					lastModifiedTimestamp = requestTime;
 				}
-			}
-			else {
+			} else {
 				lastModifiedTimestamp = requestTime;
 			}
 			if (entry != null) {
@@ -185,23 +179,21 @@ public class DownloadThread extends Thread {
 			byte[] data = IOUtils.toByteArray(in);
 			TEXTURE_CACHE.save(url, etag, lastModifiedTimestamp, expireTimestamp, data);
 			return data;
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(in);
 		}
 	}
-
+	
 	private static String readType(byte[] input) throws IOException {
 		InputStream in = null;
 		try {
 			in = new ByteArrayInputStream(input);
 			return readType(in);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(in);
 		}
 	}
-
+	
 	private static String readType(InputStream input) throws IOException {
 		ImageInputStream stream = ImageIO.createImageInputStream(input);
 		Iterator iter = ImageIO.getImageReaders(stream);
@@ -213,25 +205,22 @@ public class DownloadThread extends Thread {
 		reader.setInput(stream, true, true);
 		try {
 			reader.read(0, param);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOGGER.error("Failed to parse input format", e);
-		}
-		finally {
+		} finally {
 			reader.dispose();
 			IOUtils.closeQuietly(stream);
 		}
 		input.reset();
 		return reader.getFormatName();
 	}
-
+	
 	public static PictureTexture loadImage(DownloadThread thread) {
 		PictureTexture texture = null;
 		if (!thread.hasFailed()) {
 			if (thread.processedImage.isAnimated()) {
 				texture = new AnimatedPictureTexture(thread.processedImage);
-			}
-			else {
+			} else {
 				texture = new OrdinaryTexture(thread.processedImage);
 			}
 		}

@@ -1,11 +1,13 @@
 package com.creativemd.opf.little;
 
-import com.creativemd.creativecore.common.utils.math.RotationUtils;
-import com.creativemd.creativecore.common.utils.math.box.ColoredCube;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
-import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
@@ -15,6 +17,7 @@ import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.placing.PlacementMode;
 import com.creativemd.opf.block.TileEntityPicFrame;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,26 +30,19 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 public class LittlePlaceOpPreview extends PlacePreviewTile {
-
+	
 	public LittlePlaceOpPreview(LittleTileBox box, LittleTilePreview preview, LittlePreviews previews) {
 		super(box, preview, previews);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<LittleRenderingCube> getPreviews(LittleGridContext context)
-	{
+	public List<LittleRenderingCube> getPreviews(LittleGridContext context) {
 		NBTTagCompound nbt = preview.getTileData();
 		List<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
 		cubes.add(box.getRenderingCube(context, null, 0));
-		if(!nbt.getBoolean("fresh"))
-		{
+		if (!nbt.getBoolean("fresh")) {
 			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.create(Minecraft.getMinecraft().world, nbt.getCompoundTag("tileEntity"));
 			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(context, tileEntity, nbt.getInteger("meta"));
 			picPreview.add(box.getMinVec().getVec(context));
@@ -55,7 +51,6 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 			cubes.add(renderingCube);
 		}
 		
-		
 		return cubes;
 	}
 	
@@ -63,8 +58,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	public List<LittleTile> placeTile(@Nullable EntityPlayer player, @Nullable ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles te, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, @Nullable EnumFacing facing, boolean requiresCollisionTest) {
 		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, te, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
-		if(tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh"))
-		{
+		if (tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh")) {
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
 			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).getMeta(), "blockMetadata", "field_145847_g");
 		}
@@ -72,9 +66,8 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public PlacePreviewTile copy()
-	{
+	public PlacePreviewTile copy() {
 		return new LittlePlaceOpPreview(box.copy(), preview.copy(), structurePreview);
 	}
-
+	
 }

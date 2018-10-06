@@ -21,6 +21,7 @@ import com.creativemd.opf.little.LittleOpFrame;
 import com.creativemd.opf.little.LittleOpPreview;
 import com.creativemd.opf.little.LittlePlacedOpFrame;
 import com.creativemd.opf.packet.OPFrameConfigPacket;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,19 +42,18 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame",acceptedMinecraftVersions="")
+@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame", acceptedMinecraftVersions = "")
 @Mod.EventBusSubscriber
-public class OPFrame{
+public class OPFrame {
 	
 	public static final String modid = "opframe";
 	public static final String version = "0.1";
-
+	
 	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame").setRegistryName("opFrame");
 	public static Block littleFrame;
 	
 	@SideOnly(Side.CLIENT)
-	public void initClient()
-	{
+	public void initClient() {
 		OPFrameClient.initClient();
 	}
 	
@@ -63,58 +63,48 @@ public class OPFrame{
 	}
 	
 	@EventHandler
-	public void init(FMLInitializationEvent evt) {		
+	public void init(FMLInitializationEvent evt) {
 		GameRegistry.registerWithItem(frame);
 		
 		GameRegistry.registerTileEntity(TileEntityPicFrame.class, "OPFrameTileEntity");
 		
-		if(Loader.isModLoaded("littletiles"))
+		if (Loader.isModLoaded("littletiles"))
 			loadLittleTiles();
 		
-		if(FMLCommonHandler.instance().getSide().isClient())
+		if (FMLCommonHandler.instance().getSide().isClient())
 			initClient();
 		
-		GameRegistry.addRecipe(new ItemStack(frame),
-				"AXA",
-				"XLX",
-				"AXA",
-				'X', Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
+		GameRegistry.addRecipe(new ItemStack(frame), "AXA", "XLX", "AXA", 'X', Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
 	}
 	
 	@Method(modid = "littletiles")
-	public void loadLittleTiles()
-	{
+	public void loadLittleTiles() {
 		littleFrame = new BlockLittlePicFrame().setUnlocalizedName("littleOpFrame").setRegistryName("littleOpFrame");
 		
 		GameRegistry.registerWithItem(littleFrame);
 		
-		GuiHandler.registerGuiHandler("littleOpFrame", new LittleGuiHandler(){
-
+		GuiHandler.registerGuiHandler("littleOpFrame", new LittleGuiHandler() {
+			
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
-				if(tile instanceof LittleOpFrame)
+				if (tile instanceof LittleOpFrame)
 					return new SubContainerPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), player, tile);
 				return null;
 			}
-
+			
 			@Override
 			@SideOnly(Side.CLIENT)
 			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt, LittleTile tile) {
-				if(tile instanceof LittleOpFrame)
+				if (tile instanceof LittleOpFrame)
 					return new SubGuiPic((TileEntityPicFrame) ((LittleOpFrame) tile).getTileEntity(), true, LittleGridContext.get().size);
 				return null;
 			}
 			
 		});
-		GameRegistry.addRecipe(new ItemStack(littleFrame),
-				"AX",
-				"XL",
-				'X',
-				Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
-		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler(){
+		GameRegistry.addRecipe(new ItemStack(littleFrame), "AX", "XL", 'X', Blocks.PLANKS, 'L', Items.IRON_INGOT, 'A', Blocks.WOOL);
+		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler() {
 			@Override
-			public BlockIngredient getBlockIngredient(LittleGridContext context, LittleTilePreview preview)
-			{
+			public BlockIngredient getBlockIngredient(LittleGridContext context, LittleTilePreview preview) {
 				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume(context));
 			}
 			
@@ -123,7 +113,7 @@ public class OPFrame{
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
 	}
-
+	
 	@SubscribeEvent
 	public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
 		EntityPlayer player = event.player;

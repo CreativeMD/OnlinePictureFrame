@@ -1,14 +1,14 @@
 package com.creativemd.opf.client;
 
 public class AnimatedPictureTexture extends PictureTexture {
-
+	
 	private final int[] textureIDs;
 	private final long[] delay;
 	private final long duration;
-
+	
 	private int completedFrames;
 	private ProcessedImageData imageData;
-
+	
 	public AnimatedPictureTexture(ProcessedImageData image) {
 		super(image.getWidth(), image.getHeight());
 		imageData = image;
@@ -19,7 +19,7 @@ public class AnimatedPictureTexture extends PictureTexture {
 			textureIDs[i] = -1;
 		}
 	}
-
+	
 	@Override
 	public void tick() {
 		if (imageData != null) {
@@ -36,7 +36,7 @@ public class AnimatedPictureTexture extends PictureTexture {
 			}
 		}
 	}
-
+	
 	@Override
 	public int getTextureID() {
 		long time = duration > 0 ? System.currentTimeMillis() % duration : 0;
@@ -49,7 +49,7 @@ public class AnimatedPictureTexture extends PictureTexture {
 		}
 		return textureIDs[index];
 	}
-
+	
 	private int uploadFrame(int index) {
 		int id;
 		id = imageData.uploadFrame(index);
