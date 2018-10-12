@@ -131,7 +131,7 @@ public class SubGuiPic extends SubGui {
 		controls.add(new GuiCheckBox("flipY", "flip (y-axis)", 75, 50, frame.flippedY));
 		
 		controls.add(new GuiStateButton("posX", frame.posX, 0, 70, 70, "left (x)", "center (x)", "right (x)"));
-		controls.add(new GuiStateButton("posY", frame.posY, 80, 70, 70, "left (y)", "center (y)", "right (y)"));
+		controls.add(new GuiStateButton("posY", frame.posY, 80, 70, 70, "top (y)", "center (y)", "bottom (y)"));
 		
 		controls.add(new GuiStateButton("rotation", frame.rotation, 0, 93, 80, 10, "rotation: 0", "rotation: 1", "rotation: 2", "rotation: 3"));
 		
