@@ -1,10 +1,10 @@
 package com.creativemd.opf;
 
+import com.creativemd.creativecore.common.gui.container.SubContainer;
+import com.creativemd.creativecore.common.gui.container.SubGui;
+import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
-import com.creativemd.creativecore.gui.container.SubContainer;
-import com.creativemd.creativecore.gui.container.SubGui;
-import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.ingredients.BlockIngredient;
 import com.creativemd.littletiles.common.tiles.LittleTile;

@@ -1,14 +1,14 @@
 package com.creativemd.opf.gui;
 
-import com.creativemd.creativecore.gui.container.SubGui;
-import com.creativemd.creativecore.gui.controls.gui.GuiAnalogeSlider;
-import com.creativemd.creativecore.gui.controls.gui.GuiButton;
-import com.creativemd.creativecore.gui.controls.gui.GuiCheckBox;
-import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
-import com.creativemd.creativecore.gui.controls.gui.GuiStateButton;
-import com.creativemd.creativecore.gui.controls.gui.GuiSteppedSlider;
-import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
-import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
+import com.creativemd.creativecore.common.gui.container.SubGui;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiAnalogeSlider;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiCheckBox;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiStateButton;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiSteppedSlider;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
