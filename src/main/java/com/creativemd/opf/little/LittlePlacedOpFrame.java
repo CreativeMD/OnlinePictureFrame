@@ -121,36 +121,10 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	public void rotatePreview(Rotation direction, LittleTileVec doubledCenter) {
 		super.rotatePreview(direction, doubledCenter);
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
-		tileData.setInteger("meta", RotationUtils.rotateFacing(facing, direction).getIndex());
+		tileData.setInteger("meta", RotationUtils.rotate(facing, direction).getIndex());
 		
-		//I really need to create a working rotation system here. This is bullshit and took me hours to solve it! Please create a uniform rotation system!
 		EnumFacing front = EnumFacing.getHorizontal(tileData.getCompoundTag("tileEntity").getInteger("rotation"));
-		front = RotationUtils.rotateFacing(front, direction);
-		/* if(direction.getAxis() == Axis.Y)
-		 * {
-		 * if(facing.getAxis() == Axis.Z)
-		 * {
-		 * front = front.rotateAround(Axis.Y);
-		 * if(facing.getAxisDirection() != direction.getAxisDirection())
-		 * front = front.getOpposite();
-		 * }else if(facing.getAxis() == Axis.X){
-		 * if((direction.getAxisDirection() == AxisDirection.POSITIVE && facing.getAxisDirection() == AxisDirection.NEGATIVE) ||
-		 * (direction.getAxisDirection() == AxisDirection.NEGATIVE && facing.getAxisDirection() == AxisDirection.NEGATIVE))
-		 * front = front.getOpposite();
-		 * //}else if(facing == EnumFacing.UP && direction == EnumFacing.UP)
-		 * //front = front.getOpposite();
-		 * }else if(facing == direction)
-		 * front = front.getOpposite();
-		 * 
-		 * }else if(facing.getAxis() == Axis.Y){
-		 * boolean counter = EnumFacing.UP == facing;
-		 * if(direction.getAxisDirection() == AxisDirection.NEGATIVE)
-		 * counter = !counter;
-		 * if(counter)
-		 * front = front.rotateYCCW();
-		 * else
-		 * front = front.rotateY();
-		 * } */
+		front = RotationUtils.rotate(front, direction);
 		
 		tileData.getCompoundTag("tileEntity").setInteger("rotation", front.getHorizontalIndex());
 	}
