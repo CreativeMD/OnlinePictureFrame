@@ -34,7 +34,7 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 		else {
 			LittleTileBox newBox = this.box.copy();
 			if (!canPlaceNormal)
-				newBox.addOffset(offset);
+				newBox.add(offset);
 			return new LittlePlaceOpPreview(newBox, this, previews);
 		}
 	}

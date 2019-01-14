@@ -21,7 +21,7 @@ public class LittleOpPreview extends LittleTilePreview {
 	@Override
 	public PlacePreviewTile getPlaceableTile(LittleTileBox box, boolean canPlaceNormal, LittleTileVec offset, LittlePreviews previews) {
 		if (!canPlaceNormal)
-			this.box.addOffset(offset);
+			this.box.add(offset);
 		return new LittlePlaceOpPreview(this.box, this, previews);
 	}
 	
