@@ -6,11 +6,12 @@ import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
-import com.creativemd.littletiles.common.ingredients.BlockIngredient;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreviewHandler;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.utils.ingredients.BlockIngredient;
+import com.creativemd.littletiles.common.utils.ingredients.IngredientUtils;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -117,7 +118,7 @@ public class OPFrame {
 		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler() {
 			@Override
 			public BlockIngredient getBlockIngredient(LittleGridContext context, LittleTilePreview preview) {
-				return new BlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume(context));
+				return IngredientUtils.getBlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume(context));
 			}
 			
 		});
