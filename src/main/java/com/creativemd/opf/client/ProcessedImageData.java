@@ -1,6 +1,5 @@
 package com.creativemd.opf.client;
 
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
@@ -8,7 +7,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.porpit.lib.GifDecoder;
+import at.dhyan.open_imaging.GifDecoder.GifImage;
 
 public class ProcessedImageData {
 	private final int width;
@@ -25,17 +24,16 @@ public class ProcessedImageData {
 		duration = 0;
 	}
 	
-	public ProcessedImageData(GifDecoder decoder) {
-		Dimension frameSize = decoder.getFrameSize();
-		width = (int) frameSize.getWidth();
-		height = (int) frameSize.getHeight();
-		frames = new Frame[decoder.getFrameCount()];
-		delay = new long[decoder.getFrameCount()];
+	public ProcessedImageData(GifImage image) {
+		width = (int) image.getWidth();
+		height = (int) image.getHeight();
+		frames = new Frame[image.getFrameCount()];
+		delay = new long[image.getFrameCount()];
 		long time = 0;
-		for (int i = 0; i < decoder.getFrameCount(); i++) {
-			frames[i] = loadFrom(decoder.getFrame(i));
+		for (int i = 0; i < image.getFrameCount(); i++) {
+			frames[i] = loadFrom(image.getFrame(i));
 			delay[i] = time;
-			time += decoder.getDelay(i);
+			time += image.getDelay(i) * 10;
 		}
 		duration = time;
 	}

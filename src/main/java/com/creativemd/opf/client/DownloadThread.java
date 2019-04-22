@@ -29,8 +29,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.client.cache.TextureCache;
-import com.porpit.lib.GifDecoder;
 
+import at.dhyan.open_imaging.GifDecoder;
+import at.dhyan.open_imaging.GifDecoder.GifImage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -82,13 +83,11 @@ public class DownloadThread extends Thread {
 			try {
 				in = new ByteArrayInputStream(data);
 				if (type.equalsIgnoreCase("gif")) {
-					GifDecoder gif = new GifDecoder();
-					int status = gif.read(in);
-					if (status == GifDecoder.STATUS_OK) {
-						processedImage = new ProcessedImageData(gif);
-					} else {
-						LOGGER.error("Failed to read gif: {}", status);
-					}
+					GifImage image = GifDecoder.read(in);
+					if (image != null)
+						processedImage = new ProcessedImageData(image);
+					else
+						LOGGER.error("Failed to read gif");
 				} else {
 					try {
 						BufferedImage image = ImageIO.read(in);
