@@ -14,6 +14,7 @@ import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.client.DownloadThread;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -158,12 +159,17 @@ public class SubGuiPic extends SubGui {
 			@Override
 			public void onClicked(int x, int y, int button) {
 				synchronized (DownloadThread.LOCK) {
-					DownloadThread.loadedImages.clear();
+					if (GuiScreen.isShiftKeyDown())
+						DownloadThread.loadedImages.clear();
+					else {
+						GuiTextfield url = (GuiTextfield) get("url");
+						DownloadThread.loadedImages.remove(url.text);
+					}
 					frame.failed = false;
 					frame.texture = null;
 				}
 			}
-		});
+		}.setCustomTooltip("Hold shift to reload all"));
 		
 		save = new GuiButton("Save", 140, 174, 50) {
 			@Override
