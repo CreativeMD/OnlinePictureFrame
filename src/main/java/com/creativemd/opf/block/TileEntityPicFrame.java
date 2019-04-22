@@ -183,27 +183,17 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 	public boolean flippedX;
 	public boolean flippedY;
 	
-	/**
-	 * -90 to 90
-	 **/
+	/** -90 to 90 **/
 	public float rotationX;
-	/**
-	 * -90 to 90
-	 **/
+	/** -90 to 90 **/
 	public float rotationY;
 	
-	/**
-	 * 0-3 all directions
-	 **/
+	/** 0-3 all directions **/
 	public byte rotation = 0;
 	
-	/**
-	 * 0: normal,1: center, 2: -normal
-	 **/
+	/** 0: normal,1: center, 2: -normal **/
 	public byte posX = 0;
-	/**
-	 * 0: normal,1: center, 2: -normal
-	 **/
+	/** 0: normal,1: center, 2: -normal **/
 	public byte posY = 0;
 	
 	public boolean visibleFrame = true;

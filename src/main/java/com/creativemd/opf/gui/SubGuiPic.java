@@ -11,6 +11,7 @@ import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
+import com.creativemd.opf.client.DownloadThread;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -150,9 +151,21 @@ public class SubGuiPic extends SubGui {
 		controls.add(new GuiAnalogeSlider("rotY", 67, 148, 122, 5, frame.rotationY, -90, 90));
 		
 		controls.add(new GuiLabel("render distance (blocks):", 0, 160));
-		controls.add(new GuiSteppedSlider("renderDistance", 0, 174, 100, 14, frame.renderDistance, 5, 1024));
+		controls.add(new GuiSteppedSlider("renderDistance", 0, 174, 80, 14, frame.renderDistance, 5, 1024));
 		
-		save = new GuiButton("Save", 120, 174, 50) {
+		controls.add(new GuiButton("reload", 90, 174) {
+			
+			@Override
+			public void onClicked(int x, int y, int button) {
+				synchronized (DownloadThread.LOCK) {
+					DownloadThread.loadedImages.clear();
+					frame.failed = false;
+					frame.texture = null;
+				}
+			}
+		});
+		
+		save = new GuiButton("Save", 140, 174, 50) {
 			@Override
 			public void onClicked(int x, int y, int button) {
 				NBTTagCompound nbt = new NBTTagCompound();
