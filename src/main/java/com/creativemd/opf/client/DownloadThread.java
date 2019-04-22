@@ -102,7 +102,7 @@ public class DownloadThread extends Thread {
 			} finally {
 				IOUtils.closeQuietly(in);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("An exception occurred while loading OPFrame image", e);
 		}
 		if (processedImage == null) {
@@ -201,6 +201,10 @@ public class DownloadThread extends Thread {
 			return "";
 		}
 		ImageReader reader = (ImageReader) iter.next();
+		
+		if (reader.getFormatName().equalsIgnoreCase("gif"))
+			return "gif";
+		
 		ImageReadParam param = reader.getDefaultReadParam();
 		reader.setInput(stream, true, true);
 		try {
