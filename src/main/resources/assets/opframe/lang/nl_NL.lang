@@ -1,0 +1,10 @@
+    
+tile.opFrame.name=Online Afbeelding montuur
+tile.littleOpFrame.name=Little Online Afbeelding montuur
+config.opframe.limitations=Limitaties
+config.opframe.sizeLimit=Maximum maat
+config.opframe.onlyOpped=beperkt tot operators
+config.opframe.enableWhitelist=URL Whitelist ingeschakeld
+config.opframe.whitelist=URL Whitelist
+label.opframe.not_whitelisted.name=URL niet gewhitelist, kan niet opslaan
+label.opframe.whitelist_warning.name=Pas op: URL Whitelist niet ingeschakeld
