@@ -48,7 +48,7 @@ public class SubContainerPic extends SubContainerTileEntity {
 				frame.sizeX = (float) Math.min(globalLimitations.sizeLimitation, nbt.getFloat("x"));
 				frame.sizeY = (float) Math.min(globalLimitations.sizeLimitation, nbt.getFloat("y"));
 				
-				frame.renderDistance = nbt.getInteger("render");
+				frame.renderDistance = Math.min(globalLimitations.maxRenderDistance, nbt.getInteger("render"));
 				frame.posX = nbt.getByte("posX");
 				frame.posY = nbt.getByte("posY");
 				frame.rotation = nbt.getByte("rotation");

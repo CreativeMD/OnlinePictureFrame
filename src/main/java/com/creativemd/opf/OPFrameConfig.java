@@ -33,11 +33,17 @@ public class OPFrameConfig {
 	
 	public static class Limitations {
 		@Config.Name("size-limitation")
-		@Config.RangeDouble(min = 0.0F, max = 10000.0F)
+		@Config.RangeDouble(min = 0.0, max = 10000.0)
 		@Config.Comment("The maximum size (in blocks) for a frame")
 		@Config.LangKey("config.opframe.sizeLimit")
 		@Config.RequiresMcRestart
-		public double sizeLimitation = 1000.0F;
+		public double sizeLimitation = 1000.0;
+		
+		@Config.Name("maxRenderdistance")
+		@Config.RangeInt(min = 0)
+		@Config.Comment("The maximum render distance (in blocks)")
+		@Config.LangKey("config.opframe.maxRenderdistance")
+		public int maxRenderDistance = 10000;
 		
 		@Config.Name("onlyOperators")
 		@Config.LangKey("config.opframe.onlyOpped")
@@ -49,6 +55,11 @@ public class OPFrameConfig {
 		@Config.Comment("If true, players in adventure mode will not be able to edit frames")
 		public boolean disableAdventure = true;
 		
+		@Config.Name("onlyCreative")
+		@Config.LangKey("config.opframe.onlyCreative")
+		@Config.Comment("If true, only players in creative mode can edit frames")
+		public boolean onlyCreative = false;
+		
 		@Config.Name("whitelistEnabled")
 		@Config.LangKey("config.opframe.enableWhitelist")
 		@Config.Comment("If true, only URLs listed in the whitelist can be used for a frame")
@@ -59,7 +70,11 @@ public class OPFrameConfig {
 		@Config.LangKey("config.opframe.whitelist")
 		@Config.Comment("A list of URLs that can be used for frames")
 		@Config.RequiresMcRestart
-		public String[] whitelist = new String[] { "imgur.com", "gyazo.com", "prntscr.com", "tinypic.com", "puu.sh", "pinimg.com", "photobucket.com", "staticflickr.com", "flic.kr", "tenor.co", "gfycat.com", "giphy.com", "gph.is", "gifbin.com", "i.redd.it", "media.tumblr.com", "twimg.com", "discordapp.com", "images.discordapp.net", "githubusercontent.com", "googleusercontent.com", "googleapis.com", "wikimedia.org", "ytimg.com" };
+		public String[] whitelist = new String[] { "imgur.com", "gyazo.com", "prntscr.com", "tinypic.com", "puu.sh",
+		        "pinimg.com", "photobucket.com", "staticflickr.com", "flic.kr", "tenor.co", "gfycat.com", "giphy.com",
+		        "gph.is", "gifbin.com", "i.redd.it", "media.tumblr.com", "twimg.com", "discordapp.com",
+		        "images.discordapp.net", "githubusercontent.com", "googleusercontent.com", "googleapis.com",
+		        "wikimedia.org", "ytimg.com" };
 		
 		public boolean canUse(EntityPlayer player, String url) {
 			return canUse(player, url, false);
@@ -94,6 +109,8 @@ public class OPFrameConfig {
 		
 		public boolean canInteract(EntityPlayer player, World world) {
 			if (disableAdventure && ((EntityPlayerMP) player).interactionManager.getGameType() == GameType.ADVENTURE)
+				return false;
+			if (onlyCreative && !player.isCreative())
 				return false;
 			boolean isOperator = world.getMinecraftServer().isSinglePlayer() || player.canUseCommand(world.getMinecraftServer().getOpPermissionLevel(), "");
 			if (onlyOps) {
