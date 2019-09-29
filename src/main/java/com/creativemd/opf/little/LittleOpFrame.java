@@ -10,9 +10,9 @@ import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
-import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
+import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
+import com.creativemd.littletiles.client.render.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.action.block.LittleActionActivated;
-import com.creativemd.littletiles.common.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.LittleTileTE;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;

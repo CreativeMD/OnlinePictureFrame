@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.littletiles.client.tiles.LittleRenderingCube;
+import com.creativemd.littletiles.client.render.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
