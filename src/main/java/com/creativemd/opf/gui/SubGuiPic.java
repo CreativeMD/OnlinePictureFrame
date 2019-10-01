@@ -9,6 +9,7 @@ import com.creativemd.creativecore.common.gui.controls.gui.GuiStateButton;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiSteppedSlider;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.client.DownloadThread;
@@ -48,7 +49,8 @@ public class SubGuiPic extends SubGui {
 		url = new GuiUrlTextfield(this, "url", frame.url, 0, 0, 194, 16);
 		url.maxLength = 512;
 		controls.add(url);
-		controls.add(new GuiButton("in-size-x", "<", 49, 26, 5, 12) {
+		controls.add(new GuiLabel(translate(frame.error != null ? frame.error : ""), 0, 20, ColorUtils.RED));
+		controls.add(new GuiButton("in-size-x", "<", 49, 30, 5, 12) {
 			
 			@Override
 			public void onClicked(int x, int y, int button) {
@@ -64,7 +66,7 @@ public class SubGuiPic extends SubGui {
 				sizeX.text = Float.toString(scaled * scaleMultiplier);
 			}
 		}.setRotation(90));
-		controls.add(new GuiButton("de-size-x", ">", 49, 36, 5, 12) {
+		controls.add(new GuiButton("de-size-x", ">", 49, 40, 5, 12) {
 			
 			@Override
 			public void onClicked(int x, int y, int button) {
@@ -81,7 +83,7 @@ public class SubGuiPic extends SubGui {
 			}
 		}.setRotation(90));
 		
-		controls.add(new GuiButton("in-size-y", "<", 145, 26, 5, 12) {
+		controls.add(new GuiButton("in-size-y", "<", 145, 30, 5, 12) {
 			
 			@Override
 			public void onClicked(int x, int y, int button) {
@@ -97,7 +99,7 @@ public class SubGuiPic extends SubGui {
 				sizeY.text = Float.toString(scaled * scaleMultiplier);
 			}
 		}.setRotation(90));
-		controls.add(new GuiButton("de-size-y", ">", 145, 36, 5, 12) {
+		controls.add(new GuiButton("de-size-y", ">", 145, 40, 5, 12) {
 			
 			@Override
 			public void onClicked(int x, int y, int button) {
@@ -114,16 +116,16 @@ public class SubGuiPic extends SubGui {
 			}
 		}.setRotation(90));
 		
-		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 0, 30, 40, 15).setFloatOnly());
-		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 96, 30, 40, 15).setFloatOnly());
+		controls.add(new GuiTextfield("sizeX", frame.sizeX + "", 0, 33, 40, 15).setFloatOnly());
+		controls.add(new GuiTextfield("sizeY", frame.sizeY + "", 96, 33, 40, 15).setFloatOnly());
 		
-		controls.add(new GuiButton("reX", "x->y", 62, 30, 25, 15) {
+		controls.add(new GuiButton("reX", "x->y", 62, 33, 25, 15) {
 			@Override
 			public void onClicked(int x, int y, int button) {
 			}
 		});
 		
-		controls.add(new GuiButton("reY", "y->x", 158, 30, 25, 15) {
+		controls.add(new GuiButton("reY", "y->x", 158, 33, 25, 15) {
 			@Override
 			public void onClicked(int x, int y, int button) {
 			}
@@ -167,6 +169,7 @@ public class SubGuiPic extends SubGui {
 					}
 					frame.failed = false;
 					frame.texture = null;
+					frame.error = null;
 				}
 			}
 		}.setCustomTooltip("Hold shift to reload all"));

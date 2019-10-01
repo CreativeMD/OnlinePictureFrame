@@ -51,7 +51,7 @@ public class DownloadThread extends Thread {
 	private String url;
 	
 	private ProcessedImageData processedImage;
-	private boolean failed;
+	private String error;
 	private boolean complete;
 	
 	public DownloadThread(String url) {
@@ -70,11 +70,16 @@ public class DownloadThread extends Thread {
 	}
 	
 	public boolean hasFailed() {
-		return hasFinished() && failed;
+		return hasFinished() && error != null;
+	}
+	
+	public String getError() {
+		return error;
 	}
 	
 	@Override
 	public void run() {
+		Exception exception = null;
 		try {
 			byte[] data = load(url);
 			String type = readType(data);
@@ -96,6 +101,7 @@ public class DownloadThread extends Thread {
 							processedImage = new ProcessedImageData(image);
 						}
 					} catch (IOException e1) {
+						exception = e1;
 						LOGGER.error("Failed to parse BufferedImage from stream", e1);
 					}
 				}
@@ -103,10 +109,18 @@ public class DownloadThread extends Thread {
 				IOUtils.closeQuietly(in);
 			}
 		} catch (Exception e) {
+			exception = e;
 			LOGGER.error("An exception occurred while loading OPFrame image", e);
 		}
 		if (processedImage == null) {
-			failed = true;
+			if (exception == null)
+				error = "download.exception.gif";
+			if (exception.getMessage().startsWith("Server returned HTTP response code: 403"))
+				error = "download.exception.forbidden";
+			else if (exception.getMessage().startsWith("Server returned HTTP response code: 404"))
+				error = "download.exception.notfound";
+			else
+				error = "download.exception.invalid";
 			TEXTURE_CACHE.deleteEntry(url);
 		}
 		complete = true;

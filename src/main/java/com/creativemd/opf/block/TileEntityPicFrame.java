@@ -31,9 +31,13 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 	public boolean failed;
 	
 	@SideOnly(Side.CLIENT)
+	public String error;
+	
+	@SideOnly(Side.CLIENT)
 	public void initClient() {
 		texture = null;
 		failed = false;
+		error = null;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -61,6 +65,8 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 			if (downloader != null && downloader.hasFinished()) {
 				if (downloader.hasFailed()) {
 					failed = true;
+					error = downloader.getError();
+					DownloadThread.LOGGER.error("Could not load image of " + pos + " " + error);
 				} else {
 					texture = DownloadThread.loadImage(downloader);
 				}
