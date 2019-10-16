@@ -5,13 +5,13 @@ import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.creativemd.creativecore.common.utils.sorting.BlockSelector.BlockSelectorBlock;
 import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
-import com.creativemd.littletiles.common.tiles.preview.LittleTilePreviewHandler;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
-import com.creativemd.littletiles.common.utils.ingredients.BlockIngredientEntry;
-import com.creativemd.littletiles.common.utils.ingredients.IngredientUtils;
+import com.creativemd.littletiles.common.utils.ingredients.rules.BlockIngredientRule.BlockIngredientRuleFixedBlock;
+import com.creativemd.littletiles.common.utils.ingredients.rules.IngredientRules;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -115,13 +115,9 @@ public class OPFrame {
 			
 		});
 		
-		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame", new LittleTilePreviewHandler.DefaultPreviewHandler() {
-			@Override
-			public BlockIngredientEntry getBlockIngredient(LittleGridContext context, LittleTilePreview preview) {
-				return IngredientUtils.getBlockIngredient(preview.getPreviewBlock(), 0, preview.getPercentVolume(context));
-			}
-			
-		});
+		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame");
+		
+		IngredientRules.registerBlockRule(new BlockSelectorBlock(littleFrame), new BlockIngredientRuleFixedBlock(littleFrame, 0));
 		
 		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
