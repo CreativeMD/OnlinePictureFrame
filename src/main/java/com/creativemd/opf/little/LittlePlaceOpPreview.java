@@ -60,7 +60,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if (tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh")) {
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
-			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).getMeta(), "blockMetadata", "field_145847_g");
+			ReflectionHelper.setPrivateValue(TileEntity.class, ((LittleOpFrame) tile).getTileEntity(), ((LittleOpFrame) tile).getMeta(), new String[] { "blockMetadata", "field_145847_g" });
 		}
 		return tiles;
 	}
