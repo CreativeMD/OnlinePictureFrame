@@ -9,6 +9,7 @@ import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.littletiles.client.render.tiles.LittleRenderingCube;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileList;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
 import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
@@ -55,8 +56,8 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public List<LittleTile> placeTile(@Nullable EntityPlayer player, @Nullable ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles te, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, @Nullable EnumFacing facing, boolean requiresCollisionTest) {
-		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, te, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
+	public List<LittleTile> placeTile(@Nullable EntityPlayer player, @Nullable ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles te, TileList list, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, @Nullable EnumFacing facing, boolean requiresCollisionTest) {
+		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, te, list, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if (tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh")) {
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
