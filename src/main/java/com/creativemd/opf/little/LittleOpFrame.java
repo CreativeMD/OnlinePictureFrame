@@ -30,6 +30,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
@@ -52,7 +53,7 @@ public class LittleOpFrame extends LittleTileTE {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<LittleRenderingCube> getInternalRenderingCubes() {
+	public ArrayList<LittleRenderingCube> getInternalRenderingCubes(BlockRenderLayer layer) {
 		ArrayList<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
 		if (((TileEntityPicFrame) getTileEntity()).visibleFrame) {
 			CubeObject cube = box.getCube(getContext());
