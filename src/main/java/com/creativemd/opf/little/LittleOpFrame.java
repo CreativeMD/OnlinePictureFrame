@@ -12,6 +12,7 @@ import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.client.render.tiles.LittleRenderingCube;
+import com.creativemd.littletiles.common.action.LittleActionException;
 import com.creativemd.littletiles.common.action.block.LittleActionActivated;
 import com.creativemd.littletiles.common.tiles.LittleTile;
 import com.creativemd.littletiles.common.tiles.LittleTileTE;
@@ -92,7 +93,7 @@ public class LittleOpFrame extends LittleTileTE {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ, LittleActionActivated action) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ, LittleActionActivated action) throws LittleActionException {
 		if (!super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ, action)) {
 			if (!world.isRemote && OPFrameConfig.limitations.canInteract(player, world))
 				LittleGuiHandler.openGui("littleOpFrame", new NBTTagCompound(), player, this);
