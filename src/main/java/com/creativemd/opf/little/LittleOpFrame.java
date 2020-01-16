@@ -118,16 +118,16 @@ public class LittleOpFrame extends LittleTileTE {
 		if (frame.posX == 1)
 			offsetX = -frame.sizeX / 2F;
 		else if (frame.posX == 2)
-			offsetX = (float) (-frame.sizeX + context.gridMCLength);
+			offsetX = (float) (-frame.sizeX + context.pixelSize);
 		float offsetY = 0;
 		if (frame.posY == 1)
 			offsetY = -frame.sizeY / 2F;
 		else if (frame.posY == 2)
-			offsetY = (float) (-frame.sizeY + context.gridMCLength);
+			offsetY = (float) (-frame.sizeY + context.pixelSize);
 		CubeObject cube = new CubeObject(0, offsetY, offsetX, thickness, frame.sizeY + offsetY, frame.sizeX + offsetX);
 		EnumFacing direction = EnumFacing.getFront(meta);
 		
-		Vector3f center = new Vector3f(thickness / 2F, (float) context.gridMCLength / 2F, (float) context.gridMCLength / 2F);
+		Vector3f center = new Vector3f(thickness / 2F, (float) context.pixelSize / 2F, (float) context.pixelSize / 2F);
 		if (frame.rotation > 0) {
 			Matrix3f rotation = new Matrix3f();
 			rotation.rotX((float) Math.toRadians(frame.rotation * 90F));
@@ -213,9 +213,9 @@ public class LittleOpFrame extends LittleTileTE {
 					
 					if (direction == EnumFacing.UP) {
 						GL11.glRotated(90, 0, 0, 1);
-						GlStateManager.translate(0, -context.gridMCLength, -context.gridMCLength);
+						GlStateManager.translate(0, -context.pixelSize, -context.pixelSize);
 						GL11.glRotated(180, 1, 0, 0);
-						GlStateManager.translate(0, -context.gridMCLength, -context.gridMCLength);
+						GlStateManager.translate(0, -context.pixelSize, -context.pixelSize);
 						
 					} else if (direction == EnumFacing.DOWN)
 						GL11.glRotated(-90, 0, 0, 1);
@@ -225,7 +225,7 @@ public class LittleOpFrame extends LittleTileTE {
 					//if((frame.rotation == 1 || frame.rotation == 3) && (frame.posX == 2 ^ frame.posY == 2))
 					//GL11.glRotated(180, 1, 0, 0);
 					
-					GlStateManager.translate(0.001, context.gridMCLength / 2, context.gridMCLength / 2);
+					GlStateManager.translate(0.001, context.pixelSize / 2, context.pixelSize / 2);
 					
 					GL11.glRotated(frame.rotation * 90, 1, 0, 0);
 					//GL11.glRotated(System.nanoTime()/10000000D, 1, 0, 0);
@@ -233,18 +233,18 @@ public class LittleOpFrame extends LittleTileTE {
 					GL11.glRotated(frame.rotationX, 0, 1, 0);
 					GL11.glRotated(frame.rotationY, 0, 0, 1);
 					
-					GlStateManager.translate(-0.5, 0.5 + (frame.sizeY - 1) / 2 - context.gridMCLength / 2, 0.5 + (frame.sizeX - 1) / 2 - context.gridMCLength / 2);
+					GlStateManager.translate(-0.5, 0.5 + (frame.sizeY - 1) / 2 - context.pixelSize / 2, 0.5 + (frame.sizeX - 1) / 2 - context.pixelSize / 2);
 					
 					double posX = 0;
 					if (frame.posX == 1)
 						posX = -sizeX / 2;
 					else if (frame.posX == 2)
-						posX = -sizeX + context.gridMCLength;
+						posX = -sizeX + context.pixelSize;
 					double posY = 0;
 					if (frame.posY == 1)
 						posY = -sizeY / 2;
 					else if (frame.posY == 2)
-						posY = -sizeY + context.gridMCLength;
+						posY = -sizeY + context.pixelSize;
 					
 					GL11.glTranslated(0, posY, posX);
 					
