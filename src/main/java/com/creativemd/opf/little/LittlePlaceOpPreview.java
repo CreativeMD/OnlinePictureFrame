@@ -7,16 +7,16 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.littletiles.client.render.tiles.LittleRenderingCube;
+import com.creativemd.littletiles.client.render.tile.LittleRenderingCube;
+import com.creativemd.littletiles.common.tile.LittleTile;
+import com.creativemd.littletiles.common.tile.math.box.LittleBox;
+import com.creativemd.littletiles.common.tile.place.PlacePreview;
+import com.creativemd.littletiles.common.tile.preview.LittlePreview;
+import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.tileentity.TileList;
-import com.creativemd.littletiles.common.tiles.LittleTile;
-import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
-import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
-import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
-import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
-import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
-import com.creativemd.littletiles.common.utils.placing.PlacementMode;
+import com.creativemd.littletiles.common.util.grid.LittleGridContext;
+import com.creativemd.littletiles.common.util.place.PlacementMode;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
 import net.minecraft.client.Minecraft;
@@ -31,9 +31,9 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class LittlePlaceOpPreview extends PlacePreviewTile {
+public class LittlePlaceOpPreview extends PlacePreview {
 	
-	public LittlePlaceOpPreview(LittleTileBox box, LittleTilePreview preview, LittlePreviews previews) {
+	public LittlePlaceOpPreview(LittleBox box, LittlePreview preview, LittlePreviews previews) {
 		super(box, preview, previews);
 	}
 	
@@ -67,7 +67,7 @@ public class LittlePlaceOpPreview extends PlacePreviewTile {
 	}
 	
 	@Override
-	public PlacePreviewTile copy() {
+	public PlacePreview copy() {
 		return new LittlePlaceOpPreview(box.copy(), preview.copy(), structurePreview);
 	}
 	

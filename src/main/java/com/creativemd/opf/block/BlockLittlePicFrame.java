@@ -6,9 +6,9 @@ import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.littletiles.common.api.ILittleTile;
-import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
-import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
-import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.tile.math.box.LittleBox;
+import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
+import com.creativemd.littletiles.common.util.grid.LittleGridContext;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.little.LittleOpFrame;
 import com.creativemd.opf.little.LittleOpPreview;
@@ -40,11 +40,11 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 		LittlePreviews previews = new LittlePreviews(LittleGridContext.get());
 		NBTTagCompound nbt = new NBTTagCompound();
 		LittleOpFrame frame = new LittleOpFrame(new TileEntityPicFrame(), OPFrame.littleFrame, stack.getItemDamage());
-		frame.box = new LittleTileBox(0, 0, 0, 1, 1, 1);
+		frame.box = new LittleBox(0, 0, 0, 1, 1, 1);
 		frame.saveTile(nbt);
 		nbt.setBoolean("fresh", true);
 		//new LittleTileSize(1, 1, 1).writeToNBT("size", nbt);
-		previews.addWithoutCheckingPreview(new LittleOpPreview(new LittleTileBox(0, 0, 0, 1, 1, 1), nbt));
+		previews.addWithoutCheckingPreview(new LittleOpPreview(new LittleBox(0, 0, 0, 1, 1, 1), nbt));
 		return previews;
 	}
 	

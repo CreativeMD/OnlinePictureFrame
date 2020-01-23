@@ -11,14 +11,14 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
-import com.creativemd.littletiles.client.render.tiles.LittleRenderingCube;
+import com.creativemd.littletiles.client.render.tile.LittleRenderingCube;
 import com.creativemd.littletiles.common.action.LittleActionException;
 import com.creativemd.littletiles.common.action.block.LittleActionActivated;
-import com.creativemd.littletiles.common.tiles.LittleTile;
-import com.creativemd.littletiles.common.tiles.LittleTileTE;
-import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
-import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
-import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.tile.LittleTile;
+import com.creativemd.littletiles.common.tile.LittleTileTE;
+import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
+import com.creativemd.littletiles.common.tile.preview.LittlePreview;
+import com.creativemd.littletiles.common.util.grid.LittleGridContext;
 import com.creativemd.opf.OPFrameConfig;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
@@ -186,10 +186,10 @@ public class LittleOpFrame extends LittleTileTE {
 					
 					GlStateManager.translate(-0.5, 0.5, 0.5);
 					
-					LittleTileVec position = box.getMinVec();
+					LittleVec position = box.getMinVec();
 					EnumFacing direction = EnumFacing.getFront(getMeta());
 					if (direction.getAxisDirection() == AxisDirection.POSITIVE)
-						position.add(new LittleTileVec(direction));
+						position.add(new LittleVec(direction));
 					
 					switch (direction) {
 					case SOUTH:
@@ -277,10 +277,10 @@ public class LittleOpFrame extends LittleTileTE {
 	}
 	
 	@Override
-	public LittleTilePreview getPreviewTile() {
+	public LittlePreview getPreviewTile() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		saveTileExtra(nbt);
-		nbt.setString("tID", getID());
+		nbt.setString("tID", getType().id);
 		return new LittlePlacedOpFrame(box.copy(), nbt);
 	}
 	

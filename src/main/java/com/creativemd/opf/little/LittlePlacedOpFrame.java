@@ -3,12 +3,12 @@ package com.creativemd.opf.little;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
-import com.creativemd.littletiles.common.tiles.place.PlacePreviewTile;
-import com.creativemd.littletiles.common.tiles.preview.LittlePreviews;
-import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
-import com.creativemd.littletiles.common.tiles.vec.LittleTileBox;
-import com.creativemd.littletiles.common.tiles.vec.LittleTileVec;
-import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.tile.math.box.LittleBox;
+import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
+import com.creativemd.littletiles.common.tile.place.PlacePreview;
+import com.creativemd.littletiles.common.tile.preview.LittlePreview;
+import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
+import com.creativemd.littletiles.common.util.grid.LittleGridContext;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,22 +17,22 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class LittlePlacedOpFrame extends LittleTilePreview {
+public class LittlePlacedOpFrame extends LittlePreview {
 	
 	public LittlePlacedOpFrame(NBTTagCompound nbt) {
 		super(nbt);
 	}
 	
-	public LittlePlacedOpFrame(LittleTileBox box, NBTTagCompound tileData) {
+	public LittlePlacedOpFrame(LittleBox box, NBTTagCompound tileData) {
 		super(box, tileData);
 	}
 	
 	@Override
-	public PlacePreviewTile getPlaceableTile(LittleTileBox box, boolean canPlaceNormal, LittleTileVec offset, LittlePreviews previews) {
+	public PlacePreview getPlaceableTile(LittleBox box, boolean canPlaceNormal, LittleVec offset, LittlePreviews previews) {
 		if (this.box == null)
 			return new LittlePlaceOpPreview(box.copy(), this, previews);
 		else {
-			LittleTileBox newBox = this.box.copy();
+			LittleBox newBox = this.box.copy();
 			if (!canPlaceNormal)
 				newBox.add(offset);
 			return new LittlePlaceOpPreview(newBox, this, previews);
@@ -40,7 +40,7 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	}
 	
 	@Override
-	public void flipPreview(Axis axis, LittleTileVec doubledCenter) {
+	public void flipPreview(Axis axis, LittleVec doubledCenter) {
 		super.flipPreview(axis, doubledCenter);
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
 		
@@ -118,7 +118,7 @@ public class LittlePlacedOpFrame extends LittleTilePreview {
 	}
 	
 	@Override
-	public void rotatePreview(Rotation direction, LittleTileVec doubledCenter) {
+	public void rotatePreview(Rotation direction, LittleVec doubledCenter) {
 		super.rotatePreview(direction, doubledCenter);
 		EnumFacing facing = EnumFacing.getFront(tileData.getInteger("meta"));
 		tileData.setInteger("meta", RotationUtils.rotate(facing, direction).getIndex());

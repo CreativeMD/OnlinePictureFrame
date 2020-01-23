@@ -7,11 +7,12 @@ import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.utils.sorting.BlockSelector.BlockSelectorBlock;
 import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
-import com.creativemd.littletiles.common.tiles.LittleTile;
-import com.creativemd.littletiles.common.tiles.preview.LittleTilePreview;
-import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
-import com.creativemd.littletiles.common.utils.ingredients.rules.BlockIngredientRule.BlockIngredientRuleFixedBlock;
-import com.creativemd.littletiles.common.utils.ingredients.rules.IngredientRules;
+import com.creativemd.littletiles.common.tile.LittleTile;
+import com.creativemd.littletiles.common.tile.preview.LittlePreview;
+import com.creativemd.littletiles.common.tile.registry.LittleTileRegistry;
+import com.creativemd.littletiles.common.util.grid.LittleGridContext;
+import com.creativemd.littletiles.common.util.ingredient.rules.IngredientRules;
+import com.creativemd.littletiles.common.util.ingredient.rules.BlockIngredientRule.BlockIngredientRuleFixedBlock;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -115,12 +116,12 @@ public class OPFrame {
 			
 		});
 		
-		LittleTile.registerLittleTile(LittleOpFrame.class, "OpFrame");
+		LittleTileRegistry.registerTileType(LittleOpFrame.class, "OpFrame", (x) -> false, true);
 		
 		IngredientRules.registerBlockRule(new BlockSelectorBlock(littleFrame), new BlockIngredientRuleFixedBlock(littleFrame, 0));
 		
-		LittleTilePreview.registerPreviewType("opPreview", LittleOpPreview.class);
-		LittleTilePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
+		LittlePreview.registerPreviewType("opPreview", LittleOpPreview.class);
+		LittlePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
 		
 	}
 	
