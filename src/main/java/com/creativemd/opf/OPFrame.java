@@ -11,8 +11,8 @@ import com.creativemd.littletiles.common.tile.LittleTile;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
 import com.creativemd.littletiles.common.tile.registry.LittleTileRegistry;
 import com.creativemd.littletiles.common.util.grid.LittleGridContext;
-import com.creativemd.littletiles.common.util.ingredient.rules.IngredientRules;
 import com.creativemd.littletiles.common.util.ingredient.rules.BlockIngredientRule.BlockIngredientRuleFixedBlock;
+import com.creativemd.littletiles.common.util.ingredient.rules.IngredientRules;
 import com.creativemd.opf.block.BlockLittlePicFrame;
 import com.creativemd.opf.block.BlockPicFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
@@ -62,7 +62,7 @@ public class OPFrame {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
-		CreativeCorePacket.registerPacket(OPFrameConfigPacket.class, "OPFCfg");
+		CreativeCorePacket.registerPacket(OPFrameConfigPacket.class);
 		
 		MinecraftForge.EVENT_BUS.register(OPFrame.class);
 		
