@@ -208,11 +208,11 @@ public class SubGuiPic extends SubGui {
 				nbt.setBoolean("visibleFrame", visibleFrame.value);
 				
 				nbt.setInteger("render", (int) renderDistance.value);
-				nbt.setFloat("rotX", rotX.value);
-				nbt.setFloat("rotY", rotY.value);
+				nbt.setFloat("rotX", (float) rotX.value);
+				nbt.setFloat("rotY", (float) rotY.value);
 				
-				nbt.setFloat("transparency", transparency.value);
-				nbt.setFloat("brightness", brightness.value);
+				nbt.setFloat("transparency", (float) transparency.value);
+				nbt.setFloat("brightness", (float) brightness.value);
 				
 				nbt.setString("url", url.text);
 				float posX = 1;
