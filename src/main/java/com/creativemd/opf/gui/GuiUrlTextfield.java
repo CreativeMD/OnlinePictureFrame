@@ -6,7 +6,7 @@ import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.ColoredDisplayStyle;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
-import com.creativemd.opf.OPFrameConfig;
+import com.creativemd.opf.OPFrame;
 import com.google.common.collect.Lists;
 
 import net.minecraft.util.text.TextFormatting;
@@ -25,7 +25,7 @@ public class GuiUrlTextfield extends GuiTextfield {
 	@Override
 	protected void renderBackground(GuiRenderHelper helper, Style style) {
 		if (!canUse(true)) {
-			style = OPFrameConfig.getGlobalLimitations().whitelistEnabled ? DISABLED : WARNING;
+			style = OPFrame.CONFIG.whitelistEnabled ? DISABLED : WARNING;
 		}
 		super.renderBackground(helper, style);
 	}
@@ -48,6 +48,6 @@ public class GuiUrlTextfield extends GuiTextfield {
 	}
 	
 	protected boolean canUse(boolean ignoreToggle) {
-		return OPFrameConfig.getGlobalLimitations().canUse(mc.player, text, ignoreToggle);
+		return OPFrame.CONFIG.canUse(mc.player, text, ignoreToggle);
 	}
 }

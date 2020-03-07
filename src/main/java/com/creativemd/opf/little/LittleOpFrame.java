@@ -19,7 +19,7 @@ import com.creativemd.littletiles.common.tile.LittleTileTE;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
 import com.creativemd.littletiles.common.util.grid.LittleGridContext;
-import com.creativemd.opf.OPFrameConfig;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
 import net.minecraft.block.Block;
@@ -95,7 +95,7 @@ public class LittleOpFrame extends LittleTileTE {
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ, LittleActionActivated action) throws LittleActionException {
 		if (!super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ, action)) {
-			if (!world.isRemote && OPFrameConfig.limitations.canInteract(player, world))
+			if (!world.isRemote && OPFrame.CONFIG.canInteract(player, world))
 				LittleGuiHandler.openGui("littleOpFrame", new NBTTagCompound(), player, this);
 			return true;
 		}

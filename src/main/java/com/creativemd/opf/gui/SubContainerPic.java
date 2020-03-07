@@ -1,7 +1,7 @@
 package com.creativemd.opf.gui;
 
 import com.creativemd.creativecore.common.gui.premade.SubContainerTileEntity;
-import com.creativemd.opf.OPFrameConfig;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.little.LittleOpFrame;
 
@@ -39,16 +39,13 @@ public class SubContainerPic extends SubContainerTileEntity {
 	public void onPacketReceive(NBTTagCompound nbt) {
 		int type = nbt.getInteger("type");
 		if (type == 0) {
-			OPFrameConfig.Limitations globalLimitations = OPFrameConfig.getGlobalLimitations();
-			//frame.initClient();
-			
 			String url = nbt.getString("url");
-			if (globalLimitations.canUse(player, url)) {
+			if (OPFrame.CONFIG.canUse(player, url)) {
 				frame.url = url;
-				frame.sizeX = (float) Math.min(globalLimitations.sizeLimitation, nbt.getFloat("x"));
-				frame.sizeY = (float) Math.min(globalLimitations.sizeLimitation, nbt.getFloat("y"));
+				frame.sizeX = (float) Math.min(OPFrame.CONFIG.sizeLimitation, nbt.getFloat("x"));
+				frame.sizeY = (float) Math.min(OPFrame.CONFIG.sizeLimitation, nbt.getFloat("y"));
 				
-				frame.renderDistance = Math.min(globalLimitations.maxRenderDistance, nbt.getInteger("render"));
+				frame.renderDistance = Math.min(OPFrame.CONFIG.maxRenderDistance, nbt.getInteger("render"));
 				frame.posX = nbt.getByte("posX");
 				frame.posY = nbt.getByte("posY");
 				frame.rotation = nbt.getByte("rotation");

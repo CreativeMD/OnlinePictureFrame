@@ -1,10 +1,9 @@
 package com.creativemd.opf;
 
+import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
-import com.creativemd.creativecore.common.packet.CreativeCorePacket;
-import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.utils.sorting.BlockSelector.BlockSelectorBlock;
 import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
 import com.creativemd.littletiles.common.tile.LittleTile;
@@ -22,11 +21,9 @@ import com.creativemd.opf.gui.SubGuiPic;
 import com.creativemd.opf.little.LittleOpFrame;
 import com.creativemd.opf.little.LittleOpPreview;
 import com.creativemd.opf.little.LittlePlacedOpFrame;
-import com.creativemd.opf.packet.OPFrameConfigPacket;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,12 +37,11 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame", acceptedMinecraftVersions = "", dependencies = "required-before:creativecore")
+@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame", acceptedMinecraftVersions = "", dependencies = "required-before:creativecore", guiFactory = "com.creativemd.opf.OpFrameSettings")
 @Mod.EventBusSubscriber
 public class OPFrame {
 	
@@ -55,6 +51,8 @@ public class OPFrame {
 	public static Block frame = new BlockPicFrame().setUnlocalizedName("opFrame").setRegistryName("opFrame");
 	public static Block littleFrame;
 	
+	public static OPFrameConfig CONFIG;
+	
 	@SideOnly(Side.CLIENT)
 	public static void initClient() {
 		OPFrameClient.initClient();
@@ -62,8 +60,6 @@ public class OPFrame {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
-		CreativeCorePacket.registerPacket(OPFrameConfigPacket.class);
-		
 		MinecraftForge.EVENT_BUS.register(OPFrame.class);
 		
 		if (Loader.isModLoaded("littletiles"))
@@ -89,6 +85,7 @@ public class OPFrame {
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {
+		CreativeConfigRegistry.ROOT.registerValue(modid, CONFIG = new OPFrameConfig());
 		
 		GameRegistry.registerTileEntity(TileEntityPicFrame.class, "OPFrameTileEntity");
 	}
@@ -123,13 +120,5 @@ public class OPFrame {
 		LittlePreview.registerPreviewType("opPreview", LittleOpPreview.class);
 		LittlePreview.registerPreviewType("opPlacedPreview", LittlePlacedOpFrame.class);
 		
-	}
-	
-	@SubscribeEvent
-	public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-		EntityPlayer player = event.player;
-		if (!player.world.isRemote && player instanceof EntityPlayerMP) {
-			PacketHandler.sendPacketToPlayer(new OPFrameConfigPacket(), (EntityPlayerMP) player);
-		}
 	}
 }

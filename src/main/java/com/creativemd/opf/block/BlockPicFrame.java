@@ -10,7 +10,7 @@ import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.gui.opener.IGuiCreator;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
-import com.creativemd.opf.OPFrameConfig;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
 
@@ -56,56 +56,44 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		return new TileEntityState(state, world.getTileEntity(pos));
 	}
 	
-	/**
-	 * Called by ItemBlocks just before a block is actually set in the world, to allow for adjustments to the
-	 * IBlockstate
-	 */
+	/** Called by ItemBlocks just before a block is actually set in the world, to allow for adjustments to the
+	 * IBlockstate */
 	@Override
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
 		return this.getDefaultState().withProperty(FACING, facing);
 	}
 	
-	/**
-	 * Called by ItemBlocks after a block is set in the world, to allow post-place logic
-	 */
+	/** Called by ItemBlocks after a block is set in the world, to allow post-place logic */
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		//worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
 	
-	/**
-	 * Convert the given metadata into a BlockState for this Block
-	 */
+	/** Convert the given metadata into a BlockState for this Block */
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return this.getDefaultState().withProperty(FACING, EnumFacing.getFront(meta));
 	}
 	
-	/**
-	 * Convert the BlockState into the correct metadata value
-	 */
+	/** Convert the BlockState into the correct metadata value */
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return ((EnumFacing) state.getValue(FACING)).getIndex();
+		return state.getValue(FACING).getIndex();
 	}
 	
-	/**
-	 * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
-	 * blockstate.
-	 */
+	/** Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
+	 * blockstate. */
 	@Override
 	public IBlockState withRotation(IBlockState state, Rotation rot) {
-		return state.withProperty(FACING, rot.rotate((EnumFacing) state.getValue(FACING)));
+		return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
 	}
 	
-	/**
-	 * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
-	 * blockstate.
-	 */
+	/** Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
+	 * blockstate. */
 	@Override
 	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-		return state.withRotation(mirrorIn.toRotation((EnumFacing) state.getValue(FACING)));
+		return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
 	}
 	
 	@Override
@@ -118,9 +106,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		return EnumBlockRenderType.MODEL;
 	}
 	
-	/**
-	 * Used to determine ambient occlusion and culling when rebuilding chunks for render
-	 */
+	/** Used to determine ambient occlusion and culling when rebuilding chunks for render */
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
@@ -152,7 +138,7 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (!world.isRemote && OPFrameConfig.limitations.canInteract(player, world))
+		if (!world.isRemote && OPFrame.CONFIG.canInteract(player, world))
 			GuiHandler.openGui(player, world, pos);
 		return true;
 	}

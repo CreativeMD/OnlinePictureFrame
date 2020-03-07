@@ -10,7 +10,7 @@ import com.creativemd.creativecore.common.gui.controls.gui.GuiSteppedSlider;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.opf.OPFrameConfig;
+import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
 import com.creativemd.opf.client.DownloadThread;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
@@ -239,7 +239,7 @@ public class SubGuiPic extends SubGui {
 				sendPacketToServer(nbt);
 			}
 		};
-		save.setEnabled(OPFrameConfig.getGlobalLimitations().canUse(mc.player, url.text));
+		save.setEnabled(OPFrame.CONFIG.canUse(mc.player, url.text));
 		controls.add(save);
 		
 		if (editFacing) {
