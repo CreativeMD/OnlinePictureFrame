@@ -1,0 +1,18 @@
+tile.opFrame.name=Marco para imagen de Internet
+tile.littleOpFrame.name=Pequeño marco para imagen de Internet
+
+label.opframe.not_whitelisted.name=URL no autorizada en la lista blanca
+label.opframe.whitelist_warning.name=Advertencia: La lista blanca de URLs no esta habilitada
+
+download.exception.forbidden=Prohibido
+download.exception.notfound=No encontrado
+download.exception.invalid=Imagen no descargable
+download.exception.gif=Error al analizar el GIF
+
+config.opframe.sizeLimitation.commment=El tamaño máximo (en bloques) para un marco
+config.opframe.maxRenderDistance.comment=La distancia máxima de renderizado (en bloques)
+config.opframe.onlyOps.comment="true" para que solo los administradores (jugadores OP) puedan editar un marco
+config.opframe.disableAdventure.comment=Si es "true", los jugadores en modo aventura no podrán editar marcos
+config.opframe.onlyCreative.comment=Si es "true", solo los jugadores en modo creativo pueden editar marcos
+config.opframe.whitelistEnabled.comment=Si es "true", solo las URL de la lista blanca se pueden usar para un marco
+config.opframe.whitelist.comment=Lista de URLs que se pueden usar para marcos
