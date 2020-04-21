@@ -2,7 +2,7 @@ tile.opFrame.name=Marco para imagen de Internet
 tile.littleOpFrame.name=Pequeño marco para imagen de Internet
 
 label.opframe.not_whitelisted.name=URL no autorizada en la lista blanca
-label.opframe.whitelist_warning.name=Advertencia: La lista blanca de URLs no esta habilitada
+label.opframe.whitelist_warning.name=Advertencia: La lista blanca de URLs no está habilitada
 
 download.exception.forbidden=Prohibido
 download.exception.notfound=No encontrado
