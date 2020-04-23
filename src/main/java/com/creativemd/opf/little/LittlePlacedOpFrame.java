@@ -7,7 +7,6 @@ import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.tile.place.PlacePreview;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
-import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
 import com.creativemd.littletiles.common.util.grid.LittleGridContext;
 
 import net.minecraft.init.Blocks;
@@ -28,14 +27,14 @@ public class LittlePlacedOpFrame extends LittlePreview {
 	}
 	
 	@Override
-	public PlacePreview getPlaceableTile(LittleBox box, boolean canPlaceNormal, LittleVec offset, LittlePreviews previews) {
+	public PlacePreview getPlaceableTile(LittleVec offset) {
 		if (this.box == null)
-			return new LittlePlaceOpPreview(box.copy(), this, previews);
+			return new LittlePlaceOpPreview(box.copy(), this);
 		else {
 			LittleBox newBox = this.box.copy();
-			if (!canPlaceNormal)
+			if (offset != null)
 				newBox.add(offset);
-			return new LittlePlaceOpPreview(newBox, this, previews);
+			return new LittlePlaceOpPreview(newBox, this);
 		}
 	}
 	

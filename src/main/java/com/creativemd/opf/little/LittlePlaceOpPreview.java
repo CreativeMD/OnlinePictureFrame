@@ -3,16 +3,14 @@ package com.creativemd.opf.little;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.littletiles.client.render.tile.LittleRenderingCube;
+import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tile.LittleTile;
 import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import com.creativemd.littletiles.common.tile.place.PlacePreview;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
-import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.tileentity.TileList;
 import com.creativemd.littletiles.common.util.grid.LittleGridContext;
@@ -21,7 +19,6 @@ import com.creativemd.opf.block.TileEntityPicFrame;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -33,8 +30,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class LittlePlaceOpPreview extends PlacePreview {
 	
-	public LittlePlaceOpPreview(LittleBox box, LittlePreview preview, LittlePreviews previews) {
-		super(box, preview, previews);
+	public LittlePlaceOpPreview(LittleBox box, LittlePreview preview) {
+		super(box, preview);
 	}
 	
 	@Override
@@ -56,8 +53,8 @@ public class LittlePlaceOpPreview extends PlacePreview {
 	}
 	
 	@Override
-	public List<LittleTile> placeTile(@Nullable EntityPlayer player, @Nullable ItemStack stack, BlockPos pos, LittleGridContext context, TileEntityLittleTiles te, TileList list, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, @Nullable EnumFacing facing, boolean requiresCollisionTest) {
-		List<LittleTile> tiles = super.placeTile(player, stack, pos, context, te, list, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest);
+	public List<LittleTile> placeTile(EntityPlayer player, BlockPos pos, LittleGridContext context, TileEntityLittleTiles te, TileList list, List<LittleTile> unplaceableTiles, List<LittleTile> removedTiles, PlacementMode mode, EnumFacing facing, boolean requiresCollisionTest, LittleStructure structure) {
+		List<LittleTile> tiles = super.placeTile(player, pos, context, te, list, unplaceableTiles, removedTiles, mode, facing, requiresCollisionTest, structure);
 		LittleTile tile = tiles.size() > 0 ? tiles.get(0) : null;
 		if (tile instanceof LittleOpFrame && preview.getTileData().getBoolean("fresh")) {
 			((LittleOpFrame) tile).setMeta(facing.getIndex());
@@ -68,7 +65,7 @@ public class LittlePlaceOpPreview extends PlacePreview {
 	
 	@Override
 	public PlacePreview copy() {
-		return new LittlePlaceOpPreview(box.copy(), preview.copy(), structurePreview);
+		return new LittlePlaceOpPreview(box.copy(), preview.copy());
 	}
 	
 }

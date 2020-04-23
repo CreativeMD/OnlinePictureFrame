@@ -4,7 +4,6 @@ import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.tile.place.PlacePreview;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
-import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -19,10 +18,10 @@ public class LittleOpPreview extends LittlePreview {
 	}
 	
 	@Override
-	public PlacePreview getPlaceableTile(LittleBox box, boolean canPlaceNormal, LittleVec offset, LittlePreviews previews) {
-		if (!canPlaceNormal)
+	public PlacePreview getPlaceableTile(LittleVec offset) {
+		if (offset != null)
 			this.box.add(offset);
-		return new LittlePlaceOpPreview(this.box, this, previews);
+		return new LittlePlaceOpPreview(this.box, this);
 	}
 	
 }
