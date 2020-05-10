@@ -135,7 +135,7 @@ public class DownloadThread extends Thread {
 		TextureCache.CacheEntry entry = TEXTURE_CACHE.getEntry(url);
 		long requestTime = System.currentTimeMillis();
 		URLConnection connection = new URL(url).openConnection();
-		connection.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
 		int responseCode = -1;
 		if (connection instanceof HttpURLConnection) {
 			HttpURLConnection httpConnection = (HttpURLConnection) connection;
@@ -158,15 +158,13 @@ public class DownloadThread extends Thread {
 			if (maxAge != null && !maxAge.isEmpty()) {
 				try {
 					expireTimestamp = requestTime + Long.parseLong(maxAge) * 1000;
-				} catch (NumberFormatException e) {
-				}
+				} catch (NumberFormatException e) {}
 			}
 			String expires = connection.getHeaderField("Expires");
 			if (expires != null && !expires.isEmpty()) {
 				try {
 					expireTimestamp = FORMAT.parse(expires).getTime();
-				} catch (ParseException e) {
-				}
+				} catch (ParseException e) {}
 			}
 			String lastModified = connection.getHeaderField("Last-Modified");
 			if (lastModified != null && !lastModified.isEmpty()) {
