@@ -2,7 +2,7 @@ package com.creativemd.opf.block;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.littletiles.common.api.ILittleTile;
@@ -62,9 +62,9 @@ public class BlockLittlePicFrame extends Block implements ILittleTile, ICreative
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
-		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
-		RenderCubeObject cube = new RenderCubeObject(0.25F, 0.25F, 0.25F, 0.75F, 0.75F, 0.75F, Blocks.PLANKS);
+	public ArrayList<RenderBox> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
+		ArrayList<RenderBox> cubes = new ArrayList<RenderBox>();
+		RenderBox cube = new RenderBox(0.25F, 0.25F, 0.25F, 0.75F, 0.75F, 0.75F, Blocks.PLANKS);
 		cubes.add(cube);
 		return cubes;
 	}

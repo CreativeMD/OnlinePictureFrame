@@ -9,9 +9,9 @@ import javax.vecmath.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
-import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
 import com.creativemd.littletiles.client.gui.handler.LittleGuiHandler;
-import com.creativemd.littletiles.client.render.tile.LittleRenderingCube;
+import com.creativemd.littletiles.client.render.tile.LittleRenderBox;
 import com.creativemd.littletiles.common.action.LittleActionException;
 import com.creativemd.littletiles.common.action.block.LittleActionActivated;
 import com.creativemd.littletiles.common.tile.LittleTile;
@@ -54,10 +54,10 @@ public class LittleOpFrame extends LittleTileTE {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<LittleRenderingCube> getInternalRenderingCubes(BlockRenderLayer layer) {
-		ArrayList<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
+	public ArrayList<LittleRenderBox> getInternalRenderingCubes(BlockRenderLayer layer) {
+		ArrayList<LittleRenderBox> cubes = new ArrayList<LittleRenderBox>();
 		if (((TileEntityPicFrame) getTileEntity()).visibleFrame) {
-			CubeObject cube = box.getCube(getContext());
+			AlignedBox cube = box.getCube(getContext());
 			EnumFacing direction = EnumFacing.getFront(getMeta());
 			double width = 0.025;
 			switch (direction) {
@@ -82,7 +82,7 @@ public class LittleOpFrame extends LittleTileTE {
 			default:
 				break;
 			}
-			cubes.add(new LittleRenderingCube(cube, box, Blocks.PLANKS, 0));
+			cubes.add(new LittleRenderBox(cube, box, Blocks.PLANKS, 0));
 		}
 		return cubes;
 	}
@@ -112,7 +112,7 @@ public class LittleOpFrame extends LittleTileTE {
 		return new ItemStack(this.getBlock(), 1, getMeta());
 	}
 	
-	public static CubeObject getBoundingBoxByTilenEntity(LittleGridContext context, TileEntityPicFrame frame, int meta) {
+	public static AlignedBox getBoundingBoxByTilenEntity(LittleGridContext context, TileEntityPicFrame frame, int meta) {
 		float thickness = 0.05F;
 		float offsetX = 0;
 		if (frame.posX == 1)
@@ -124,7 +124,7 @@ public class LittleOpFrame extends LittleTileTE {
 			offsetY = -frame.sizeY / 2F;
 		else if (frame.posY == 2)
 			offsetY = (float) (-frame.sizeY + context.pixelSize);
-		CubeObject cube = new CubeObject(0, offsetY, offsetX, thickness, frame.sizeY + offsetY, frame.sizeX + offsetX);
+		AlignedBox cube = new AlignedBox(0, offsetY, offsetX, thickness, frame.sizeY + offsetY, frame.sizeX + offsetX);
 		EnumFacing direction = EnumFacing.getFront(meta);
 		
 		Vector3f center = new Vector3f(thickness / 2F, (float) context.pixelSize / 2F, (float) context.pixelSize / 2F);

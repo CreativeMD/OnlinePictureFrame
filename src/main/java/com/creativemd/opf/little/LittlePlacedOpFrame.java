@@ -1,6 +1,6 @@
 package com.creativemd.opf.little;
 
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.littletiles.common.tile.math.box.LittleBox;
@@ -87,8 +87,8 @@ public class LittlePlacedOpFrame extends LittlePreview {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public RenderCubeObject getCubeBlock(LittleGridContext context) {
-		RenderCubeObject cube = super.getCubeBlock(context);
+	public RenderBox getCubeBlock(LittleGridContext context) {
+		RenderBox cube = super.getCubeBlock(context);
 		EnumFacing direction = EnumFacing.getFront(tileData.getInteger("meta"));
 		double width = 0.025;
 		switch (direction) {
@@ -113,7 +113,7 @@ public class LittlePlacedOpFrame extends LittlePreview {
 		default:
 			break;
 		}
-		return new RenderCubeObject(cube, Blocks.PLANKS, 0);
+		return new RenderBox(cube, Blocks.PLANKS, 0);
 	}
 	
 	@Override

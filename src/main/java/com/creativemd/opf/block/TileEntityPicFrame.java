@@ -1,7 +1,7 @@
 package com.creativemd.opf.block;
 
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
-import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
 import com.creativemd.opf.client.DownloadThread;
 import com.creativemd.opf.client.PictureTexture;
 
@@ -90,7 +90,7 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 	public static AxisAlignedBB getBoundingBox(TileEntityPicFrame frame, int meta) {
 		/* AxisAlignedBB bb = INFINITE_EXTENT_AABB;
 		 * return bb; */
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
+		AlignedBox cube = new AlignedBox(0, 0, 0, 0.05F, 1, 1);
 		
 		float sizeX = frame.sizeX;
 		if (sizeX == 0) {
@@ -169,9 +169,9 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 			cube.maxY += offsetY;
 		}
 		
-		cube = new CubeObject(Math.min(cube.minX, cube.maxX), Math.min(cube.minY, cube.maxY), Math.min(cube.minZ, cube.maxZ), Math.max(cube.minX, cube.maxX), Math.max(cube.minY, cube.maxY), Math.max(cube.minZ, cube.maxZ));
+		cube = new AlignedBox(Math.min(cube.minX, cube.maxX), Math.min(cube.minY, cube.maxY), Math.min(cube.minZ, cube.maxZ), Math.max(cube.minX, cube.maxX), Math.max(cube.minY, cube.maxY), Math.max(cube.minZ, cube.maxZ));
 		
-		return CubeObject.rotateCube(cube, direction).getAxis();
+		return AlignedBox.rotateCube(cube, direction).getAxis();
 	}
 	
 	@Override

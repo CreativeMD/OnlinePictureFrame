@@ -2,14 +2,14 @@ package com.creativemd.opf.block;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.gui.opener.IGuiCreator;
-import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
@@ -119,9 +119,9 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
+		AlignedBox cube = new AlignedBox(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = blockState.getValue(FACING);
-		return CubeObject.rotateCube(cube, direction).getAxis(); //.offset(pos);
+		return AlignedBox.rotateCube(cube, direction).getAxis(); //.offset(pos);
 	}
 	
 	@Override
@@ -131,9 +131,9 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		if (te instanceof TileEntityPicFrame)
 			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) te, te.getBlockMetadata());
 		
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
+		AlignedBox cube = new AlignedBox(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = state.getValue(FACING);
-		return CubeObject.rotateCube(cube, direction).getAxis();//.offset(pos);
+		return AlignedBox.rotateCube(cube, direction).getAxis();//.offset(pos);
 	}
 	
 	@Override
@@ -167,11 +167,11 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
-		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
-		RenderCubeObject cube = new RenderCubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
+	public ArrayList<RenderBox> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
+		ArrayList<RenderBox> cubes = new ArrayList<RenderBox>();
+		RenderBox cube = new RenderBox(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
 		if (te instanceof TileEntityPicFrame && ((TileEntityPicFrame) te).visibleFrame) {
-			cube = new RenderCubeObject(CubeObject.rotateCube(cube, state.getValue(FACING)), cube);
+			cube = new RenderBox(AlignedBox.rotateCube(cube, state.getValue(FACING)), cube);
 			cubes.add(cube);
 		} else if (!(te instanceof TileEntityPicFrame))
 			cubes.add(cube);

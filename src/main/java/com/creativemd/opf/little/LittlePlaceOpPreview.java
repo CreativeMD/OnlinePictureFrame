@@ -3,9 +3,9 @@ package com.creativemd.opf.little;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.littletiles.client.render.tile.LittleRenderingCube;
+import com.creativemd.littletiles.client.render.tile.LittleRenderBox;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tile.LittleTile;
 import com.creativemd.littletiles.common.tile.math.box.LittleBox;
@@ -36,15 +36,15 @@ public class LittlePlaceOpPreview extends PlacePreview {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<LittleRenderingCube> getPreviews(LittleGridContext context) {
+	public List<LittleRenderBox> getPreviews(LittleGridContext context) {
 		NBTTagCompound nbt = preview.getTileData();
-		List<LittleRenderingCube> cubes = new ArrayList<LittleRenderingCube>();
+		List<LittleRenderBox> cubes = new ArrayList<LittleRenderBox>();
 		cubes.add(box.getRenderingCube(context, null, 0));
 		if (!nbt.getBoolean("fresh")) {
 			TileEntityPicFrame tileEntity = (TileEntityPicFrame) TileEntity.create(Minecraft.getMinecraft().world, nbt.getCompoundTag("tileEntity"));
-			CubeObject picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(context, tileEntity, nbt.getInteger("meta"));
-			picPreview.add(box.getMinVec().getVec(context));
-			LittleRenderingCube renderingCube = box.getRenderingCube(context, picPreview, null, 0);
+			AlignedBox picPreview = LittleOpFrame.getBoundingBoxByTilenEntity(context, tileEntity, nbt.getInteger("meta"));
+			picPreview.add(box.getMinVec().getVector(context));
+			LittleRenderBox renderingCube = box.getRenderingCube(context, picPreview, null, 0);
 			renderingCube.color = ColorUtils.VecToInt(new Vec3d(0, 1, 1));
 			cubes.add(renderingCube);
 		}

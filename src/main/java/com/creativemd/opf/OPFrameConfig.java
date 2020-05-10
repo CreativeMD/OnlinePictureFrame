@@ -2,7 +2,6 @@ package com.creativemd.opf;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -36,8 +35,8 @@ public class OPFrameConfig {
 	public boolean whitelistEnabled = false;
 	
 	@CreativeConfig
-	public List<String> whitelist = new ArrayList<>(Arrays.asList("imgur.com", "gyazo.com", "prntscr.com", "tinypic.com", "puu.sh", "pinimg.com", "photobucket.com", "staticflickr.com", "flic.kr", "tenor.co", "gfycat.com", "giphy.com", "gph.is", "gifbin.com", "i.redd.it", "media.tumblr.com",
-	        "twimg.com", "discordapp.com", "images.discordapp.net", "githubusercontent.com", "googleusercontent.com", "googleapis.com", "wikimedia.org", "ytimg.com"));
+	public List<String> whitelist = Arrays.asList("imgur.com", "gyazo.com", "prntscr.com", "tinypic.com", "puu.sh", "pinimg.com", "photobucket.com", "staticflickr.com", "flic.kr", "tenor.co", "gfycat.com", "giphy.com", "gph.is", "gifbin.com", "i.redd.it", "media.tumblr.com", "twimg.com",
+	        "discordapp.com", "images.discordapp.net", "githubusercontent.com", "googleusercontent.com", "googleapis.com", "wikimedia.org", "ytimg.com");
 	
 	public boolean canUse(EntityPlayer player, String url) {
 		return canUse(player, url, false);
