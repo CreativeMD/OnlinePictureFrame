@@ -115,7 +115,7 @@ public class DownloadThread extends Thread {
 		if (processedImage == null) {
 			if (exception == null)
 				error = "download.exception.gif";
-			if (exception.getMessage().startsWith("Server returned HTTP response code: 403"))
+			else if (exception.getMessage().startsWith("Server returned HTTP response code: 403"))
 				error = "download.exception.forbidden";
 			else if (exception.getMessage().startsWith("Server returned HTTP response code: 404"))
 				error = "download.exception.notfound";
