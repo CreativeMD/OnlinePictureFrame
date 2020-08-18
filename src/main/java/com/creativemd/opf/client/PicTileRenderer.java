@@ -2,7 +2,6 @@ package com.creativemd.opf.client;
 
 import org.lwjgl.opengl.GL11;
 
-import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.opf.block.TileEntityPicFrame;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,6 +13,35 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFrame> {
+	
+	public static void applyDirection(EnumFacing direction) {
+		int rotation = 0;
+		switch (direction) {
+		case EAST:
+			rotation = 0;
+			break;
+		case NORTH:
+			rotation = 90;
+			break;
+		case SOUTH:
+			rotation = 270;
+			break;
+		case WEST:
+			rotation = 180;
+			break;
+		case UP:
+			GL11.glRotated(90, 1, 0, 0);
+			GL11.glRotated(-90, 0, 0, 1);
+			break;
+		case DOWN:
+			GL11.glRotated(-90, 1, 0, 0);
+			GL11.glRotated(-90, 0, 0, 1);
+			break;
+		default:
+			break;
+		}
+		GL11.glRotated(rotation, 0, 1, 0);
+	}
 	
 	public static void renderTileEntityAt(TileEntityPicFrame frame, double x, double y, double z, float partialTicks, int meta, boolean isLittle) {
 		if (!frame.url.equals("")) {
@@ -38,7 +66,7 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 					GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 					
 					EnumFacing direction = EnumFacing.getFront(meta);
-					RenderHelper3D.applyDirection(direction);
+					applyDirection(direction);
 					if (direction == EnumFacing.UP || direction == EnumFacing.DOWN)
 						GL11.glRotatef(90, 0, 1, 0);
 					

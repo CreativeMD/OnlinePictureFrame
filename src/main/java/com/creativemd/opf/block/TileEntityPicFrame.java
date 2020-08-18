@@ -171,7 +171,7 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 		
 		cube = new AlignedBox(Math.min(cube.minX, cube.maxX), Math.min(cube.minY, cube.maxY), Math.min(cube.minZ, cube.maxZ), Math.max(cube.minX, cube.maxX), Math.max(cube.minY, cube.maxY), Math.max(cube.minZ, cube.maxZ));
 		
-		return AlignedBox.rotateCube(cube, direction).getAxis();
+		return BlockPicFrame.rotateCube(cube, direction).getBB();
 	}
 	
 	@Override
