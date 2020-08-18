@@ -2,14 +2,14 @@ package com.creativemd.opf.block;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 import com.creativemd.creativecore.client.rendering.model.ICreativeRendered;
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.gui.opener.IGuiCreator;
-import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.gui.SubContainerPic;
 import com.creativemd.opf.gui.SubGuiPic;
@@ -34,6 +34,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -119,9 +120,9 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
+		AlignedBox cube = new AlignedBox(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = blockState.getValue(FACING);
-		return CubeObject.rotateCube(cube, direction).getAxis(); //.offset(pos);
+		return rotateCube(cube, direction).getBB(); //.offset(pos);
 	}
 	
 	@Override
@@ -131,9 +132,9 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 		if (te instanceof TileEntityPicFrame)
 			return TileEntityPicFrame.getBoundingBox((TileEntityPicFrame) te, te.getBlockMetadata());
 		
-		CubeObject cube = new CubeObject(0, 0, 0, 0.05F, 1, 1);
+		AlignedBox cube = new AlignedBox(0, 0, 0, 0.05F, 1, 1);
 		EnumFacing direction = state.getValue(FACING);
-		return CubeObject.rotateCube(cube, direction).getAxis();//.offset(pos);
+		return rotateCube(cube, direction).getBB();//.offset(pos);
 	}
 	
 	@Override
@@ -167,15 +168,107 @@ public class BlockPicFrame extends BlockContainer implements IGuiCreator, ICreat
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ArrayList<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
-		ArrayList<RenderCubeObject> cubes = new ArrayList<RenderCubeObject>();
-		RenderCubeObject cube = new RenderCubeObject(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
+	public ArrayList<RenderBox> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack) {
+		ArrayList<RenderBox> cubes = new ArrayList<RenderBox>();
+		RenderBox cube = new RenderBox(0, 0, 0, 0.03F, 1, 1, Blocks.PLANKS);
 		if (te instanceof TileEntityPicFrame && ((TileEntityPicFrame) te).visibleFrame) {
-			cube = new RenderCubeObject(CubeObject.rotateCube(cube, state.getValue(FACING)), cube);
+			cube = new RenderBox(rotateCube(cube, state.getValue(FACING)), cube);
 			cubes.add(cube);
 		} else if (!(te instanceof TileEntityPicFrame))
 			cubes.add(cube);
 		return cubes;
+	}
+	
+	public static AlignedBox rotateCube(AlignedBox cube, EnumFacing direction) {
+		return rotateCube(cube, direction, new Vec3d(0.5, 0.5, 0.5));
+	}
+	
+	public static AlignedBox rotateCube(AlignedBox cube, EnumFacing direction, Vec3d center) {
+		AlignedBox rotateCube = new AlignedBox(cube);
+		applyCubeRotation(rotateCube, direction, center);
+		return rotateCube;
+	}
+	
+	public static Vec3d applyVectorRotation(Vec3d vector, EnumFacing EnumFacing) {
+		double tempX = vector.x;
+		double tempY = vector.y;
+		double tempZ = vector.z;
+		
+		double posX = tempX;
+		double posY = tempY;
+		double posZ = tempZ;
+		
+		switch (EnumFacing) {
+		case UP:
+			posX = -tempY;
+			posY = tempX;
+			break;
+		case DOWN:
+			posX = tempY;
+			posY = -tempX;
+			break;
+		case SOUTH:
+			posX = -tempZ;
+			posZ = tempX;
+			break;
+		case NORTH:
+			posX = tempZ;
+			posZ = -tempX;
+			break;
+		case WEST:
+			posX = -tempX;
+			posZ = -tempZ;
+			break;
+		default:
+			break;
+		}
+		return new Vec3d(posX, posY, posZ);
+	}
+	
+	public static void applyCubeRotation(AlignedBox cube, EnumFacing EnumFacing, Vec3d center) {
+		float minX = cube.minX;
+		float minY = cube.minY;
+		float minZ = cube.minZ;
+		float maxX = cube.maxX;
+		float maxY = cube.maxY;
+		float maxZ = cube.maxZ;
+		if (center != null) {
+			minX -= center.x;
+			minY -= center.y;
+			minZ -= center.z;
+			maxX -= center.x;
+			maxY -= center.y;
+			maxZ -= center.z;
+		}
+		Vec3d min = applyVectorRotation(new Vec3d(minX, minY, minZ), EnumFacing);
+		Vec3d max = applyVectorRotation(new Vec3d(maxX, maxY, maxZ), EnumFacing);
+		
+		if (center != null) {
+			min = min.addVector(center.x, center.y, center.z);
+			max = max.addVector(center.x, center.y, center.z);
+		}
+		
+		if (min.x < max.x) {
+			cube.minX = (float) min.x;
+			cube.maxX = (float) max.x;
+		} else {
+			cube.minX = (float) max.x;
+			cube.maxX = (float) min.x;
+		}
+		if (min.y < max.y) {
+			cube.minY = (float) min.y;
+			cube.maxY = (float) max.y;
+		} else {
+			cube.minY = (float) max.y;
+			cube.maxY = (float) min.y;
+		}
+		if (min.z < max.z) {
+			cube.minZ = (float) min.z;
+			cube.maxZ = (float) max.z;
+		} else {
+			cube.minZ = (float) max.z;
+			cube.maxZ = (float) min.z;
+		}
 	}
 	
 }

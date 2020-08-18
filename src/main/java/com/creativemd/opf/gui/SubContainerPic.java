@@ -3,12 +3,9 @@ package com.creativemd.opf.gui;
 import com.creativemd.creativecore.common.gui.premade.SubContainerTileEntity;
 import com.creativemd.opf.OPFrame;
 import com.creativemd.opf.block.TileEntityPicFrame;
-import com.creativemd.opf.little.LittleOpFrame;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.common.Optional.Method;
 
 public class SubContainerPic extends SubContainerTileEntity {
 	
@@ -58,21 +55,9 @@ public class SubContainerPic extends SubContainerTileEntity {
 				
 				frame.transparency = nbt.getFloat("transparency");
 				frame.brightness = nbt.getFloat("brightness");
-				
-				if (nbt.hasKey("facing")) {
-					setFacing(EnumFacing.getFront(nbt.getInteger("facing")));
-				}
 			}
 			
 			frame.updateBlock();
-		}
-	}
-	
-	@Method(modid = "littletiles")
-	public void setFacing(EnumFacing facing) {
-		if (tile != null) {
-			((LittleOpFrame) tile).setMeta(facing.getIndex());
-			((LittleOpFrame) tile).sendUpdatePacketToClient();
 		}
 	}
 	
