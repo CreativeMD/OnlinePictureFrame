@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame", acceptedMinecraftVersions = "", dependencies = "required-before:creativecore", guiFactory = "com.creativemd.opf.OpFrameSettings")
+@Mod(modid = OPFrame.modid, version = OPFrame.version, name = "OnlinePictureFrame", acceptedMinecraftVersions = "", dependencies = "required-after:creativecore", guiFactory = "com.creativemd.opf.OpFrameSettings")
 @Mod.EventBusSubscriber
 public class OPFrame {
 	
