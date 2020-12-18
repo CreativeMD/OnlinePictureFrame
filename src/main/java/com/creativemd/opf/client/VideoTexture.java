@@ -57,20 +57,18 @@ public class VideoTexture extends PictureTexture {
 	public void beforeRender() {
 		synchronized (this) {
 			if (buffer != null && first) {
-				System.out.println("Uploading for the first time " + buffer);
 				GlStateManager.pushMatrix();
 				GlStateManager.bindTexture(texture);
 				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 				GlStateManager.popMatrix();
-				System.out.println("Done");
 				first = false;
 			}
 			if (needsUpdate.getAndSet(false)) {
 				GlStateManager.pushMatrix();
 				GlStateManager.bindTexture(texture);
 				
-				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-				//GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+				//GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+				GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 				
 				GlStateManager.popMatrix();
 			}
