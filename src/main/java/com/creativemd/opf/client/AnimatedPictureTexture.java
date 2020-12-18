@@ -1,5 +1,7 @@
 package com.creativemd.opf.client;
 
+import net.minecraft.client.renderer.GlStateManager;
+
 public class AnimatedPictureTexture extends PictureTexture {
 	
 	private final int[] textureIDs;
@@ -27,12 +29,10 @@ public class AnimatedPictureTexture extends PictureTexture {
 			long startTime = System.currentTimeMillis();
 			int index = 0;
 			while (completedFrames < textureIDs.length && index < textureIDs.length && System.currentTimeMillis() - startTime < 10) {
-				while (textureIDs[index] != -1 && index < textureIDs.length - 1) {
+				while (textureIDs[index] != -1 && index < textureIDs.length - 1)
 					index++;
-				}
-				if (textureIDs[index] == -1) {
+				if (textureIDs[index] == -1)
 					textureIDs[index] = uploadFrame(index);
-				}
 			}
 		}
 	}
@@ -60,4 +60,11 @@ public class AnimatedPictureTexture extends PictureTexture {
 		}
 		return id;
 	}
+	
+	@Override
+	public void release() {
+		for (int i = 0; i < textureIDs.length; i++)
+			GlStateManager.deleteTexture(textureIDs[i]);
+	}
+	
 }

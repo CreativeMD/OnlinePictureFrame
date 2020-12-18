@@ -48,9 +48,11 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 			if (frame.isTextureLoaded()) {
 				int textureID = frame.texture.getTextureID();
 				
-				if (textureID != -1 && frame.transparency > 0) {
+				if (frame.texture.hasTexture() && frame.transparency > 0) {
 					float sizeX = frame.sizeX;
 					float sizeY = frame.sizeY;
+					
+					frame.texture.beforeRender();
 					
 					GlStateManager.enableBlend();
 					OpenGlHelper.glBlendFunc(770, 771, 1, 0);
@@ -113,9 +115,8 @@ public class PicTileRenderer extends TileEntitySpecialRenderer<TileEntityPicFram
 					GlStateManager.disableBlend();
 					GlStateManager.enableLighting();
 				}
-			} else {
+			} else
 				frame.loadTexture();
-			}
 		}
 	}
 	

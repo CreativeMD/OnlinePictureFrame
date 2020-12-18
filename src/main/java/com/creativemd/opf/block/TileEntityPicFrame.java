@@ -67,9 +67,8 @@ public class TileEntityPicFrame extends TileEntityCreative implements ITickable 
 					failed = true;
 					error = downloader.getError();
 					DownloadThread.LOGGER.error("Could not load image of " + pos + " " + error);
-				} else {
+				} else
 					texture = DownloadThread.loadImage(downloader);
-				}
 				
 				downloader = null;
 			}

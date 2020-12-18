@@ -53,6 +53,7 @@ public class DownloadThread extends Thread {
 	private ProcessedImageData processedImage;
 	private String error;
 	private boolean complete;
+	private boolean isVideo;
 	
 	public DownloadThread(String url) {
 		this.url = url;
@@ -71,6 +72,10 @@ public class DownloadThread extends Thread {
 	
 	public boolean hasFailed() {
 		return hasFinished() && error != null;
+	}
+	
+	public boolean isVideo() {
+		return isVideo;
 	}
 	
 	public String getError() {
@@ -108,11 +113,13 @@ public class DownloadThread extends Thread {
 			} finally {
 				IOUtils.closeQuietly(in);
 			}
+		} catch (FoundVideoException e) {
+			isVideo = true;
 		} catch (Exception e) {
 			exception = e;
 			LOGGER.error("An exception occurred while loading OPFrame image", e);
 		}
-		if (processedImage == null) {
+		if (!isVideo && processedImage == null) {
 			if (exception == null)
 				error = "download.exception.gif";
 			else if (exception.getMessage().startsWith("Server returned HTTP response code: 403"))
@@ -131,7 +138,7 @@ public class DownloadThread extends Thread {
 		}
 	}
 	
-	public static byte[] load(String url) throws IOException {
+	public static byte[] load(String url) throws IOException, FoundVideoException {
 		TextureCache.CacheEntry entry = TEXTURE_CACHE.getEntry(url);
 		long requestTime = System.currentTimeMillis();
 		URLConnection connection = new URL(url).openConnection();
@@ -151,6 +158,8 @@ public class DownloadThread extends Thread {
 		InputStream in = null;
 		try {
 			in = connection.getInputStream();
+			if (!connection.getContentType().startsWith("image"))
+				throw new FoundVideoException();
 			String etag = connection.getHeaderField("ETag");
 			long lastModifiedTimestamp;
 			long expireTimestamp = -1;
@@ -184,7 +193,13 @@ public class DownloadThread extends Thread {
 				if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
 					File file = entry.getFile();
 					if (file.exists()) {
-						return IOUtils.toByteArray(new FileInputStream(file));
+						FileInputStream fileStream = new FileInputStream(file);
+						try {
+							return IOUtils.toByteArray(fileStream);
+						} finally {
+							fileStream.close();
+						}
+						
 					}
 				}
 			}
@@ -233,18 +248,23 @@ public class DownloadThread extends Thread {
 	
 	public static PictureTexture loadImage(DownloadThread thread) {
 		PictureTexture texture = null;
+		
 		if (!thread.hasFailed()) {
-			if (thread.processedImage.isAnimated()) {
+			if (thread.isVideo())
+				texture = new VideoTexture(thread.url);
+			else if (thread.processedImage.isAnimated())
 				texture = new AnimatedPictureTexture(thread.processedImage);
-			} else {
+			else
 				texture = new OrdinaryTexture(thread.processedImage);
-			}
 		}
-		if (texture != null) {
+		if (texture != null)
 			synchronized (LOCK) {
 				loadedImages.put(thread.url, texture);
 			}
-		}
 		return texture;
+	}
+	
+	public static class FoundVideoException extends Exception {
+		
 	}
 }
